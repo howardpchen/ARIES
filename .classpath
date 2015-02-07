@@ -13,7 +13,15 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.2 (Mojarra 2.2.0)"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/NeticaWin32"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.2 (Mojarra 2.2.0)">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/NeticaWin32">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
