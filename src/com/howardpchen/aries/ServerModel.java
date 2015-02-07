@@ -8,10 +8,8 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class ServerModel {
-	private AriesModule currentModule;
-	private ArrayList<AriesCase> cases;
-	private AriesCase currentCase;
-	
+	private Session currentSession;
+
 	public ServerModel() {
 		
 	}
