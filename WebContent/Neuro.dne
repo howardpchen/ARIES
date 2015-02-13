@@ -1,0 +1,529 @@
+// ~->[DNET-1]->~
+
+// File created by BotzolakisE at UPenn using Netica 5.15 on Jan 21, 2015 at 15:05:36.
+
+bnet M2P3c___Naive___Attending_Feat {
+AutoCompile = TRUE;
+autoupdate = TRUE;
+whenchanged = 1421870736;
+
+visual V2 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	windowposn = (100, 100, 1151, 603);
+	resolution = 72;
+	drawingbounds = (1259, 720);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00E1E1E1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00F8EED2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00D3CAA6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00C8C8C8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00FFFFFF;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00FFFFB4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00FFBDBD;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00DEE8FF;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00F0FAFA;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00FFFFFF;};
+	NodeSet target {Disabled = 1; Color = 0x00C8C8C8;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node Disease {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Abscess, Cerebritis, Craniopharyngioma, Glioblastoma, HematomaSubacute, InfarctionAcute, MetastasesNonhemorrhagic, MultipleSclerosis, Normal, Rhombencephalitis, Toxoplasmosis, XanthogranulomaChoroidPlexus);
+	parents = ();
+	probs = 
+		// Abscess      Cerebritis   Craniopharyngiom Glioblastoma HematomaSubacute InfarctionAcute MetastasesNonhem MultipleSclerosi Normal Rhombencephaliti Toxoplasmosis XanthogranulomaC 
+		  (0.05940597,  0.05940597,  0.05940597,  0.05940597,  0.05940597,  0.05940597,  0.05940597,  0.05940597,  0.3465343,   0.05940597,  0.05940597,  0.05940597);
+	numcases = 101;
+	title = "Disease";
+	whenchanged = 1415395054;
+	belief = (0.05940596, 0.05940598, 0.05940598, 0.05940597, 0.05940596, 0.05940597, 0.05940596, 0.05940596, 0.3465343, 0.05940597, 0.05940597, 0.05940597);
+	visual V2 {
+		center = (600, 138);
+		height = 1;
+		};
+	};
+
+node T1 {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Decreased, Increased, Normal);
+	parents = (Disease);
+	probs = 
+		// Decreased    Increased    Normal        // Disease          
+		  (0.999996,    1.999988e-6, 1.999988e-6,  // Abscess          
+		   0.3999996,   0.2000008,   0.3999996,    // Cerebritis       
+		   0.3333333,   0.4999992,   0.1666675,    // Craniopharyngiom 
+		   0.9999967,   1.666658e-6, 1.666658e-6,  // Glioblastoma     
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // HematomaSubacute 
+		   0.666665,    1.666658e-6, 0.3333333,    // InfarctionAcute  
+		   0.666665,    0.1666675,   0.1666675,    // MetastasesNonhem 
+		   0.8333308,   1.666658e-6, 0.1666675,    // MultipleSclerosi 
+		   2.85714e-7,  2.85714e-7,  0.9999994,    // Normal           
+		   0.3333333,   1.666658e-6, 0.666665,     // Rhombencephaliti 
+		   0.1666675,   0.4999992,   0.3333333,    // Toxoplasmosis    
+		   0.3333333,   0.1666675,   0.4999992);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (5.00003,      // Abscess          
+		   5.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   6.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   6.00003,      // InfarctionAcute  
+		   6.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00003,      // Rhombencephaliti 
+		   6.00003,      // Toxoplasmosis    
+		   6.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.3405936, 0.1504956, 0.5089108);
+	visual V2 {
+		center = (114, 78);
+		height = 4;
+		link 1 {
+			path = ((465, 121), (203, 88));
+			};
+		};
+	};
+
+node T2 {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Decreased, Increased, Normal);
+	parents = (Disease);
+	probs = 
+		// Decreased    Increased    Normal        // Disease          
+		  (1.666658e-6, 0.9999967,   1.666658e-6,  // Abscess          
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Cerebritis       
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Craniopharyngiom 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Glioblastoma     
+		   0.4999992,   0.4999992,   1.666658e-6,  // HematomaSubacute 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // InfarctionAcute  
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // MetastasesNonhem 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // MultipleSclerosi 
+		   2.85714e-7,  0.0857145,   0.9142852,    // Normal           
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Rhombencephaliti 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Toxoplasmosis    
+		   1.666658e-6, 0.8333308,   0.1666675);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00003,      // Abscess          
+		   6.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   6.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   6.00003,      // InfarctionAcute  
+		   6.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00003,      // Rhombencephaliti 
+		   6.00003,      // Toxoplasmosis    
+		   6.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.02970402, 0.6435627, 0.3267332);
+	visual V2 {
+		center = (114, 180);
+		height = 2;
+		};
+	};
+
+node FLAIR {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Decreased, Increased, Normal);
+	parents = (Disease);
+	probs = 
+		// Decreased    Increased    Normal        // Disease          
+		  (1.999988e-6, 0.999996,    1.999988e-6,  // Abscess          
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Cerebritis       
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Craniopharyngiom 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Glioblastoma     
+		   0.3333333,   0.666665,    1.666658e-6,  // HematomaSubacute 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // InfarctionAcute  
+		   0.1666675,   0.8333308,   1.666658e-6,  // MetastasesNonhem 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // MultipleSclerosi 
+		   2.85714e-7,  0.0857145,   0.9142852,    // Normal           
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Rhombencephaliti 
+		   1.666658e-6, 0.9999967,   1.666658e-6,  // Toxoplasmosis    
+		   1.666658e-6, 0.666665,    0.3333333);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (5.00003,      // Abscess          
+		   6.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   6.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   6.00003,      // InfarctionAcute  
+		   6.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00003,      // Rhombencephaliti 
+		   6.00003,      // Toxoplasmosis    
+		   6.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.02970404, 0.6336617, 0.3366342);
+	visual V2 {
+		center = (114, 288);
+		height = 3;
+		};
+	};
+
+node ADC {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Decreased, Increased, Normal);
+	parents = (Disease);
+	probs = 
+		// Decreased    Increased    Normal        // Disease          
+		  (0.9999967,   1.666658e-6, 1.666658e-6,  // Abscess          
+		   0.2500006,   2.499981e-6, 0.7499969,    // Cerebritis       
+		   1.666658e-6, 0.666665,    0.3333333,    // Craniopharyngiom 
+		   0.7999972,   1.999988e-6, 0.2000008,    // Glioblastoma     
+		   0.9999967,   1.666658e-6, 1.666658e-6,  // HematomaSubacute 
+		   0.999996,    1.999988e-6, 1.999988e-6,  // InfarctionAcute  
+		   1.999988e-6, 0.3999996,   0.5999984,    // MetastasesNonhem 
+		   0.1666675,   0.1666675,   0.666665,     // MultipleSclerosi 
+		   2.85714e-7,  2.85714e-7,  0.9999994,    // Normal           
+		   0.2000008,   1.999988e-6, 0.7999972,    // Rhombencephaliti 
+		   0.4999992,   0.3333333,   0.1666675,    // Toxoplasmosis    
+		   0.4999992,   1.666658e-6, 0.4999992);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00003,      // Abscess          
+		   4.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   5.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   5.00003,      // InfarctionAcute  
+		   5.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   35,           // Normal           
+		   5.00003,      // Rhombencephaliti 
+		   6.00003,      // Toxoplasmosis    
+		   6.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.3217819, 0.09307019, 0.5851479);
+	visual V2 {
+		center = (114, 390);
+		height = 5;
+		link 1 {
+			path = ((465, 207), (177, 357));
+			};
+		};
+	};
+
+node T2_Susc {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (No, Yes);
+	parents = (Disease);
+	probs = 
+		// No           Yes           // Disease          
+		  (0.9999983,   1.666661e-6,  // Abscess          
+		   0.999998,    1.999992e-6,  // Cerebritis       
+		   0.7999988,   0.2000012,    // Craniopharyngiom 
+		   0.5999996,   0.4000004,    // Glioblastoma     
+		   1.666661e-6, 0.9999983,    // HematomaSubacute 
+		   0.6666661,   0.3333339,    // InfarctionAcute  
+		   0.6666661,   0.3333339,    // MetastasesNonhem 
+		   0.9999983,   1.666661e-6,  // MultipleSclerosi 
+		   1,           2.857139e-7,  // Normal           
+		   0.9999983,   1.666661e-6,  // Rhombencephaliti 
+		   0.8333322,   0.1666678,    // Toxoplasmosis    
+		   0.5,         0.5);         // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00002,      // Abscess          
+		   5.00002,      // Cerebritis       
+		   5.00002,      // Craniopharyngiom 
+		   5.00002,      // Glioblastoma     
+		   6.00002,      // HematomaSubacute 
+		   6.00002,      // InfarctionAcute  
+		   6.00002,      // MetastasesNonhem 
+		   6.00002,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00002,      // Rhombencephaliti 
+		   6.00002,      // Toxoplasmosis    
+		   6.00002);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.8257418, 0.1742582);
+	visual V2 {
+		center = (114, 480);
+		height = 8;
+		link 1 {
+			path = ((465, 232), (150, 454));
+			};
+		};
+	};
+
+node T1post {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (No, Yes);
+	parents = (Disease);
+	probs = 
+		// No           Yes           // Disease          
+		  (1.666661e-6, 0.9999983,    // Abscess          
+		   0.3333339,   0.6666661,    // Cerebritis       
+		   0.1666678,   0.8333322,    // Craniopharyngiom 
+		   1.666661e-6, 0.9999983,    // Glioblastoma     
+		   0.9999983,   1.666661e-6,  // HematomaSubacute 
+		   0.9999983,   1.666661e-6,  // InfarctionAcute  
+		   1.666661e-6, 0.9999983,    // MetastasesNonhem 
+		   0.5,         0.5,          // MultipleSclerosi 
+		   1,           2.857139e-7,  // Normal           
+		   0.5,         0.5,          // Rhombencephaliti 
+		   1.666661e-6, 0.9999983,    // Toxoplasmosis    
+		   0.3333339,   0.6666661);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00002,      // Abscess          
+		   6.00002,      // Cerebritis       
+		   6.00002,      // Craniopharyngiom 
+		   6.00002,      // Glioblastoma     
+		   6.00002,      // HematomaSubacute 
+		   6.00002,      // InfarctionAcute  
+		   6.00002,      // MetastasesNonhem 
+		   6.00002,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00002,      // Rhombencephaliti 
+		   6.00002,      // Toxoplasmosis    
+		   6.00002);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.5742575, 0.4257425);
+	visual V2 {
+		center = (114, 570);
+		height = 9;
+		};
+	};
+
+node Age {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Adult, Old);
+	parents = (Disease);
+	probs = 
+		// Adult        Old           // Disease          
+		  (0.6666661,   0.3333339,    // Abscess          
+		   0.5,         0.5,          // Cerebritis       
+		   0.9999983,   1.666661e-6,  // Craniopharyngiom 
+		   0.5,         0.5,          // Glioblastoma     
+		   0.1666678,   0.8333322,    // HematomaSubacute 
+		   0.5,         0.5,          // InfarctionAcute  
+		   0.8333322,   0.1666678,    // MetastasesNonhem 
+		   0.9999983,   1.666661e-6,  // MultipleSclerosi 
+		   0.9142855,   0.08571452,   // Normal           
+		   0.8333322,   0.1666678,    // Rhombencephaliti 
+		   0.9999983,   1.666661e-6,  // Toxoplasmosis    
+		   0.3333339,   0.6666661);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00002,      // Abscess          
+		   6.00002,      // Cerebritis       
+		   6.00002,      // Craniopharyngiom 
+		   6.00002,      // Glioblastoma     
+		   6.00002,      // HematomaSubacute 
+		   6.00002,      // InfarctionAcute  
+		   6.00002,      // MetastasesNonhem 
+		   6.00002,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00002,      // Rhombencephaliti 
+		   6.00002,      // Toxoplasmosis    
+		   6.00002);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.7524747, 0.2475253);
+	visual V2 {
+		center = (600, 342);
+		height = 6;
+		};
+	};
+
+node Location {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (BS, CE, CG, CW, DGW, EC, IV);
+	parents = (Disease);
+	probs = 
+		// BS           CE           CG           CW           DGW          EC           IV            // Disease          
+		  (1.666647e-6, 1.666647e-6, 0.1666664,   0.6666605,   1.666647e-6, 0.1666664,   1.666647e-6,  // Abscess          
+		   1.666647e-6, 1.666647e-6, 0.8333253,   0.1666664,   1.666647e-6, 1.666647e-6, 1.666647e-6,  // Cerebritis       
+		   1.666647e-6, 1.666647e-6, 1.666647e-6, 1.666647e-6, 1.666647e-6, 0.99999,     1.666647e-6,  // Craniopharyngiom 
+		   1.666647e-6, 1.666647e-6, 0.4999958,   0.4999958,   1.666647e-6, 1.666647e-6, 1.666647e-6,  // Glioblastoma     
+		   1.666647e-6, 1.666647e-6, 0.1666664,   0.4999958,   0.1666664,   1.666647e-6, 0.1666664,    // HematomaSubacute 
+		   0.1666664,   1.666647e-6, 0.3333311,   0.1666664,   0.3333311,   1.666647e-6, 1.666647e-6,  // InfarctionAcute  
+		   1.666647e-6, 0.3333311,   0.3333311,   0.3333311,   1.666647e-6, 1.666647e-6, 1.666647e-6,  // MetastasesNonhem 
+		   1.666647e-6, 1.666647e-6, 1.666647e-6, 0.99999,     1.666647e-6, 1.666647e-6, 1.666647e-6,  // MultipleSclerosi 
+		   3.333256e-6, 3.333256e-6, 3.333256e-6, 0.99998,     3.333256e-6, 3.333256e-6, 3.333256e-6,  // Normal           
+		   0.99999,     1.666647e-6, 1.666647e-6, 1.666647e-6, 1.666647e-6, 1.666647e-6, 1.666647e-6,  // Rhombencephaliti 
+		   1.666647e-6, 1.666647e-6, 0.1666664,   1.666647e-6, 0.8333253,   1.666647e-6, 1.666647e-6,  // Toxoplasmosis    
+		   1.999972e-6, 1.999972e-6, 1.999972e-6, 1.999972e-6, 1.999972e-6, 0.3999964,   0.5999936);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00007,      // Abscess          
+		   6.00007,      // Cerebritis       
+		   6.00007,      // Craniopharyngiom 
+		   6.00007,      // Glioblastoma     
+		   6.00007,      // HematomaSubacute 
+		   6.00007,      // InfarctionAcute  
+		   6.00007,      // MetastasesNonhem 
+		   6.00007,      // MultipleSclerosi 
+		   3.00007,      // Normal           
+		   6.00007,      // Rhombencephaliti 
+		   6.00007,      // Toxoplasmosis    
+		   5.00007);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.06930842, 0.01980402, 0.1485155, 0.5445461, 0.0792093, 0.09307049, 0.04554623);
+	visual V2 {
+		center = (936, 102);
+		height = 7;
+		};
+	};
+
+node Number {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (MoreThanOne, One);
+	parents = (Disease);
+	probs = 
+		// MoreThanOne  One           // Disease          
+		  (0.1666678,   0.8333322,    // Abscess          
+		   0.999998,    1.999992e-6,  // Cerebritis       
+		   1.666661e-6, 0.9999983,    // Craniopharyngiom 
+		   1.666661e-6, 0.9999983,    // Glioblastoma     
+		   1.666661e-6, 0.9999983,    // HematomaSubacute 
+		   0.3333339,   0.6666661,    // InfarctionAcute  
+		   0.8333322,   0.1666678,    // MetastasesNonhem 
+		   0.9999983,   1.666661e-6,  // MultipleSclerosi 
+		   0.9999967,   3.333311e-6,  // Normal           
+		   0.5,         0.5,          // Rhombencephaliti 
+		   0.9999983,   1.666661e-6,  // Toxoplasmosis    
+		   0.7999988,   0.2000012);   // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00002,      // Abscess          
+		   5.00002,      // Cerebritis       
+		   6.00002,      // Craniopharyngiom 
+		   6.00002,      // Glioblastoma     
+		   6.00002,      // HematomaSubacute 
+		   6.00002,      // InfarctionAcute  
+		   6.00002,      // MetastasesNonhem 
+		   6.00002,      // MultipleSclerosi 
+		   3.00002,      // Normal           
+		   6.00002,      // Rhombencephaliti 
+		   6.00002,      // Toxoplasmosis    
+		   5.00002);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.6811867, 0.3188132);
+	visual V2 {
+		center = (936, 240);
+		height = 10;
+		};
+	};
+
+node Size {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Large, Medium, Small);
+	parents = (Disease);
+	probs = 
+		// Large        Medium       Small         // Disease          
+		  (0.5999984,   0.3999996,   1.999988e-6,  // Abscess          
+		   0.4999992,   0.3333333,   0.1666675,    // Cerebritis       
+		   0.3333333,   0.666665,    1.666658e-6,  // Craniopharyngiom 
+		   0.8333308,   0.1666675,   1.666658e-6,  // Glioblastoma     
+		   0.666665,    0.3333333,   1.666658e-6,  // HematomaSubacute 
+		   0.3333333,   0.4999992,   0.1666675,    // InfarctionAcute  
+		   0.3333333,   0.3333333,   0.3333333,    // MetastasesNonhem 
+		   1.666658e-6, 0.8333308,   0.1666675,    // MultipleSclerosi 
+		   3.3333e-6,   3.3333e-6,   0.9999933,    // Normal           
+		   1.666658e-6, 0.666665,    0.3333333,    // Rhombencephaliti 
+		   3.3333e-6,   0.9999933,   3.3333e-6,    // Toxoplasmosis    
+		   1.999988e-6, 0.999996,    1.999988e-6); // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (5.00003,      // Abscess          
+		   6.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   6.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   6.00003,      // InfarctionAcute  
+		   6.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   3.00003,      // Normal           
+		   6.00003,      // Rhombencephaliti 
+		   3.00003,      // Toxoplasmosis    
+		   5.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.2138628, 0.3702974, 0.4158398);
+	visual V2 {
+		center = (936, 354);
+		height = 11;
+		};
+	};
+
+node Mass {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (MassEffect, Normal, VolumeLoss);
+	parents = (Disease);
+	probs = 
+		// MassEffect   Normal       VolumeLoss    // Disease          
+		  (0.9999967,   1.666658e-6, 1.666658e-6,  // Abscess          
+		   0.4999992,   0.4999992,   1.666658e-6,  // Cerebritis       
+		   0.9999967,   1.666658e-6, 1.666658e-6,  // Craniopharyngiom 
+		   0.9999967,   1.666658e-6, 1.666658e-6,  // Glioblastoma     
+		   0.8333308,   0.1666675,   1.666658e-6,  // HematomaSubacute 
+		   0.1666675,   0.8333308,   1.666658e-6,  // InfarctionAcute  
+		   0.4999992,   0.4999992,   1.666658e-6,  // MetastasesNonhem 
+		   1.666658e-6, 0.8333308,   0.1666675,    // MultipleSclerosi 
+		   2.85714e-7,  0.9999994,   2.85714e-7,   // Normal           
+		   0.1666675,   0.8333308,   1.666658e-6,  // Rhombencephaliti 
+		   0.8333308,   0.1666675,   1.666658e-6,  // Toxoplasmosis    
+		   0.1666675,   0.8333308,   1.666658e-6); // XanthogranulomaC ;
+	numcases = 
+		                 // Disease          
+		  (6.00003,      // Abscess          
+		   6.00003,      // Cerebritis       
+		   6.00003,      // Craniopharyngiom 
+		   6.00003,      // Glioblastoma     
+		   6.00003,      // HematomaSubacute 
+		   6.00003,      // InfarctionAcute  
+		   6.00003,      // MetastasesNonhem 
+		   6.00003,      // MultipleSclerosi 
+		   35,           // Normal           
+		   6.00003,      // Rhombencephaliti 
+		   6.00003,      // Toxoplasmosis    
+		   6.00003);     // XanthogranulomaC ;
+	whenchanged = 1415395054;
+	belief = (0.3663362, 0.6237617, 0.009902134);
+	visual V2 {
+		center = (942, 480);
+		height = 12;
+		};
+	};
+NodeSet target {Nodes = (Disease);};
+ElimOrder = (T2_Susc, T1post, Age, Number, T1, T2, FLAIR, ADC, Size, Mass, Disease, Location);
+};
