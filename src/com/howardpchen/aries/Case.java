@@ -21,8 +21,8 @@ public class Case {
 		return network;
 	}
 
-	public void setNetwork(NetworkWrapper network) {
-		this.network = network;
+	public void setNetwork(NetworkWrapper w) {
+		this.network = w;
 	}
 	
 	
