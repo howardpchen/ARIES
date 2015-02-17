@@ -7,10 +7,11 @@
       or sample-file-no-form.xhtml. Don't copy and rename THIS file, because
       this file has too many extraneous things in it. -->
 <h:head>
-<title>JSF 2.2: Blank Starting-Point Project</title>
+<title>ARIES Example</title>
 <link href="./css/styles.css" rel="stylesheet" type="text/css"/> 
 </h:head>
 <h:body>
-#{serverModel.testNodes}
+<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
+<h:outputText value="#{serverModel.testNodes}" escape="false" />
 </h:body>
 </html>
