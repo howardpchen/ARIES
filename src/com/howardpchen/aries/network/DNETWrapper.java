@@ -35,7 +35,13 @@ public class DNETWrapper extends NetworkWrapper {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return returnMap;
+	}
+	@Override
+	public ArrayList<String> getNodeNames() {
+		ArrayList<String> nodenames = new ArrayList<String>();
+		
+		return nodenames;
 	}
 	
 }

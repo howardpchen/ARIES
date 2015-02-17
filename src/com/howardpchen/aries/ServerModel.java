@@ -21,6 +21,8 @@ public class ServerModel {
 	
 	public String getTestNodes() {
 		NetworkWrapper dw = new DNETWrapper("../ARIES/WebContent/Neuro.dne");
+		ArrayList<String> nn = dw.getNodeNames();
+		
 		Map<String, Double> values = dw.getNodeProbs("T1");
 		StringBuffer sb = new StringBuffer("");
 		Iterator<String> it = values.keySet().iterator();
