@@ -43,6 +43,24 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		
 		return returnMap;
 	}
+	
+	public String[] getStates(String nodeName) {
+		String[] states = null;
+		Node myNode = null;
+		try {
+			myNode = net.getNode(nodeName);
+			int st = net.getNode(nodeName).getNumStates();
+			states = new String[st];
+			for (int i = 0; i < st; i++) {
+				String title = myNode.state(i).getName();
+				states[i] = title;
+			}
+		} catch (NeticaException e) {
+			e.printStackTrace();
+		}
+		return states;
+	}
+	
 	@Override
 	public String[] getNodeNames() {
 		String[] names = null;
