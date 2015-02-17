@@ -50,6 +50,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		try {
 			names = new String[net.getNodes().size()];
 			NodeList nl = net.getNodes();
+			@SuppressWarnings("unchecked")
 			Iterator<Node> it = nl.iterator();
 			int current = 0;
 			while (it.hasNext()){
