@@ -1,0 +1,181 @@
+body,p,h1,h2,h3,h4,ul,ol,textarea,input {
+	background:#000000;
+	font-family:verdana,helvetica,arial,sans-serif;
+	color:#F0F4F6;
+}
+
+a.topnav:link,a.topnav:visited {color:#cccccc;text-decoration:underline;}
+a.topnav:hover,a.topnav:active {color:#999999;text-decoration:underline;}
+a:link {text-decoration:underline;}
+a:visited {text-decoration:underline;}
+a:hover {text-decoration:underline;}
+a:active {text-decoration:underline;}
+
+a.button, .radiobuttons label, select, input[type=text], input[type=password] {
+    text-align:center;
+    display:inline-block;
+    width:135pt;
+    height:20pt;
+    background-color:#000;
+    border:3px;
+    color:#fff;
+    font-size: 11pt;
+    cursor:pointer;
+    text-decoration:none;
+    border-radius: 15pt;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #77F #77F;
+    line-height:20pt;
+    margin:6pt;
+}
+select:disabled, input:disabled  {
+    color:#222;
+    background-color:#222;
+}
+
+
+input[type=submit] {
+    padding:5px 15px; background:#77F; border:0 none;
+    font-color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius: 15px 15px; 
+    }
+a.btnConfirm, a.btnNext, a.btnPrev, a.btnSubmit  {
+    background-color:#227;
+    border:1px outset #2683cf;
+    color:#FFF;
+    font-size: 14px;
+    font-weight:bold;
+    padding:5px 10px 5px 10px;
+    margin:1px;
+    cursor:pointer;
+    text-decoration:none;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #77F #77F;
+    line-height: 30px;
+}
+a.btnConfirmDisabled  {
+	display:none;
+}
+
+a.btnNextDisabled, a.btnNextDisabled:active {
+    border:1px outset #2683cf;
+    font-size: 14px;
+    font-weight:bold;
+    padding:5px 10px 5px 10px;
+    margin:1px;
+    text-decoration:none;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 3px;
+    line-height: 30px;
+    border-color: #777 #777;
+    background-color:#222;
+    color: #555;
+    cursor:default;
+}
+a.btnNext:active, a.btnPrev:active, a.btnSubmit:active  {
+    background-color:#77F;
+    border:1px outset #2683cf;
+    color:#FFF;
+    font-size: 14px;
+    font-weight:bold;
+    padding:5px 10px 5px 10px;
+    margin:1px;
+    cursor:pointer;
+    text-decoration:none;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #7777FF #7777FF;
+    line-height: 30px;
+}
+
+
+textarea  {
+	width: 80%;
+	height: 10em;
+	border-radius: 15pt;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #77F #77F;
+	background: #222;
+	color: #eee;
+}
+
+h1 {font-size:28px;margin-top:0px;font-weight:normal}
+h2 {font-size:22px;margin-top:10px;margin-bottom:10px;font-weight:normal}
+h3 {font-size:17px;font-weight:normal}
+h4 {font-size:12px;}
+h5 {font-size:11px;}
+h6 {font-size:10px;}
+
+.formTable {
+  display: table;
+}
+/* If prompt and input are in two cells of one row, the prompt will be R-aligned. */
+.formTable td:first-child {
+  text-align: right;
+}
+/* Third table cell shows the error message, so make it bold and red. Used in validation examples that have h:message. */
+.formTable td:nth-child(3) {
+  color: red;
+  font-weight: bold;
+}
+
+p.node-title {
+	width: 500px;
+    background-color: #77F;
+    border-width: 3px;
+    font-size: 16px;
+    font-weight:bold;
+    padding:5px 10px 5px 10px;	
+}
+
+tr:nth-child(even) {background: #669}
+tr:nth-child(odd) {background: #667}
+table {
+	width: 500px;
+	
+}
+td {
+	margin-left: 0.5em;  
+}
+th { background-color: #afc4d6;
+     font-size: 110%;
+     font-family: Arial, Helvetica, sans-serif;
+}
+legend {
+  font-weight: bold;
+  color: black;
+  background-color: #afc4d6;
+  border: 1px solid #1a55bf;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+fieldset {
+  border-radius: 6px;
+  display: block;
+}
+input, textarea {
+  background-color: #ecedf2;
+  text-align: left;
+}
+input[type="checkbox"] {
+  background-color: transparent;  /* For IE 7-9 -- doesn't matter in FF, Chrome, or IE 10+ */
+}
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+  background-color: #9fd1ff;
+}
+.error {
+  color: red;
+  font-weight: bold;
+}
+/* So that in Chrome and IE, the bullets are next to the text in centered lists. Already OK in Firefox. */
+[align="center"] li {
+  list-style-position: inside;
+}
