@@ -8,5 +8,6 @@ public abstract class NetworkWrapper {
 	}
 	public abstract Map<String, Double> getNodeProbs(String nodeName);
 	public abstract String[] getNodeNames();
-	
+	public abstract void setNodeState(String nodeName, String state);
+	public abstract void clearNodeState(String nodeName);
 }

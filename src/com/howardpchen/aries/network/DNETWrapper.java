@@ -44,6 +44,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		return returnMap;
 	}
 	
+	
 	public String[] getStates(String nodeName) {
 		String[] states = null;
 		Node myNode = null;
@@ -82,6 +83,46 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		
 		return names;
 	}
+	@Override
+	public void setNodeState(String nodeName, String state) {
+		Node myNode;
+		try {
+			myNode = net.getNode(nodeName);
+			
+			/*
+			int st = net.getNode(nodeName).getNumStates();
+			int index = -1;
+			String[] states = new String[st];
+			for (int i = 0; i < st; i++) {
+				String title = myNode.state(i).getName();
+				if (title.equals(state)) {
+					index = i;
+					break;
+				}
+			}
+			*/
+			
+			myNode.finding().setState(state);
+			
+		} catch (NeticaException e) {
+			System.err.println("Error: Node not found!");
+		}
+		
+	}
+	
+	public void clearNodeState(String nodeName) {
+		Node myNode;
+		try {
+			myNode = net.getNode(nodeName);
+			myNode.finding().clear();
+			
+		} catch (NeticaException e) {
+			System.err.println("Error: Node not found!");
+		}
+		
+	}
+	
+	
 	
 }
 
