@@ -1,6 +1,6 @@
 # ARiES
 
-ARiES (Adaptive Radiology Educational System).
+ARIES (Adaptive Radiology Interpretation & Educational System).
 
 ## Installation
 
