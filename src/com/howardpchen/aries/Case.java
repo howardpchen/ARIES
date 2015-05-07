@@ -10,7 +10,12 @@ public class Case {
 	private NetworkWrapper network;
 	
 	public Case(String filename) {
-		setNetwork(new DNETWrapper(filename));
+		try {
+			setNetwork(new DNETWrapper(filename));
+		} catch (NetworkLoadingException e) {
+			System.err.println("Error loading network in Case");
+			//e.printStackTrace();
+		}
 	}
 	
 	public Case(NetworkWrapper w) {

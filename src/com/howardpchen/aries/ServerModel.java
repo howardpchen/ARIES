@@ -10,8 +10,13 @@ import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import com.howardpchen.aries.network.DNETWrapper;
+import com.howardpchen.aries.network.NetworkLoadingException;
 import com.howardpchen.aries.network.NetworkWrapper;
 
 @ManagedBean
@@ -26,7 +31,12 @@ public class ServerModel implements Serializable {
 	
 			
 	public ServerModel() {
-		dw = new DNETWrapper("WebContent/Neuro.dne");
+		try {
+			dw = new DNETWrapper("WebContent/Neuro.dne");
+		} catch (NetworkLoadingException e) {
+			System.out.println ("Error loading the network.");
+			
+		}
 		userInputs = new HashMap<String, String>();
 		System.out.println("Called constructor.");
 	}
@@ -35,6 +45,7 @@ public class ServerModel implements Serializable {
 		String[] inputs = s.split(":");
 		if (inputs.length == 2)	userInputs.put(inputs[0], inputs[1]);
 	}
+	
 	public String getNodeInput() {
 		return "";
 	}
@@ -131,4 +142,21 @@ public class ServerModel implements Serializable {
 		double db = d.doubleValue();
 		return Math.round(db * 1000)/10d;
 	}
+
+
+	public void valueBound(HttpSessionBindingEvent event) {
+	    System.out.println("valueBound:" + event.getName() + " session:" + event.getSession().getId() );
+	}
+
+	public void registerSession() {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put( "sessionBindingListener", this  );
+		System.out.println( "registered sessionBindingListener"  );
+	}
+
+	public void valueUnbound(HttpSessionBindingEvent event) {
+		System.out.println("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
+	    dw.endSession();
+	}
+
+	
 }

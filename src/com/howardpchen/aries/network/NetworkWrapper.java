@@ -10,4 +10,5 @@ public abstract class NetworkWrapper {
 	public abstract String[] getNodeNames();
 	public abstract void setNodeState(String nodeName, String state);
 	public abstract void clearNodeState(String nodeName);
+	public abstract void endSession();
 }

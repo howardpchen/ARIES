@@ -14,14 +14,15 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	private static final long serialVersionUID = 223891435872906573L;
 	Environ env;
 	Net net;
-	public DNETWrapper(String filename) {
+	public DNETWrapper(String filename) throws NetworkLoadingException {
 		try {
 			env = new Environ(null);
 			net = new Net(new Streamer(filename));
 			net.compile();
 		} catch (NeticaException e) {
-			System.err.println("Problem loading network.");
-			e.printStackTrace();
+			System.err.println("Problem loading network on Netica.");
+			//e.printStackTrace();
+			throw new NetworkLoadingException();
 		}
 	}
 	@Override
@@ -37,8 +38,8 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				returnMap.put(title, val);
 			}
 		} catch (NeticaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error getting node probabilities.");
+			//e.printStackTrace();
 		}
 		
 		return returnMap;
@@ -57,7 +58,8 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				states[i] = title;
 			}
 		} catch (NeticaException e) {
-			e.printStackTrace();
+			System.err.println("Problem getting node states for: " + nodeName);
+			//e.printStackTrace();
 		}
 		return states;
 	}
@@ -88,20 +90,6 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		Node myNode;
 		try {
 			myNode = net.getNode(nodeName);
-			
-			/*
-			int st = net.getNode(nodeName).getNumStates();
-			int index = -1;
-			String[] states = new String[st];
-			for (int i = 0; i < st; i++) {
-				String title = myNode.state(i).getName();
-				if (title.equals(state)) {
-					index = i;
-					break;
-				}
-			}
-			*/
-			
 			myNode.finding().setState(state);
 			
 		} catch (NeticaException e) {
@@ -120,6 +108,15 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			System.err.println("Error: Node not found!");
 		}
 		
+	}
+	@Override
+	public void endSession() {
+		try {
+			net.finalize();
+		} catch (NeticaException e) {
+			System.err.println("Error finalizing existing Network session");
+			//e.printStackTrace();
+		}
 	}
 	
 	
