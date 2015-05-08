@@ -12,6 +12,9 @@ local.properties
 .settings/
 .loadpath
 
+# Library needs to be separately downloaded 
+WebContent/WEB-INF/lib/*
+
 # Eclipse Core
 .project
 
