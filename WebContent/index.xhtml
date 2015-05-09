@@ -5,15 +5,18 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	  xmlns:f="http://java.sun.com/jsf/core">
 
+
 <h:head>
 <title>ARIES Example</title>
 <link href="./css/style.css" rel="stylesheet" type="text/css"/> 
 </h:head>
 <h:body>
+
 <h1> Adaptive Radiology Interpretation &amps; Education System (ARIES)</h1>
 <h3> Pre-pre-pre-alpha version</h3>
 
 <h:form>
+<h:inputHidden value="#{serverModel.prePageLoad}"/>
 
 <h2>Your Inputs:</h2>
 
@@ -39,6 +42,8 @@
 <p>
 <h:outputText value="#{serverModel.testNodes}" escape="false" />
 </p>
+<h:inputHidden value="#{serverModel.postPageLoad}"/>
 </h:form>
+
 </h:body>
 </html>

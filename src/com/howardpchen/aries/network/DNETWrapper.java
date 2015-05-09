@@ -21,7 +21,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			net.compile();
 		} catch (NeticaException e) {
 			System.err.println("Problem loading network on Netica.");
-			//e.printStackTrace();
+			e.printStackTrace();
 			throw new NetworkLoadingException();
 		}
 	}
@@ -113,6 +113,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	public void endSession() {
 		try {
 			net.finalize();
+			env.finalize();
 		} catch (NeticaException e) {
 			System.err.println("Error finalizing existing Network session");
 			//e.printStackTrace();

@@ -1,6 +1,6 @@
 package com.howardpchen.aries;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,8 +12,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 import com.howardpchen.aries.network.DNETWrapper;
 import com.howardpchen.aries.network.NetworkLoadingException;
@@ -21,23 +19,20 @@ import com.howardpchen.aries.network.NetworkWrapper;
 
 @ManagedBean
 @SessionScoped
-public class ServerModel implements Serializable {
+public class ServerModel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9026586621419425189L;
+//	private static final long serialVersionUID = -9026586621419425189L;
+	
 	private Map<String, String> userInputs;
-	private NetworkWrapper dw; 
+	private NetworkWrapper dw;
+	private String pageLoad = ""; 
 	
 			
 	public ServerModel() {
-		try {
-			dw = new DNETWrapper("WebContent/Neuro.dne");
-		} catch (NetworkLoadingException e) {
-			System.out.println ("Error loading the network.");
-			
-		}
 		userInputs = new HashMap<String, String>();
+		registerSession();
 		System.out.println("Called constructor.");
 	}
 	
@@ -137,6 +132,32 @@ public class ServerModel implements Serializable {
 		sb.append("</table>");
 		return sb.toString();
 	}
+
+
+	public void setPrePageLoad(String pl) {
+		this.pageLoad = pl;
+	}
+	
+	public String getPrePageLoad() {
+	    System.out.println("DNET Wrapper session started");
+		try {
+			dw = new DNETWrapper("WebContent/Neuro.dne");
+		} catch (NetworkLoadingException e) {
+			System.out.println ("Error loading the network.");
+			
+		}
+		return this.pageLoad;
+	}
+
+	public void setPostPageLoad(String pl) {
+		this.pageLoad = pl;
+	}
+	
+	public String getPostPageLoad() {
+	    dw.endSession();
+	    System.out.println("DNET Wrapper session ended");
+		return this.pageLoad;
+	}
 	
 	public static double convertToPercentage(Double d) {
 		double db = d.doubleValue();
@@ -155,7 +176,6 @@ public class ServerModel implements Serializable {
 
 	public void valueUnbound(HttpSessionBindingEvent event) {
 		System.out.println("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
-	    dw.endSession();
 	}
 
 	
