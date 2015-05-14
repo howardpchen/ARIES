@@ -2,8 +2,12 @@ package com.howardpchen.aries;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,13 +57,17 @@ public class ServerModel {
 		sb.append("<table>");
 		while (it.hasNext()) {
 			String key = it.next();
-			sb.append("<tr><td>").append(key).append("<td>").append(userInputs.get(key)).append("</tr>");
+			if (!userInputs.get(key).equals("[Clear]")) sb.append("<tr><td>").append(key).append("<td>").append(userInputs.get(key)).append("</tr>");
 		}
 		sb.append("</table>");
 		return sb.toString();
 	}
 	
 	public String nodeInputHandler() {
+	    return("index");  // return to index or refresh index
+	}
+	public String resetHandler() {
+		userInputs.clear();
 	    return("index");  // return to index or refresh index
 	}
 	
@@ -76,7 +84,7 @@ public class ServerModel {
 			Iterator<String> it = s.iterator();
 			while (it.hasNext()) {
 				String key = it.next();
-				sb.append("<tr><td>" + key).append("<td>" + values.get(key)).append("</tr>");
+				sb.append("<tr><td>" + key).append("<td>" + convertToPercentage(values.get(key))).append("%</tr>");
 			}
 			sb.append("</table>");
 		}
@@ -103,9 +111,8 @@ public class ServerModel {
 		return returnString;
 	}
 	
-	public String getDiagnosisNode() {
+	public synchronized String getDiagnosisNode() {
 		// Update the diagnosis node first
-		
 		Set<String> s = userInputs.keySet();
 		Iterator<String> it = s.iterator();
 		while (it.hasNext()) {
@@ -122,7 +129,7 @@ public class ServerModel {
 		
 		StringBuffer sb = new StringBuffer("");
 		sb.append("<table>");
-		Map<String, Double> values = dw.getDiagnosisProbs();
+		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 		s = values.keySet();
 		it = s.iterator();
 		while (it.hasNext()) {
@@ -163,6 +170,23 @@ public class ServerModel {
 		double db = d.doubleValue();
 		return Math.round(db * 1000)/10d;
 	}
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue( Map<K, V> map, int direction) {
+		final int dir = direction;
+	    List<Map.Entry<K, V>> list =
+	        new LinkedList<Map.Entry<K, V>>( map.entrySet() );
+	    Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
+	            public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 ) {
+	            return (o1.getValue()).compareTo( o2.getValue() ) * dir;
+	            }
+	            } );
+
+	    Map<K, V> result = new LinkedHashMap<K, V>();
+	    for (Map.Entry<K, V> entry : list) {
+	        result.put( entry.getKey(), entry.getValue() );
+	    }
+	    return result;
+	}
+
 
 
 	public void valueBound(HttpSessionBindingEvent event) {
@@ -178,5 +202,7 @@ public class ServerModel {
 		System.out.println("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
 	}
 
+	
+	
 	
 }

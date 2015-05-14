@@ -20,23 +20,21 @@
 
 <h2>Your Inputs:</h2>
 
-<h:selectOneMenu value="#{serverModel.nodeInput}">
+<h:selectOneMenu value="#{serverModel.nodeInput}"  onchange="this.form.submit()">
   <f:selectItems value="#{serverModel.selectMenuInputs}"/>
-</h:selectOneMenu> 
-<h:commandButton value="Enter/Update Finding" 
-                 action="#{serverModel.nodeInputHandler}"/>
-
+   
+</h:selectOneMenu>
+<h:commandButton value="Reset" 
+                 action="#{serverModel.resetHandler}"/>
 
 <p>
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
 
-
 <h2>Probability of Diagnoses: </h2>
 <p>
 <h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 </p>
-
 
 <h2>"Under the Hood" Network Values</h2>
 <p>
@@ -44,6 +42,5 @@
 </p>
 <h:inputHidden value="#{serverModel.postPageLoad}"/>
 </h:form>
-
 </h:body>
 </html>
