@@ -1,0 +1,1877 @@
+// ~->[DNET-1]->~
+
+// File created by BotzolakisE at UPenn using Netica 5.15 on May 11, 2015 at 22:04:45.
+
+bnet NV_M2_P1c {
+AutoCompile = TRUE;
+autoupdate = TRUE;
+whenchanged = 1431396285;
+
+visual V1 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	windowposn = (50, 50, 1101, 553);
+	resolution = 72;
+	drawingbounds = (2322, 1687);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00E1E1E1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00F8EED2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00D3CAA6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00C8C8C8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00FFFFFF;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00FFFFB4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00FFBDBD;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00DEE8FF;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00F0FAFA;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00FFFFFF;};
+	NodeSet target {Disabled = 1; Color = 0x00C8C8C8;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node Disease {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	statetitles = ("Abscess", "Acute_disseminated_encephalomyelitis", "Acute_hemorrhagic_leukoencephalitis", "AIDS_HIV_encephalitis", "Alzheimer_disease", "Amyloid_angiopathy", "Aneurysm", "Aneurysm_thrombosed", "Angiomatosis_leptomeningeal", "Arachnoid_cyst", "Arteriovenous_malformation_or_fistula", "Astrocytoma_high_grade", "Astrocytoma_low_grade", "Behcet", "CADASIL", "Capillary_telangiectasia", "Cavernous_malformation", "Cephalocele", "Cerebritis", "Chiari_malformation", "Choroid_plexus_papilloma_or_carcinoma", "Colloid_cyst", "Contusion_cerebral", "Cortical_dysyplasia", "Craniopharyngioma", "Cryptococcosis", "Cysticercosis", "Cytomegalovirus", "Dandy_Walker_malformation_spectrum", "Dermoid", "Diffuse_axonal_injury", "Dysembroplastic_neuroepithelial_tumor", "Empyema_subdural_epidural", "Encephalitis", "Encephalomalacia", "Ependymal_tumors", "Epidermoid_cyst", "Epilepsy_seizures", "Fahr_disease", "Foreign_Body", "Frontotemporal_Degeneration", "Gangliocytoma_ganglioglioma", "Germinoma", "Giant_cell_astrocytoma", "Glioblastoma", "Gliomatosis_cerebri", "Gliosis", "Hamartoma_of_tuber_cinereum", "Hemangioblastoma", "Hemangiopericytoma", "Hematoma_intracerebral_acute", "Hematoma_intracerebral_chronic", "Hematoma_intracerebral_subacute", "Hematoma_intraventricular_acute", "Hematoma_subdural_epidural_acute", "Hematoma_subdural_epidural_chronic", "Hematoma_subdural_epidural_subacute", "Hemosiderosis_leptomeningeal", "Hepatic_encephalopathy", "Herpes_simplex_encephalitis", "Heterotypic_gray_matter", "Huntington_disease", "Hydrocephalus_communicating", "Hydrocephalus_noncommunicating", "Hygroma_subdural", "Hypoxic_ischemic_encephalopathy", "Infarction_acute", "Infarction_chronic", "Infarction_subacute", "Jakob_Creutzfeldt_disease", "Lhermitte_Duclos_disease", "Lipoma", "Lyme_disease", "Lymphoma", "Medulloblastoma", "Meningioma", "Meningitis", "Mesial_temporal_sclerosis", "Metabolic_poisoning", "Metastasis_intracerebral", "Metastasis_leptomeningeal", "Migraine", "Mitochondrial_disease", "Moyamoya_disease", "Multiple_sclerosis", "Multiple_sclerosis_tumefactive_demyelinating", "Multiple_system_atrophy", "Myelinolysis_acute_central_pontine", "Myelinolysis_extrapontine", "Neurocytoma_central", "Neurofibromatosis_type_1", "Neurofibromatosis_type_2", "Normal", "Oligodendroglioma", "Parkinson_plus", "Periventricular_leukomalacia", "Pineal_neoplasm", "Pleomorphic_xanthoastrocytoma", "Pneumocephalus", "Porencephalic_cyst", "Posterior_reversible_enephalopathy", "Primitive_neuroectodermal_tumor", "Progressive_multifocal_leukoencephalopathy", "Pseudotumor", "Rhombencephalitis", "Sarcoidosis", "Schizencephaly", "Schwannoma", "Small_vessel_ischemic_changes", "Subarachnoid_hemorrhage", "Syringobulbia", "Teratoma", "Thromboembolism_arterial", "Thrombosis_venous", "Toxoplasmosis", "Tuberculosis", "Tuberous_sclerosis", "Vasculitis", "Ventricultis_Ependymitis", "Wallerian_degeneration", "Wernicke_encephalopathy", "Wilson_disease", "Xanthogranuloma_of_choroid_plexus");
+	parents = ();
+	probs = 
+		// Abscess      Acute_disseminat Acute_hemorrhagi AIDS_HIV_encepha Alzheimer_diseas Amyloid_angiopat Aneurysm Aneurysm_thrombo Angiomatosis_lep Arachnoid_cyst Arteriovenous_ma Astrocytoma_high Astrocytoma_low_ Behcet CADASIL Capillary_telang Cavernous_malfor Cephalocele Cerebritis Chiari_malformat Choroid_plexus_p Colloid_cyst Contusion_cerebr Cortical_dysypla Craniopharyngiom Cryptococcosis Cysticercosis Cytomegalovirus Dandy_Walker_mal Dermoid Diffuse_axonal_i Dysembroplastic_ Empyema_subdural Encephalitis Encephalomalacia Ependymal_tumors Epidermoid_cyst Epilepsy_seizure Fahr_disease Foreign_Body Frontotemporal_D Gangliocytoma_ga Germinoma Giant_cell_astro Glioblastoma Gliomatosis_cere Gliosis Hamartoma_of_tub Hemangioblastoma Hemangiopericyto Hematoma_intrace Hematoma_intrace Hematoma_intrace Hematoma_intrave Hematoma_subdura Hematoma_subdura Hematoma_subdura Hemosiderosis_le Hepatic_encephal Herpes_simplex_e Heterotypic_gray Huntington_disea Hydrocephalus_co Hydrocephalus_no Hygroma_subdural Hypoxic_ischemic Infarction_acute Infarction_chron Infarction_subac Jakob_Creutzfeld Lhermitte_Duclos Lipoma Lyme_disease Lymphoma Medulloblastoma Meningioma Meningitis Mesial_temporal_ Metabolic_poison Metastasis_intra Metastasis_lepto Migraine Mitochondrial_di Moyamoya_disease Multiple_scleros Multiple_scleros Multiple_system_ Myelinolysis_acu Myelinolysis_ext Neurocytoma_cent Neurofibromatosi Neurofibromatosi Normal Oligodendrogliom Parkinson_plus Periventricular_ Pineal_neoplasm Pleomorphic_xant Pneumocephalus Porencephalic_cy Posterior_revers Primitive_neuroe Progressive_mult Pseudotumor Rhombencephaliti Sarcoidosis Schizencephaly Schwannoma Small_vessel_isc Subarachnoid_hem Syringobulbia Teratoma Thromboembolism_ Thrombosis_venou Toxoplasmosis Tuberculosis Tuberous_scleros Vasculitis Ventricultis_Epe Wallerian_degene Wernicke_encepha Wilson_disease Xanthogranuloma_ 
+		  (@undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      0.15,        @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef,      @undef);
+	whenchanged = 1423608117;
+	belief = (0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967212, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967214, 0.006967213, 0.006967214, 0.006967214, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967212, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967211, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967214, 0.15, 0.006967213, 0.006967214, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967214, 0.006967213, 0.006967213, 0.006967214, 0.006967214, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213, 0.006967213);
+	visual V1 {
+		center = (618, 843);
+		font = font {shape= "Arial"; size= 8;};
+		MaxNumEntries = 200;
+		height = 1;
+		};
+	};
+
+node T1 {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Increased, Normal, Decreased);
+	parents = (Disease);
+	probs = 
+		// Increased    Normal       Decreased     // Disease          
+		  (0.05,        0.1,         0.85,         // Abscess          
+		   0.01,        0.09,        0.9,          // Acute_disseminat 
+		   0.05,        0.05,        0.9,          // Acute_hemorrhagi 
+		   0.01,        0.84,        0.15,         // AIDS_HIV_encepha 
+		   0.01,        0.98,        0.01,         // Alzheimer_diseas 
+		   0.3,         0.01,        0.69,         // Amyloid_angiopat 
+		   0.05,        0.25,        0.7,          // Aneurysm         
+		   0.75,        0.03,        0.22,         // Aneurysm_thrombo 
+		   0.05,        0.9,         0.05,         // Angiomatosis_lep 
+		   0.01,        0.01,        0.98,         // Arachnoid_cyst   
+		   0.05,        0.01,        0.94,         // Arteriovenous_ma 
+		   0.04,        0.01,        0.95,         // Astrocytoma_high 
+		   0.05,        0.1,         0.85,         // Astrocytoma_low_ 
+		   0.01,        0.4,         0.59,         // Behcet           
+		   0.01,        0.2,         0.79,         // CADASIL          
+		   0.01,        0.59,        0.4,          // Capillary_telang 
+		   0.4,         0.05,        0.55,         // Cavernous_malfor 
+		   0.01,        0.6,         0.39,         // Cephalocele      
+		   0.02,        0.48,        0.5,          // Cerebritis       
+		   0.01,        0.98,        0.01,         // Chiari_malformat 
+		   0.02,        0.5,         0.48,         // Choroid_plexus_p 
+		   0.65,        0.3,         0.05,         // Colloid_cyst     
+		   0.05,        0.6,         0.35,         // Contusion_cerebr 
+		   0.1,         0.88,        0.02,         // Cortical_dysypla 
+		   0.2,         0.32,        0.48,         // Craniopharyngiom 
+		   0.05,        0.03,        0.92,         // Cryptococcosis   
+		   0.01,        0.6,         0.39,         // Cysticercosis    
+		   0.01,        0.95,        0.04,         // Cytomegalovirus  
+		   0.01,        0.98,        0.01,         // Dandy_Walker_mal 
+		   0.85,        0.05,        0.1,          // Dermoid          
+		   0.05,        0.8,         0.15,         // Diffuse_axonal_i 
+		   0.01,        0.14,        0.85,         // Dysembroplastic_ 
+		   0.05,        0.05,        0.9,          // Empyema_subdural 
+		   0.01,        0.3,         0.69,         // Encephalitis     
+		   0.01,        0.05,        0.94,         // Encephalomalacia 
+		   0.01,        0.04,        0.95,         // Ependymal_tumors 
+		   0.05,        0.05,        0.9,          // Epidermoid_cyst  
+		   0.01,        0.7,         0.29,         // Epilepsy_seizure 
+		   0.2,         0.4,         0.4,          // Fahr_disease     
+		   0.05,        0.5,         0.45,         // Foreign_Body     
+		   0.01,        0.98,        0.01,         // Frontotemporal_D 
+		   0.01,        0.4,         0.59,         // Gangliocytoma_ga 
+		   0.05,        0.1,         0.85,         // Germinoma        
+		   0.01,        0.9,         0.09,         // Giant_cell_astro 
+		   0.05,        0.15,        0.8,          // Glioblastoma     
+		   0.01,        0.14,        0.85,         // Gliomatosis_cere 
+		   0.03,        0.07,        0.9,          // Gliosis          
+		   0.01,        0.94,        0.05,         // Hamartoma_of_tub 
+		   0.01,        0.01,        0.98,         // Hemangioblastoma 
+		   0.01,        0.89,        0.1,          // Hemangiopericyto 
+		   0.05,        0.75,        0.2,          // Hematoma_intrace 
+		   0.15,        0.01,        0.84,         // Hematoma_intrace 
+		   0.87,        0.1,         0.03,         // Hematoma_intrace 
+		   0.05,        0.75,        0.2,          // Hematoma_intrave 
+		   0.05,        0.75,        0.2,          // Hematoma_subdura 
+		   0.15,        0.01,        0.84,         // Hematoma_subdura 
+		   0.87,        0.1,         0.03,         // Hematoma_subdura 
+		   0.01,        0.95,        0.04,         // Hemosiderosis_le 
+		   0.9,         0.09,        0.01,         // Hepatic_encephal 
+		   0.1,         0.1,         0.8,          // Herpes_simplex_e 
+		   0.01,        0.98,        0.01,         // Heterotypic_gray 
+		   0.01,        0.85,        0.14,         // Huntington_disea 
+		   0.01,        0.98,        0.01,         // Hydrocephalus_co 
+		   0.01,        0.98,        0.01,         // Hydrocephalus_no 
+		   0.01,        0.01,        0.98,         // Hygroma_subdural 
+		   0.05,        0.6,         0.35,         // Hypoxic_ischemic 
+		   0.07,        0.4,         0.53,         // Infarction_acute 
+		   0.1,         0.1,         0.8,          // Infarction_chron 
+		   0.3,         0.05,        0.65,         // Infarction_subac 
+		   0.01,        0.9,         0.09,         // Jakob_Creutzfeld 
+		   0.01,        0.09,        0.9,          // Lhermitte_Duclos 
+		   0.98,        0.01,        0.01,         // Lipoma           
+		   0.01,        0.4,         0.59,         // Lyme_disease     
+		   0.01,        0.3,         0.69,         // Lymphoma         
+		   0.01,        0.09,        0.9,          // Medulloblastoma  
+		   0.01,        0.89,        0.1,          // Meningioma       
+		   0.05,        0.75,        0.2,          // Meningitis       
+		   0.01,        0.6,         0.39,         // Mesial_temporal_ 
+		   0.05,        0.35,        0.6,          // Metabolic_poison 
+		   0.1,         0.27,        0.63,         // Metastasis_intra 
+		   0.05,        0.75,        0.2,          // Metastasis_lepto 
+		   0.01,        0.54,        0.45,         // Migraine         
+		   0.01,        0.6,         0.39,         // Mitochondrial_di 
+		   0.1,         0.1,         0.8,          // Moyamoya_disease 
+		   0.01,        0.48,        0.51,         // Multiple_scleros 
+		   0.01,        0.19,        0.8,          // Multiple_scleros 
+		   0.01,        0.75,        0.24,         // Multiple_system_ 
+		   0.01,        0.65,        0.34,         // Myelinolysis_acu 
+		   0.01,        0.65,        0.34,         // Myelinolysis_ext 
+		   0.01,        0.49,        0.5,          // Neurocytoma_cent 
+		   0.05,        0.35,        0.6,          // Neurofibromatosi 
+		   0.01,        0.75,        0.24,         // Neurofibromatosi 
+		   0.03,        0.94,        0.03,         // Normal           
+		   0.05,        0.05,        0.9,          // Oligodendrogliom 
+		   0.01,        0.9,         0.09,         // Parkinson_plus   
+		   0.01,        0.35,        0.64,         // Periventricular_ 
+		   0.1,         0.05,        0.85,         // Pineal_neoplasm  
+		   0.01,        0.3,         0.69,         // Pleomorphic_xant 
+		   0.01,        0.01,        0.98,         // Pneumocephalus   
+		   0.01,        0.01,        0.98,         // Porencephalic_cy 
+		   0.01,        0.59,        0.4,          // Posterior_revers 
+		   0.01,        0.09,        0.9,          // Primitive_neuroe 
+		   0.01,        0.14,        0.85,         // Progressive_mult 
+		   0.01,        0.98,        0.01,         // Pseudotumor      
+		   0.08,        0.43,        0.49,         // Rhombencephaliti 
+		   0.01,        0.6,         0.39,         // Sarcoidosis      
+		   0.01,        0.98,        0.01,         // Schizencephaly   
+		   0.01,        0.75,        0.24,         // Schwannoma       
+		   0.01,        0.65,        0.34,         // Small_vessel_isc 
+		   0.01,        0.95,        0.04,         // Subarachnoid_hem 
+		   0.01,        0.01,        0.98,         // Syringobulbia    
+		   0.1,         0.01,        0.89,         // Teratoma         
+		   0.4,         0.5,         0.1,          // Thromboembolism_ 
+		   0.4,         0.5,         0.1,          // Thrombosis_venou 
+		   0.1,         0.15,        0.75,         // Toxoplasmosis    
+		   0.01,        0.4,         0.59,         // Tuberculosis     
+		   0.05,        0.5,         0.45,         // Tuberous_scleros 
+		   0.01,        0.4,         0.59,         // Vasculitis       
+		   0.01,        0.75,        0.24,         // Ventricultis_Epe 
+		   0.01,        0.65,        0.34,         // Wallerian_degene 
+		   0.01,        0.5,         0.49,         // Wernicke_encepha 
+		   0.8,         0.15,        0.05,         // Wilson_disease   
+		   0.23,        0.64,        0.13);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.09033608, 0.5032951, 0.4063689);
+	visual V1 {
+		center = (390, 42);
+		height = 2;
+		link 1 {
+			path = ((492, 402), (399, 75));
+			};
+		};
+	};
+
+node T1_Post {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (Disease);
+	probs = 
+		// Yes          No            // Disease          
+		  (0.96,        0.04,         // Abscess          
+		   0.3,         0.7,          // Acute_disseminat 
+		   0.2,         0.8,          // Acute_hemorrhagi 
+		   0.05,        0.95,         // AIDS_HIV_encepha 
+		   0.01,        0.99,         // Alzheimer_diseas 
+		   0.05,        0.95,         // Amyloid_angiopat 
+		   0.8,         0.2,          // Aneurysm         
+		   0.9,         0.1,          // Aneurysm_thrombo 
+		   0.98,        0.02,         // Angiomatosis_lep 
+		   0.01,        0.99,         // Arachnoid_cyst   
+		   0.8,         0.2,          // Arteriovenous_ma 
+		   0.95,        0.05,         // Astrocytoma_high 
+		   0.5,         0.5,          // Astrocytoma_low_ 
+		   0.1,         0.9,          // Behcet           
+		   0.01,        0.99,         // CADASIL          
+		   0.95,        0.05,         // Capillary_telang 
+		   0.1,         0.9,          // Cavernous_malfor 
+		   0.01,        0.99,         // Cephalocele      
+		   0.3,         0.7,          // Cerebritis       
+		   0.01,        0.99,         // Chiari_malformat 
+		   0.95,        0.05,         // Choroid_plexus_p 
+		   0.05,        0.95,         // Colloid_cyst     
+		   0.05,        0.95,         // Contusion_cerebr 
+		   0.05,        0.95,         // Cortical_dysypla 
+		   0.83,        0.17,         // Craniopharyngiom 
+		   0.05,        0.95,         // Cryptococcosis   
+		   0.2,         0.8,          // Cysticercosis    
+		   0.6,         0.4,          // Cytomegalovirus  
+		   0.99,        0.01,         // Dandy_Walker_mal 
+		   0.05,        0.95,         // Dermoid          
+		   0.05,        0.95,         // Diffuse_axonal_i 
+		   0.05,        0.95,         // Dysembroplastic_ 
+		   0.99,        0.01,         // Empyema_subdural 
+		   0.1,         0.9,          // Encephalitis     
+		   0.01,        0.99,         // Encephalomalacia 
+		   0.85,        0.15,         // Ependymal_tumors 
+		   0.05,        0.95,         // Epidermoid_cyst  
+		   0.05,        0.95,         // Epilepsy_seizure 
+		   0.01,        0.99,         // Fahr_disease     
+		   0.01,        0.99,         // Foreign_Body     
+		   0.01,        0.99,         // Frontotemporal_D 
+		   0.5,         0.5,          // Gangliocytoma_ga 
+		   0.95,        0.05,         // Germinoma        
+		   0.95,        0.05,         // Giant_cell_astro 
+		   0.92,        0.08,         // Glioblastoma     
+		   0.2,         0.8,          // Gliomatosis_cere 
+		   0.01,        0.99,         // Gliosis          
+		   0.01,        0.99,         // Hamartoma_of_tub 
+		   0.95,        0.05,         // Hemangioblastoma 
+		   0.99,        0.01,         // Hemangiopericyto 
+		   0.01,        0.99,         // Hematoma_intrace 
+		   0.01,        0.99,         // Hematoma_intrace 
+		   0.3,         0.7,          // Hematoma_intrace 
+		   0.01,        0.99,         // Hematoma_intrave 
+		   0.01,        0.99,         // Hematoma_subdura 
+		   0.75,        0.25,         // Hematoma_subdura 
+		   0.6,         0.4,          // Hematoma_subdura 
+		   0.01,        0.99,         // Hemosiderosis_le 
+		   0.01,        0.99,         // Hepatic_encephal 
+		   0.6,         0.4,          // Herpes_simplex_e 
+		   0.01,        0.99,         // Heterotypic_gray 
+		   0.01,        0.99,         // Huntington_disea 
+		   0.01,        0.99,         // Hydrocephalus_co 
+		   0.01,        0.99,         // Hydrocephalus_no 
+		   0.01,        0.99,         // Hygroma_subdural 
+		   0.05,        0.95,         // Hypoxic_ischemic 
+		   0.05,        0.95,         // Infarction_acute 
+		   0.01,        0.99,         // Infarction_chron 
+		   0.8,         0.2,          // Infarction_subac 
+		   0.05,        0.95,         // Jakob_Creutzfeld 
+		   0.7,         0.3,          // Lhermitte_Duclos 
+		   0.01,        0.99,         // Lipoma           
+		   0.15,        0.85,         // Lyme_disease     
+		   0.99,        0.01,         // Lymphoma         
+		   0.9,         0.1,          // Medulloblastoma  
+		   0.99,        0.01,         // Meningioma       
+		   0.9,         0.1,          // Meningitis       
+		   0.01,        0.99,         // Mesial_temporal_ 
+		   0.05,        0.95,         // Metabolic_poison 
+		   0.95,        0.05,         // Metastasis_intra 
+		   0.9,         0.1,          // Metastasis_lepto 
+		   0.05,        0.95,         // Migraine         
+		   0.05,        0.95,         // Mitochondrial_di 
+		   0.7,         0.3,          // Moyamoya_disease 
+		   0.15,        0.85,         // Multiple_scleros 
+		   0.85,        0.15,         // Multiple_scleros 
+		   0.05,        0.95,         // Multiple_system_ 
+		   0.05,        0.95,         // Myelinolysis_acu 
+		   0.05,        0.95,         // Myelinolysis_ext 
+		   0.7,         0.3,          // Neurocytoma_cent 
+		   0.2,         0.8,          // Neurofibromatosi 
+		   0.95,        0.05,         // Neurofibromatosi 
+		   0.03,        0.97,         // Normal           
+		   0.6,         0.4,          // Oligodendrogliom 
+		   0.01,        0.99,         // Parkinson_plus   
+		   0.01,        0.99,         // Periventricular_ 
+		   0.95,        0.05,         // Pineal_neoplasm  
+		   0.85,        0.15,         // Pleomorphic_xant 
+		   0.01,        0.99,         // Pneumocephalus   
+		   0.01,        0.99,         // Porencephalic_cy 
+		   0.05,        0.95,         // Posterior_revers 
+		   0.9,         0.1,          // Primitive_neuroe 
+		   0.15,        0.85,         // Progressive_mult 
+		   0.01,        0.99,         // Pseudotumor      
+		   0.12,        0.88,         // Rhombencephaliti 
+		   0.9,         0.1,          // Sarcoidosis      
+		   0.01,        0.99,         // Schizencephaly   
+		   0.95,        0.05,         // Schwannoma       
+		   0.01,        0.99,         // Small_vessel_isc 
+		   0.01,        0.99,         // Subarachnoid_hem 
+		   0.01,        0.99,         // Syringobulbia    
+		   0.6,         0.4,          // Teratoma         
+		   0.4,         0.6,          // Thromboembolism_ 
+		   0.4,         0.6,          // Thrombosis_venou 
+		   0.95,        0.05,         // Toxoplasmosis    
+		   0.95,        0.05,         // Tuberculosis     
+		   0.1,         0.9,          // Tuberous_scleros 
+		   0.1,         0.9,          // Vasculitis       
+		   0.95,        0.05,         // Ventricultis_Epe 
+		   0.01,        0.99,         // Wallerian_degene 
+		   0.2,         0.8,          // Wernicke_encepha 
+		   0.01,        0.99,         // Wilson_disease   
+		   0.3,         0.7);         // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.3087582, 0.6912418);
+	visual V1 {
+		center = (300, 108);
+		height = 3;
+		link 1 {
+			path = ((492, 553), (311, 134));
+			};
+		};
+	};
+
+node T2 {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Increased, Normal, Decreased);
+	parents = (Disease);
+	probs = 
+		// Increased    Normal       Decreased     // Disease          
+		  (0.9,         0.09,        0.01,         // Abscess          
+		   0.95,        0.03,        0.02,         // Acute_disseminat 
+		   0.4,         0.01,        0.59,         // Acute_hemorrhagi 
+		   0.8,         0.19,        0.01,         // AIDS_HIV_encepha 
+		   0.01,        0.98,        0.01,         // Alzheimer_diseas 
+		   0.9,         0.01,        0.09,         // Amyloid_angiopat 
+		   0.01,        0.29,        0.7,          // Aneurysm         
+		   0.1,         0.01,        0.89,         // Aneurysm_thrombo 
+		   0.2,         0.01,        0.79,         // Angiomatosis_lep 
+		   0.98,        0.01,        0.01,         // Arachnoid_cyst   
+		   0.01,        0.01,        0.98,         // Arteriovenous_ma 
+		   0.95,        0.01,        0.04,         // Astrocytoma_high 
+		   0.95,        0.01,        0.04,         // Astrocytoma_low_ 
+		   0.98,        0.01,        0.01,         // Behcet           
+		   0.98,        0.01,        0.01,         // CADASIL          
+		   0.4,         0.55,        0.05,         // Capillary_telang 
+		   0.09,        0.01,        0.9,          // Cavernous_malfor 
+		   0.45,        0.54,        0.01,         // Cephalocele      
+		   0.91,        0.08,        0.01,         // Cerebritis       
+		   0.1,         0.89,        0.01,         // Chiari_malformat 
+		   0.9,         0.05,        0.05,         // Choroid_plexus_p 
+		   0.25,        0.2,         0.55,         // Colloid_cyst     
+		   0.55,        0.05,        0.4,          // Contusion_cerebr 
+		   0.2,         0.75,        0.05,         // Cortical_dysypla 
+		   0.83,        0.12,        0.05,         // Craniopharyngiom 
+		   0.95,        0.04,        0.01,         // Cryptococcosis   
+		   0.9,         0.01,        0.09,         // Cysticercosis    
+		   0.85,        0.14,        0.01,         // Cytomegalovirus  
+		   0.01,        0.98,        0.01,         // Dandy_Walker_mal 
+		   0.9,         0.09,        0.01,         // Dermoid          
+		   0.75,        0.05,        0.2,          // Diffuse_axonal_i 
+		   0.95,        0.04,        0.01,         // Dysembroplastic_ 
+		   0.95,        0.01,        0.04,         // Empyema_subdural 
+		   0.95,        0.01,        0.04,         // Encephalitis     
+		   0.95,        0.01,        0.04,         // Encephalomalacia 
+		   0.9,         0.01,        0.09,         // Ependymal_tumors 
+		   0.9,         0.05,        0.05,         // Epidermoid_cyst  
+		   0.95,        0.04,        0.01,         // Epilepsy_seizure 
+		   0.1,         0.2,         0.7,          // Fahr_disease     
+		   0.6,         0.01,        0.39,         // Foreign_Body     
+		   0.01,        0.98,        0.01,         // Frontotemporal_D 
+		   0.95,        0.01,        0.04,         // Gangliocytoma_ga 
+		   0.85,        0.05,        0.1,          // Germinoma        
+		   0.79,        0.01,        0.2,          // Giant_cell_astro 
+		   0.9,         0.08,        0.02,         // Glioblastoma     
+		   0.95,        0.02,        0.03,         // Gliomatosis_cere 
+		   0.95,        0.02,        0.03,         // Gliosis          
+		   0.2,         0.79,        0.01,         // Hamartoma_of_tub 
+		   0.95,        0.01,        0.04,         // Hemangioblastoma 
+		   0.15,        0.75,        0.1,          // Hemangiopericyto 
+		   0.45,        0.05,        0.5,          // Hematoma_intrace 
+		   0.19,        0.01,        0.8,          // Hematoma_intrace 
+		   0.15,        0.05,        0.8,          // Hematoma_intrace 
+		   0.45,        0.05,        0.5,          // Hematoma_intrave 
+		   0.45,        0.05,        0.5,          // Hematoma_subdura 
+		   0.19,        0.01,        0.8,          // Hematoma_subdura 
+		   0.15,        0.05,        0.8,          // Hematoma_subdura 
+		   0.01,        0.2,         0.79,         // Hemosiderosis_le 
+		   0.1,         0.89,        0.01,         // Hepatic_encephal 
+		   0.85,        0.01,        0.14,         // Herpes_simplex_e 
+		   0.01,        0.98,        0.01,         // Heterotypic_gray 
+		   0.9,         0.09,        0.01,         // Huntington_disea 
+		   0.2,         0.79,        0.01,         // Hydrocephalus_co 
+		   0.2,         0.79,        0.01,         // Hydrocephalus_no 
+		   0.98,        0.01,        0.01,         // Hygroma_subdural 
+		   0.95,        0.04,        0.01,         // Hypoxic_ischemic 
+		   0.83,        0.13,        0.04,         // Infarction_acute 
+		   0.94,        0.01,        0.05,         // Infarction_chron 
+		   0.94,        0.01,        0.05,         // Infarction_subac 
+		   0.15,        0.84,        0.01,         // Jakob_Creutzfeld 
+		   0.95,        0.03,        0.02,         // Lhermitte_Duclos 
+		   0.6,         0.3,         0.1,          // Lipoma           
+		   0.95,        0.04,        0.01,         // Lyme_disease     
+		   0.75,        0.2,         0.05,         // Lymphoma         
+		   0.7,         0.2,         0.1,          // Medulloblastoma  
+		   0.15,        0.75,        0.1,          // Meningioma       
+		   0.3,         0.69,        0.01,         // Meningitis       
+		   0.9,         0.09,        0.01,         // Mesial_temporal_ 
+		   0.95,        0.04,        0.01,         // Metabolic_poison 
+		   0.8,         0.16,        0.04,         // Metastasis_intra 
+		   0.3,         0.69,        0.01,         // Metastasis_lepto 
+		   0.85,        0.14,        0.01,         // Migraine         
+		   0.95,        0.04,        0.01,         // Mitochondrial_di 
+		   0.89,        0.01,        0.1,          // Moyamoya_disease 
+		   0.95,        0.03,        0.02,         // Multiple_scleros 
+		   0.95,        0.03,        0.02,         // Multiple_scleros 
+		   0.5,         0.2,         0.3,          // Multiple_system_ 
+		   0.95,        0.04,        0.01,         // Myelinolysis_acu 
+		   0.95,        0.04,        0.01,         // Myelinolysis_ext 
+		   0.8,         0.01,        0.19,         // Neurocytoma_cent 
+		   0.95,        0.04,        0.01,         // Neurofibromatosi 
+		   0.85,        0.14,        0.01,         // Neurofibromatosi 
+		   0.03,        0.94,        0.03,         // Normal           
+		   0.9,         0.01,        0.09,         // Oligodendrogliom 
+		   0.05,        0.65,        0.3,          // Parkinson_plus   
+		   0.95,        0.01,        0.04,         // Periventricular_ 
+		   0.95,        0.01,        0.04,         // Pineal_neoplasm  
+		   0.95,        0.01,        0.04,         // Pleomorphic_xant 
+		   0.01,        0.01,        0.98,         // Pneumocephalus   
+		   0.95,        0.03,        0.02,         // Porencephalic_cy 
+		   0.95,        0.03,        0.02,         // Posterior_revers 
+		   0.7,         0.2,         0.1,          // Primitive_neuroe 
+		   0.95,        0.04,        0.01,         // Progressive_mult 
+		   0.05,        0.94,        0.01,         // Pseudotumor      
+		   0.9,         0.09,        0.01,         // Rhombencephaliti 
+		   0.5,         0.49,        0.01,         // Sarcoidosis      
+		   0.01,        0.98,        0.01,         // Schizencephaly   
+		   0.85,        0.14,        0.01,         // Schwannoma       
+		   0.95,        0.03,        0.02,         // Small_vessel_isc 
+		   0.8,         0.05,        0.15,         // Subarachnoid_hem 
+		   0.95,        0.03,        0.02,         // Syringobulbia    
+		   0.9,         0.01,        0.09,         // Teratoma         
+		   0.05,        0.65,        0.3,          // Thromboembolism_ 
+		   0.05,        0.65,        0.3,          // Thrombosis_venou 
+		   0.92,        0.05,        0.03,         // Toxoplasmosis    
+		   0.9,         0.09,        0.01,         // Tuberculosis     
+		   0.95,        0.03,        0.02,         // Tuberous_scleros 
+		   0.95,        0.04,        0.01,         // Vasculitis       
+		   0.9,         0.09,        0.01,         // Ventricultis_Epe 
+		   0.9,         0.09,        0.01,         // Wallerian_degene 
+		   0.95,        0.04,        0.01,         // Wernicke_encepha 
+		   0.9,         0.09,        0.01,         // Wilson_disease   
+		   0.27,        0.57,        0.16);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.5559549, 0.3113484, 0.1326967);
+	visual V1 {
+		center = (198, 174);
+		height = 4;
+		};
+	};
+
+node FLAIR {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Increased, Normal, Decreased);
+	parents = (Disease);
+	probs = 
+		// Increased    Normal       Decreased     // Disease          
+		  (0.87,        0.11,        0.02,         // Abscess          
+		   0.95,        0.04,        0.01,         // Acute_disseminat 
+		   0.9,         0.01,        0.09,         // Acute_hemorrhagi 
+		   0.84,        0.15,        0.01,         // AIDS_HIV_encepha 
+		   0.01,        0.98,        0.01,         // Alzheimer_diseas 
+		   0.9,         0.01,        0.09,         // Amyloid_angiopat 
+		   0.05,        0.55,        0.4,          // Aneurysm         
+		   0.4,         0.01,        0.59,         // Aneurysm_thrombo 
+		   0.8,         0.01,        0.19,         // Angiomatosis_lep 
+		   0.01,        0.01,        0.98,         // Arachnoid_cyst   
+		   0.49,        0.02,        0.49,         // Arteriovenous_ma 
+		   0.95,        0.01,        0.04,         // Astrocytoma_high 
+		   0.95,        0.01,        0.04,         // Astrocytoma_low_ 
+		   0.98,        0.01,        0.01,         // Behcet           
+		   0.98,        0.01,        0.01,         // CADASIL          
+		   0.1,         0.85,        0.05,         // Capillary_telang 
+		   0.2,         0.01,        0.79,         // Cavernous_malfor 
+		   0.4,         0.59,        0.01,         // Cephalocele      
+		   0.97,        0.02,        0.01,         // Cerebritis       
+		   0.1,         0.89,        0.01,         // Chiari_malformat 
+		   0.9,         0.05,        0.05,         // Choroid_plexus_p 
+		   0.55,        0.3,         0.15,         // Colloid_cyst     
+		   0.9,         0.05,        0.05,         // Contusion_cerebr 
+		   0.4,         0.55,        0.05,         // Cortical_dysypla 
+		   0.88,        0.1,         0.02,         // Craniopharyngiom 
+		   0.95,        0.04,        0.01,         // Cryptococcosis   
+		   0.94,        0.05,        0.01,         // Cysticercosis    
+		   0.85,        0.14,        0.01,         // Cytomegalovirus  
+		   0.01,        0.98,        0.01,         // Dandy_Walker_mal 
+		   0.8,         0.19,        0.01,         // Dermoid          
+		   0.85,        0.1,         0.05,         // Diffuse_axonal_i 
+		   0.95,        0.04,        0.01,         // Dysembroplastic_ 
+		   0.9,         0.05,        0.05,         // Empyema_subdural 
+		   0.95,        0.04,        0.01,         // Encephalitis     
+		   0.4,         0.01,        0.59,         // Encephalomalacia 
+		   0.95,        0.01,        0.04,         // Ependymal_tumors 
+		   0.8,         0.1,         0.1,          // Epidermoid_cyst  
+		   0.95,        0.04,        0.01,         // Epilepsy_seizure 
+		   0.1,         0.6,         0.3,          // Fahr_disease     
+		   0.9,         0.01,        0.09,         // Foreign_Body     
+		   0.01,        0.98,        0.01,         // Frontotemporal_D 
+		   0.9,         0.01,        0.09,         // Gangliocytoma_ga 
+		   0.8,         0.1,         0.1,          // Germinoma        
+		   0.9,         0.05,        0.05,         // Giant_cell_astro 
+		   0.92,        0.06,        0.02,         // Glioblastoma     
+		   0.95,        0.03,        0.02,         // Gliomatosis_cere 
+		   0.95,        0.03,        0.02,         // Gliosis          
+		   0.3,         0.69,        0.01,         // Hamartoma_of_tub 
+		   0.9,         0.01,        0.09,         // Hemangioblastoma 
+		   0.1,         0.8,         0.1,          // Hemangiopericyto 
+		   0.49,        0.02,        0.49,         // Hematoma_intrace 
+		   0.8,         0.01,        0.19,         // Hematoma_intrace 
+		   0.68,        0.16,        0.16,         // Hematoma_intrace 
+		   0.49,        0.02,        0.49,         // Hematoma_intrave 
+		   0.4,         0.3,         0.3,          // Hematoma_subdura 
+		   0.8,         0.01,        0.19,         // Hematoma_subdura 
+		   0.68,        0.16,        0.16,         // Hematoma_subdura 
+		   0.05,        0.8,         0.15,         // Hemosiderosis_le 
+		   0.1,         0.89,        0.01,         // Hepatic_encephal 
+		   0.98,        0.01,        0.01,         // Herpes_simplex_e 
+		   0.01,        0.98,        0.01,         // Heterotypic_gray 
+		   0.9,         0.09,        0.01,         // Huntington_disea 
+		   0.2,         0.79,        0.01,         // Hydrocephalus_co 
+		   0.2,         0.79,        0.01,         // Hydrocephalus_no 
+		   0.8,         0.01,        0.19,         // Hygroma_subdural 
+		   0.95,        0.04,        0.01,         // Hypoxic_ischemic 
+		   0.9,         0.09,        0.01,         // Infarction_acute 
+		   0.95,        0.04,        0.01,         // Infarction_chron 
+		   0.95,        0.04,        0.01,         // Infarction_subac 
+		   0.15,        0.84,        0.01,         // Jakob_Creutzfeld 
+		   0.95,        0.03,        0.02,         // Lhermitte_Duclos 
+		   0.9,         0.09,        0.01,         // Lipoma           
+		   0.95,        0.04,        0.01,         // Lyme_disease     
+		   0.95,        0.04,        0.01,         // Lymphoma         
+		   0.95,        0.04,        0.01,         // Medulloblastoma  
+		   0.1,         0.8,         0.1,          // Meningioma       
+		   0.3,         0.69,        0.01,         // Meningitis       
+		   0.9,         0.09,        0.01,         // Mesial_temporal_ 
+		   0.95,        0.04,        0.01,         // Metabolic_poison 
+		   0.9,         0.09,        0.01,         // Metastasis_intra 
+		   0.3,         0.69,        0.01,         // Metastasis_lepto 
+		   0.9,         0.09,        0.01,         // Migraine         
+		   0.95,        0.04,        0.01,         // Mitochondrial_di 
+		   0.7,         0.29,        0.01,         // Moyamoya_disease 
+		   0.9,         0.09,        0.01,         // Multiple_scleros 
+		   0.95,        0.04,        0.01,         // Multiple_scleros 
+		   0.4,         0.59,        0.01,         // Multiple_system_ 
+		   0.9,         0.09,        0.01,         // Myelinolysis_acu 
+		   0.9,         0.09,        0.01,         // Myelinolysis_ext 
+		   0.95,        0.04,        0.01,         // Neurocytoma_cent 
+		   0.95,        0.04,        0.01,         // Neurofibromatosi 
+		   0.85,        0.14,        0.01,         // Neurofibromatosi 
+		   0.03,        0.94,        0.03,         // Normal           
+		   0.95,        0.01,        0.04,         // Oligodendrogliom 
+		   0.05,        0.94,        0.01,         // Parkinson_plus   
+		   0.95,        0.04,        0.01,         // Periventricular_ 
+		   0.95,        0.04,        0.01,         // Pineal_neoplasm  
+		   0.95,        0.04,        0.01,         // Pleomorphic_xant 
+		   0.01,        0.01,        0.98,         // Pneumocephalus   
+		   0.15,        0.05,        0.8,          // Porencephalic_cy 
+		   0.95,        0.03,        0.02,         // Posterior_revers 
+		   0.95,        0.04,        0.01,         // Primitive_neuroe 
+		   0.95,        0.04,        0.01,         // Progressive_mult 
+		   0.05,        0.94,        0.01,         // Pseudotumor      
+		   0.85,        0.14,        0.01,         // Rhombencephaliti 
+		   0.6,         0.39,        0.01,         // Sarcoidosis      
+		   0.01,        0.98,        0.01,         // Schizencephaly   
+		   0.85,        0.14,        0.01,         // Schwannoma       
+		   0.95,        0.03,        0.02,         // Small_vessel_isc 
+		   0.85,        0.14,        0.01,         // Subarachnoid_hem 
+		   0.15,        0.05,        0.8,          // Syringobulbia    
+		   0.9,         0.01,        0.09,         // Teratoma         
+		   0.2,         0.75,        0.05,         // Thromboembolism_ 
+		   0.2,         0.75,        0.05,         // Thrombosis_venou 
+		   0.9,         0.09,        0.01,         // Toxoplasmosis    
+		   0.9,         0.09,        0.01,         // Tuberculosis     
+		   0.95,        0.03,        0.02,         // Tuberous_scleros 
+		   0.95,        0.04,        0.01,         // Vasculitis       
+		   0.9,         0.09,        0.01,         // Ventricultis_Epe 
+		   0.9,         0.09,        0.01,         // Wallerian_degene 
+		   0.95,        0.04,        0.01,         // Wernicke_encepha 
+		   0.9,         0.09,        0.01,         // Wilson_disease   
+		   0.62,        0.25,        0.13);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.5822909, 0.3301598, 0.08754918);
+	visual V1 {
+		center = (108, 246);
+		height = 5;
+		};
+	};
+
+node ADC {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Increased, Normal, Decreased);
+	parents = (Disease);
+	probs = 
+		// Increased    Normal       Decreased     // Disease          
+		  (0.07,        0.13,        0.8,          // Abscess          
+		   0.2,         0.7,         0.1,          // Acute_disseminat 
+		   0.2,         0.5,         0.3,          // Acute_hemorrhagi 
+		   0.05,        0.9,         0.05,         // AIDS_HIV_encepha 
+		   0.01,        0.98,        0.01,         // Alzheimer_diseas 
+		   0.4,         0.55,        0.05,         // Amyloid_angiopat 
+		   0.33,        0.34,        0.33,         // Aneurysm         
+		   0.33,        0.34,        0.33,         // Aneurysm_thrombo 
+		   0.01,        0.98,        0.01,         // Angiomatosis_lep 
+		   0.98,        0.01,        0.01,         // Arachnoid_cyst   
+		   0.33,        0.34,        0.33,         // Arteriovenous_ma 
+		   0.3,         0.5,         0.2,          // Astrocytoma_high 
+		   0.4,         0.55,        0.05,         // Astrocytoma_low_ 
+		   0.6,         0.35,        0.05,         // Behcet           
+		   0.4,         0.4,         0.2,          // CADASIL          
+		   0.33,        0.34,        0.33,         // Capillary_telang 
+		   0.33,        0.34,        0.33,         // Cavernous_malfor 
+		   0.8,         0.1,         0.1,          // Cephalocele      
+		   0.6,         0.3,         0.1,          // Cerebritis       
+		   0.04,        0.94,        0.02,         // Chiari_malformat 
+		   0.33,        0.66,        0.01,         // Choroid_plexus_p 
+		   0.5,         0.49,        0.01,         // Colloid_cyst     
+		   0.4,         0.5,         0.1,          // Contusion_cerebr 
+		   0.3,         0.69,        0.01,         // Cortical_dysypla 
+		   0.67,        0.25,        0.08,         // Craniopharyngiom 
+		   0.8,         0.19,        0.01,         // Cryptococcosis   
+		   0.2,         0.79,        0.01,         // Cysticercosis    
+		   0.2,         0.2,         0.6,          // Cytomegalovirus  
+		   0.01,        0.98,        0.01,         // Dandy_Walker_mal 
+		   0.15,        0.05,        0.8,          // Dermoid          
+		   0.2,         0.5,         0.3,          // Diffuse_axonal_i 
+		   0.2,         0.75,        0.05,         // Dysembroplastic_ 
+		   0.05,        0.05,        0.9,          // Empyema_subdural 
+		   0.3,         0.6,         0.1,          // Encephalitis     
+		   0.95,        0.01,        0.04,         // Encephalomalacia 
+		   0.3,         0.6,         0.1,          // Ependymal_tumors 
+		   0.05,        0.05,        0.9,          // Epidermoid_cyst  
+		   0.1,         0.3,         0.6,          // Epilepsy_seizure 
+		   0.2,         0.75,        0.05,         // Fahr_disease     
+		   0.4,         0.5,         0.1,          // Foreign_Body     
+		   0.01,        0.98,        0.01,         // Frontotemporal_D 
+		   0.2,         0.75,        0.05,         // Gangliocytoma_ga 
+		   0.4,         0.1,         0.5,          // Germinoma        
+		   0.35,        0.6,         0.05,         // Giant_cell_astro 
+		   0.15,        0.68,        0.17,         // Glioblastoma     
+		   0.4,         0.55,        0.05,         // Gliomatosis_cere 
+		   0.2,         0.75,        0.05,         // Gliosis          
+		   0.1,         0.85,        0.05,         // Hamartoma_of_tub 
+		   0.4,         0.55,        0.05,         // Hemangioblastoma 
+		   0.1,         0.8,         0.1,          // Hemangiopericyto 
+		   0.4,         0.1,         0.5,          // Hematoma_intrace 
+		   0.7,         0.2,         0.1,          // Hematoma_intrace 
+		   0.5,         0.1,         0.4,          // Hematoma_intrace 
+		   0.4,         0.1,         0.5,          // Hematoma_intrave 
+		   0.4,         0.1,         0.5,          // Hematoma_subdura 
+		   0.7,         0.2,         0.1,          // Hematoma_subdura 
+		   0.5,         0.1,         0.4,          // Hematoma_subdura 
+		   0.05,        0.9,         0.05,         // Hemosiderosis_le 
+		   0.01,        0.89,        0.1,          // Hepatic_encephal 
+		   0.4,         0.3,         0.3,          // Herpes_simplex_e 
+		   0.01,        0.98,        0.01,         // Heterotypic_gray 
+		   0.5,         0.49,        0.01,         // Huntington_disea 
+		   0.05,        0.9,         0.05,         // Hydrocephalus_co 
+		   0.05,        0.9,         0.05,         // Hydrocephalus_no 
+		   0.98,        0.01,        0.01,         // Hygroma_subdural 
+		   0.2,         0.2,         0.6,          // Hypoxic_ischemic 
+		   0.01,        0.06,        0.93,         // Infarction_acute 
+		   0.68,        0.31,        0.01,         // Infarction_chron 
+		   0.3,         0.55,        0.15,         // Infarction_subac 
+		   0.05,        0.15,        0.8,          // Jakob_Creutzfeld 
+		   0.2,         0.3,         0.5,          // Lhermitte_Duclos 
+		   0.5,         0.49,        0.01,         // Lipoma           
+		   0.4,         0.55,        0.05,         // Lyme_disease     
+		   0.05,        0.05,        0.9,          // Lymphoma         
+		   0.2,         0.1,         0.7,          // Medulloblastoma  
+		   0.1,         0.8,         0.1,          // Meningioma       
+		   0.2,         0.75,        0.05,         // Meningitis       
+		   0.6,         0.35,        0.05,         // Mesial_temporal_ 
+		   0.3,         0.3,         0.4,          // Metabolic_poison 
+		   0.3,         0.58,        0.12,         // Metastasis_intra 
+		   0.2,         0.75,        0.05,         // Metastasis_lepto 
+		   0.35,        0.64,        0.01,         // Migraine         
+		   0.4,         0.45,        0.15,         // Mitochondrial_di 
+		   0.4,         0.5,         0.1,          // Moyamoya_disease 
+		   0.35,        0.57,        0.08,         // Multiple_scleros 
+		   0.7,         0.05,        0.25,         // Multiple_scleros 
+		   0.3,         0.69,        0.01,         // Multiple_system_ 
+		   0.6,         0.35,        0.05,         // Myelinolysis_acu 
+		   0.6,         0.35,        0.05,         // Myelinolysis_ext 
+		   0.75,        0.15,        0.1,          // Neurocytoma_cent 
+		   0.5,         0.45,        0.05,         // Neurofibromatosi 
+		   0.4,         0.55,        0.05,         // Neurofibromatosi 
+		   0.03,        0.94,        0.03,         // Normal           
+		   0.5,         0.49,        0.01,         // Oligodendrogliom 
+		   0.05,        0.94,        0.01,         // Parkinson_plus   
+		   0.7,         0.29,        0.01,         // Periventricular_ 
+		   0.7,         0.25,        0.05,         // Pineal_neoplasm  
+		   0.3,         0.65,        0.05,         // Pleomorphic_xant 
+		   0.01,        0.01,        0.98,         // Pneumocephalus   
+		   0.98,        0.01,        0.01,         // Porencephalic_cy 
+		   0.45,        0.45,        0.1,          // Posterior_revers 
+		   0.2,         0.1,         0.7,          // Primitive_neuroe 
+		   0.3,         0.5,         0.2,          // Progressive_mult 
+		   0.05,        0.94,        0.01,         // Pseudotumor      
+		   0.15,        0.5,         0.35,         // Rhombencephaliti 
+		   0.3,         0.65,        0.05,         // Sarcoidosis      
+		   0.01,        0.98,        0.01,         // Schizencephaly   
+		   0.3,         0.65,        0.05,         // Schwannoma       
+		   0.4,         0.59,        0.01,         // Small_vessel_isc 
+		   0.4,         0.4,         0.2,          // Subarachnoid_hem 
+		   0.98,        0.01,        0.01,         // Syringobulbia    
+		   0.4,         0.55,        0.05,         // Teratoma         
+		   0.2,         0.6,         0.2,          // Thromboembolism_ 
+		   0.2,         0.6,         0.2,          // Thrombosis_venou 
+		   0.25,        0.63,        0.12,         // Toxoplasmosis    
+		   0.3,         0.6,         0.1,          // Tuberculosis     
+		   0.34,        0.65,        0.01,         // Tuberous_scleros 
+		   0.4,         0.55,        0.05,         // Vasculitis       
+		   0.4,         0.55,        0.05,         // Ventricultis_Epe 
+		   0.25,        0.74,        0.01,         // Wallerian_degene 
+		   0.3,         0.5,         0.2,          // Wernicke_encepha 
+		   0.2,         0.75,        0.05,         // Wilson_disease   
+		   0.15,        0.32,        0.53);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.2886926, 0.5441926, 0.1671148);
+	visual V1 {
+		center = (96, 384);
+		height = 6;
+		};
+	};
+
+node T2_Susc {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (Disease);
+	probs = 
+		// Yes          No            // Disease          
+		  (0.25,        0.75,         // Abscess          
+		   0.05,        0.95,         // Acute_disseminat 
+		   0.95,        0.05,         // Acute_hemorrhagi 
+		   0.02,        0.98,         // AIDS_HIV_encepha 
+		   0.01,        0.99,         // Alzheimer_diseas 
+		   0.98,        0.02,         // Amyloid_angiopat 
+		   0.2,         0.8,          // Aneurysm         
+		   0.9,         0.1,          // Aneurysm_thrombo 
+		   0.99,        0.01,         // Angiomatosis_lep 
+		   0.01,        0.99,         // Arachnoid_cyst   
+		   0.7,         0.3,          // Arteriovenous_ma 
+		   0.2,         0.8,          // Astrocytoma_high 
+		   0.15,        0.85,         // Astrocytoma_low_ 
+		   0.03,        0.97,         // Behcet           
+		   0.2,         0.8,          // CADASIL          
+		   0.95,        0.05,         // Capillary_telang 
+		   0.95,        0.05,         // Cavernous_malfor 
+		   0.01,        0.99,         // Cephalocele      
+		   0.05,        0.95,         // Cerebritis       
+		   0.01,        0.99,         // Chiari_malformat 
+		   0.2,         0.8,          // Choroid_plexus_p 
+		   0.1,         0.9,          // Colloid_cyst     
+		   0.2,         0.8,          // Contusion_cerebr 
+		   0.1,         0.9,          // Cortical_dysypla 
+		   0.23,        0.77,         // Craniopharyngiom 
+		   0.05,        0.95,         // Cryptococcosis   
+		   0.8,         0.2,          // Cysticercosis    
+		   0.01,        0.99,         // Cytomegalovirus  
+		   0.01,        0.99,         // Dandy_Walker_mal 
+		   0.1,         0.9,          // Dermoid          
+		   0.8,         0.2,          // Diffuse_axonal_i 
+		   0.1,         0.9,          // Dysembroplastic_ 
+		   0.05,        0.95,         // Empyema_subdural 
+		   0.05,        0.95,         // Encephalitis     
+		   0.4,         0.6,          // Encephalomalacia 
+		   0.5,         0.5,          // Ependymal_tumors 
+		   0.15,        0.85,         // Epidermoid_cyst  
+		   0.05,        0.95,         // Epilepsy_seizure 
+		   0.95,        0.05,         // Fahr_disease     
+		   0.99,        0.01,         // Foreign_Body     
+		   0.01,        0.99,         // Frontotemporal_D 
+		   0.05,        0.95,         // Gangliocytoma_ga 
+		   0.5,         0.5,          // Germinoma        
+		   0.4,         0.6,          // Giant_cell_astro 
+		   0.13,        0.87,         // Glioblastoma     
+		   0.05,        0.95,         // Gliomatosis_cere 
+		   0.2,         0.8,          // Gliosis          
+		   0.1,         0.9,          // Hamartoma_of_tub 
+		   0.05,        0.95,         // Hemangioblastoma 
+		   0.05,        0.95,         // Hemangiopericyto 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.99,        0.01,         // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrave 
+		   0.9,         0.1,          // Hematoma_subdura 
+		   0.99,        0.01,         // Hematoma_subdura 
+		   0.9,         0.1,          // Hematoma_subdura 
+		   0.99,        0.01,         // Hemosiderosis_le 
+		   0.05,        0.95,         // Hepatic_encephal 
+		   0.2,         0.8,          // Herpes_simplex_e 
+		   0.01,        0.99,         // Heterotypic_gray 
+		   0.01,        0.99,         // Huntington_disea 
+		   0.01,        0.99,         // Hydrocephalus_co 
+		   0.01,        0.99,         // Hydrocephalus_no 
+		   0.99,        0.01,         // Hygroma_subdural 
+		   0.1,         0.9,          // Hypoxic_ischemic 
+		   0.1,         0.9,          // Infarction_acute 
+		   0.3,         0.7,          // Infarction_chron 
+		   0.3,         0.7,          // Infarction_subac 
+		   0.01,        0.99,         // Jakob_Creutzfeld 
+		   0.05,        0.95,         // Lhermitte_Duclos 
+		   0.2,         0.8,          // Lipoma           
+		   0.01,        0.99,         // Lyme_disease     
+		   0.15,        0.85,         // Lymphoma         
+		   0.1,         0.9,          // Medulloblastoma  
+		   0.25,        0.75,         // Meningioma       
+		   0.05,        0.95,         // Meningitis       
+		   0.05,        0.95,         // Mesial_temporal_ 
+		   0.1,         0.9,          // Metabolic_poison 
+		   0.07,        0.93,         // Metastasis_intra 
+		   0.05,        0.95,         // Metastasis_lepto 
+		   0.02,        0.98,         // Migraine         
+		   0.05,        0.95,         // Mitochondrial_di 
+		   0.7,         0.3,          // Moyamoya_disease 
+		   0.02,        0.98,         // Multiple_scleros 
+		   0.1,         0.9,          // Multiple_scleros 
+		   0.7,         0.3,          // Multiple_system_ 
+		   0.05,        0.95,         // Myelinolysis_acu 
+		   0.05,        0.95,         // Myelinolysis_ext 
+		   0.2,         0.8,          // Neurocytoma_cent 
+		   0.05,        0.95,         // Neurofibromatosi 
+		   0.05,        0.95,         // Neurofibromatosi 
+		   0.02,        0.98,         // Normal           
+		   0.5,         0.5,          // Oligodendrogliom 
+		   0.2,         0.8,          // Parkinson_plus   
+		   0.1,         0.9,          // Periventricular_ 
+		   0.15,        0.85,         // Pineal_neoplasm  
+		   0.3,         0.7,          // Pleomorphic_xant 
+		   0.99,        0.01,         // Pneumocephalus   
+		   0.1,         0.9,          // Porencephalic_cy 
+		   0.05,        0.95,         // Posterior_revers 
+		   0.25,        0.75,         // Primitive_neuroe 
+		   0.05,        0.95,         // Progressive_mult 
+		   0.01,        0.99,         // Pseudotumor      
+		   0.04,        0.96,         // Rhombencephaliti 
+		   0.05,        0.95,         // Sarcoidosis      
+		   0.01,        0.99,         // Schizencephaly   
+		   0.05,        0.95,         // Schwannoma       
+		   0.05,        0.95,         // Small_vessel_isc 
+		   0.9,         0.1,          // Subarachnoid_hem 
+		   0.1,         0.9,          // Syringobulbia    
+		   0.85,        0.15,         // Teratoma         
+		   0.7,         0.3,          // Thromboembolism_ 
+		   0.7,         0.3,          // Thrombosis_venou 
+		   0.07,        0.93,         // Toxoplasmosis    
+		   0.15,        0.85,         // Tuberculosis     
+		   0.15,        0.85,         // Tuberous_scleros 
+		   0.01,        0.99,         // Vasculitis       
+		   0.1,         0.9,          // Ventricultis_Epe 
+		   0.01,        0.99,         // Wallerian_degene 
+		   0.01,        0.99,         // Wernicke_encepha 
+		   0.2,         0.8,          // Wilson_disease   
+		   0.05,        0.95);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.2435082, 0.7564918);
+	visual V1 {
+		center = (84, 480);
+		height = 7;
+		};
+	};
+
+node Homogeneous {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Yes, No);
+	parents = (Disease);
+	probs = 
+		// Yes          No            // Disease          
+		  (0.05,        0.95,         // Abscess          
+		   0.85,        0.15,         // Acute_disseminat 
+		   0.1,         0.9,          // Acute_hemorrhagi 
+		   0.95,        0.05,         // AIDS_HIV_encepha 
+		   0.99,        0.01,         // Alzheimer_diseas 
+		   0.05,        0.95,         // Amyloid_angiopat 
+		   0.7,         0.3,          // Aneurysm         
+		   0.05,        0.95,         // Aneurysm_thrombo 
+		   0.8,         0.2,          // Angiomatosis_lep 
+		   0.98,        0.02,         // Arachnoid_cyst   
+		   0.1,         0.9,          // Arteriovenous_ma 
+		   0.05,        0.95,         // Astrocytoma_high 
+		   0.5,         0.5,          // Astrocytoma_low_ 
+		   0.8,         0.2,          // Behcet           
+		   0.9,         0.1,          // CADASIL          
+		   0.8,         0.2,          // Capillary_telang 
+		   0.01,        0.99,         // Cavernous_malfor 
+		   0.5,         0.5,          // Cephalocele      
+		   0.8,         0.2,          // Cerebritis       
+		   0.95,        0.05,         // Chiari_malformat 
+		   0.05,        0.95,         // Choroid_plexus_p 
+		   0.95,        0.05,         // Colloid_cyst     
+		   0.9,         0.1,          // Contusion_cerebr 
+		   0.99,        0.01,         // Cortical_dysypla 
+		   0.4,         0.6,          // Craniopharyngiom 
+		   0.95,        0.05,         // Cryptococcosis   
+		   0.9,         0.1,          // Cysticercosis    
+		   0.95,        0.05,         // Cytomegalovirus  
+		   0.95,        0.05,         // Dandy_Walker_mal 
+		   0.4,         0.6,          // Dermoid          
+		   0.85,        0.15,         // Diffuse_axonal_i 
+		   0.15,        0.85,         // Dysembroplastic_ 
+		   0.4,         0.6,          // Empyema_subdural 
+		   0.9,         0.1,          // Encephalitis     
+		   0.9,         0.1,          // Encephalomalacia 
+		   0.15,        0.85,         // Ependymal_tumors 
+		   0.95,        0.05,         // Epidermoid_cyst  
+		   0.95,        0.05,         // Epilepsy_seizure 
+		   0.8,         0.2,          // Fahr_disease     
+		   0.05,        0.95,         // Foreign_Body     
+		   0.4,         0.6,          // Frontotemporal_D 
+		   0.85,        0.15,         // Gangliocytoma_ga 
+		   0.2,         0.8,          // Germinoma        
+		   0.6,         0.4,          // Giant_cell_astro 
+		   0.2,         0.8,          // Glioblastoma     
+		   0.8,         0.2,          // Gliomatosis_cere 
+		   0.9,         0.1,          // Gliosis          
+		   0.95,        0.05,         // Hamartoma_of_tub 
+		   0.05,        0.95,         // Hemangioblastoma 
+		   0.1,         0.9,          // Hemangiopericyto 
+		   0.8,         0.2,          // Hematoma_intrace 
+		   0.2,         0.8,          // Hematoma_intrace 
+		   0.2,         0.8,          // Hematoma_intrace 
+		   0.1,         0.9,          // Hematoma_intrave 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.6,         0.4,          // Hematoma_subdura 
+		   0.2,         0.8,          // Hematoma_subdura 
+		   0.9,         0.1,          // Hemosiderosis_le 
+		   0.95,        0.05,         // Hepatic_encephal 
+		   0.5,         0.5,          // Herpes_simplex_e 
+		   0.99,        0.01,         // Heterotypic_gray 
+		   0.95,        0.05,         // Huntington_disea 
+		   0.95,        0.05,         // Hydrocephalus_co 
+		   0.95,        0.05,         // Hydrocephalus_no 
+		   0.9,         0.1,          // Hygroma_subdural 
+		   0.9,         0.1,          // Hypoxic_ischemic 
+		   0.8,         0.2,          // Infarction_acute 
+		   0.7,         0.3,          // Infarction_chron 
+		   0.8,         0.2,          // Infarction_subac 
+		   0.9,         0.1,          // Jakob_Creutzfeld 
+		   0.2,         0.8,          // Lhermitte_Duclos 
+		   0.9,         0.1,          // Lipoma           
+		   0.9,         0.1,          // Lyme_disease     
+		   0.85,        0.15,         // Lymphoma         
+		   0.85,        0.15,         // Medulloblastoma  
+		   0.85,        0.15,         // Meningioma       
+		   0.7,         0.3,          // Meningitis       
+		   0.85,        0.15,         // Mesial_temporal_ 
+		   0.9,         0.1,          // Metabolic_poison 
+		   0.3,         0.7,          // Metastasis_intra 
+		   0.7,         0.3,          // Metastasis_lepto 
+		   0.9,         0.1,          // Migraine         
+		   0.9,         0.1,          // Mitochondrial_di 
+		   0.1,         0.9,          // Moyamoya_disease 
+		   0.9,         0.1,          // Multiple_scleros 
+		   0.8,         0.2,          // Multiple_scleros 
+		   0.9,         0.1,          // Multiple_system_ 
+		   0.95,        0.05,         // Myelinolysis_acu 
+		   0.95,        0.05,         // Myelinolysis_ext 
+		   0.3,         0.7,          // Neurocytoma_cent 
+		   0.5,         0.5,          // Neurofibromatosi 
+		   0.85,        0.15,         // Neurofibromatosi 
+		   0.9,         0.1,          // Normal           
+		   0.3,         0.7,          // Oligodendrogliom 
+		   0.85,        0.15,         // Parkinson_plus   
+		   0.9,         0.1,          // Periventricular_ 
+		   0.85,        0.15,         // Pineal_neoplasm  
+		   0.05,        0.95,         // Pleomorphic_xant 
+		   0.3,         0.7,          // Pneumocephalus   
+		   0.95,        0.05,         // Porencephalic_cy 
+		   0.95,        0.05,         // Posterior_revers 
+		   0.15,        0.85,         // Primitive_neuroe 
+		   0.9,         0.1,          // Progressive_mult 
+		   0.95,        0.05,         // Pseudotumor      
+		   0.9,         0.1,          // Rhombencephaliti 
+		   0.9,         0.1,          // Sarcoidosis      
+		   0.99,        0.01,         // Schizencephaly   
+		   0.85,        0.15,         // Schwannoma       
+		   0.95,        0.05,         // Small_vessel_isc 
+		   0.8,         0.2,          // Subarachnoid_hem 
+		   0.95,        0.05,         // Syringobulbia    
+		   0.05,        0.95,         // Teratoma         
+		   0.05,        0.95,         // Thromboembolism_ 
+		   0.05,        0.95,         // Thrombosis_venou 
+		   0.1,         0.9,          // Toxoplasmosis    
+		   0.3,         0.7,          // Tuberculosis     
+		   0.9,         0.1,          // Tuberous_scleros 
+		   0.9,         0.1,          // Vasculitis       
+		   0.7,         0.3,          // Ventricultis_Epe 
+		   0.95,        0.05,         // Wallerian_degene 
+		   0.95,        0.05,         // Wernicke_encepha 
+		   0.95,        0.05,         // Wilson_disease   
+		   0.1,         0.9);         // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.6864549, 0.3135451);
+	visual V1 {
+		center = (90, 552);
+		height = 14;
+		};
+	};
+
+node Location {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (CG, CW, DGW, BS, Ce, IV, EC);
+	parents = (Disease);
+	probs = 
+		// CG           CW           DGW          BS           Ce           IV           EC            // Disease          
+		  (0.39,        0.23,        0.2,         0.04,        0.1,         0.02,        0.02,         // Abscess          
+		   0.02,        0.8,         0.1,         0.03,        0.03,        0.01,        0.01,         // Acute_disseminat 
+		   0.01,        0.75,        0.15,        0.03,        0.04,        0.01,        0.01,         // Acute_hemorrhagi 
+		   0.04,        0.85,        0.04,        0.01,        0.04,        0.01,        0.01,         // AIDS_HIV_encepha 
+		   0.94,        0.01,        0.01,        0.01,        0.01,        0.01,        0.01,         // Alzheimer_diseas 
+		   0.05,        0.8,         0.05,        0.02,        0.06,        0.01,        0.01,         // Amyloid_angiopat 
+		   0.03,        0.01,        0.04,        0.01,        0.01,        0.01,        0.89,         // Aneurysm         
+		   0.05,        0.01,        0.05,        0.01,        0.01,        0.01,        0.86,         // Aneurysm_thrombo 
+		   0.75,        0.01,        0.01,        0.01,        0.01,        0.01,        0.2,          // Angiomatosis_lep 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Arachnoid_cyst   
+		   0.4,         0.1,         0.2,         0.05,        0.1,         0.01,        0.14,         // Arteriovenous_ma 
+		   0.16,        0.7,         0.1,         0.01,        0.01,        0.01,        0.01,         // Astrocytoma_high 
+		   0.17,        0.1,         0.21,        0.1,         0.4,         0.01,        0.01,         // Astrocytoma_low_ 
+		   0.02,        0.3,         0.3,         0.34,        0.02,        0.01,        0.01,         // Behcet           
+		   0.02,        0.84,        0.1,         0.01,        0.01,        0.01,        0.01,         // CADASIL          
+		   0.01,        0.15,        0.07,        0.7,         0.05,        0.01,        0.01,         // Capillary_telang 
+		   0.09,        0.6,         0.09,        0.1,         0.1,         0.01,        0.01,         // Cavernous_malfor 
+		   0.56,        0.01,        0.3,         0.01,        0.1,         0.01,        0.01,         // Cephalocele      
+		   0.46,        0.15,        0.2,         0.04,        0.13,        0.01,        0.01,         // Cerebritis       
+		   0.01,        0.01,        0.01,        0.05,        0.9,         0.01,        0.01,         // Chiari_malformat 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Choroid_plexus_p 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Colloid_cyst     
+		   0.68,        0.05,        0.1,         0.05,        0.1,         0.01,        0.01,         // Contusion_cerebr 
+		   0.87,        0.03,        0.04,        0.01,        0.03,        0.01,        0.01,         // Cortical_dysypla 
+		   0.02,        0.02,        0.07,        0.05,        0.02,        0.07,        0.75,         // Craniopharyngiom 
+		   0.01,        0.1,         0.76,        0.01,        0.01,        0.1,         0.01,         // Cryptococcosis   
+		   0.48,        0.01,        0.05,        0.01,        0.05,        0.2,         0.2,          // Cysticercosis    
+		   0.01,        0.2,         0.01,        0.01,        0.01,        0.75,        0.01,         // Cytomegalovirus  
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.7,         0.25,         // Dandy_Walker_mal 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.05,        0.9,          // Dermoid          
+		   0.05,        0.73,        0.1,         0.05,        0.05,        0.01,        0.01,         // Diffuse_axonal_i 
+		   0.86,        0.05,        0.05,        0.01,        0.01,        0.01,        0.01,         // Dysembroplastic_ 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Empyema_subdural 
+		   0.48,        0.05,        0.3,         0.05,        0.1,         0.01,        0.01,         // Encephalitis     
+		   0.4,         0.19,        0.2,         0.04,        0.15,        0.01,        0.01,         // Encephalomalacia 
+		   0.04,        0.2,         0.1,         0.1,         0.1,         0.45,        0.01,         // Ependymal_tumors 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.05,        0.9,          // Epidermoid_cyst  
+		   0.76,        0.05,        0.15,        0.01,        0.01,        0.01,        0.01,         // Epilepsy_seizure 
+		   0.01,        0.05,        0.86,        0.01,        0.05,        0.01,        0.01,         // Fahr_disease     
+		   0.66,        0.05,        0.05,        0.03,        0.1,         0.01,        0.1,          // Foreign_Body     
+		   0.9,         0.01,        0.05,        0.01,        0.01,        0.01,        0.01,         // Frontotemporal_D 
+		   0.83,        0.01,        0.05,        0.04,        0.05,        0.01,        0.01,         // Gangliocytoma_ga 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.7,         0.25,         // Germinoma        
+		   0.01,        0.05,        0.05,        0.01,        0.01,        0.86,        0.01,         // Giant_cell_astro 
+		   0.26,        0.44,        0.2,         0.04,        0.04,        0.01,        0.01,         // Glioblastoma     
+		   0.1,         0.7,         0.16,        0.01,        0.01,        0.01,        0.01,         // Gliomatosis_cere 
+		   0.4,         0.2,         0.18,        0.1,         0.1,         0.01,        0.01,         // Gliosis          
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.25,        0.7,          // Hamartoma_of_tub 
+		   0.01,        0.01,        0.05,        0.05,        0.86,        0.01,        0.01,         // Hemangioblastoma 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.05,        0.9,          // Hemangiopericyto 
+		   0.17,        0.25,        0.41,        0.05,        0.1,         0.01,        0.01,         // Hematoma_intrace 
+		   0.17,        0.25,        0.41,        0.05,        0.1,         0.01,        0.01,         // Hematoma_intrace 
+		   0.17,        0.22,        0.43,        0.06,        0.09,        0.02,        0.01,         // Hematoma_intrace 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Hematoma_intrave 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Hematoma_subdura 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Hematoma_subdura 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Hematoma_subdura 
+		   0.6,         0.01,        0.01,        0.21,        0.15,        0.01,        0.01,         // Hemosiderosis_le 
+		   0.1,         0.01,        0.85,        0.01,        0.01,        0.01,        0.01,         // Hepatic_encephal 
+		   0.9,         0.05,        0.01,        0.01,        0.01,        0.01,        0.01,         // Herpes_simplex_e 
+		   0.05,        0.82,        0.05,        0.01,        0.05,        0.01,        0.01,         // Heterotypic_gray 
+		   0.01,        0.01,        0.94,        0.01,        0.01,        0.01,        0.01,         // Huntington_disea 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Hydrocephalus_co 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Hydrocephalus_no 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Hygroma_subdural 
+		   0.11,        0.1,         0.75,        0.01,        0.01,        0.01,        0.01,         // Hypoxic_ischemic 
+		   0.39,        0.18,        0.23,        0.07,        0.11,        0.01,        0.01,         // Infarction_acute 
+		   0.39,        0.18,        0.23,        0.07,        0.11,        0.01,        0.01,         // Infarction_chron 
+		   0.39,        0.18,        0.23,        0.07,        0.11,        0.01,        0.01,         // Infarction_subac 
+		   0.25,        0.01,        0.7,         0.01,        0.01,        0.01,        0.01,         // Jakob_Creutzfeld 
+		   0.01,        0.01,        0.01,        0.01,        0.94,        0.01,        0.01,         // Lhermitte_Duclos 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.2,         0.75,         // Lipoma           
+		   0.01,        0.76,        0.05,        0.01,        0.01,        0.01,        0.15,         // Lyme_disease     
+		   0.05,        0.73,        0.14,        0.01,        0.01,        0.01,        0.05,         // Lymphoma         
+		   0.01,        0.01,        0.01,        0.1,         0.1,         0.76,        0.01,         // Medulloblastoma  
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.05,        0.9,          // Meningioma       
+		   0.03,        0.01,        0.01,        0.03,        0.03,        0.05,        0.84,         // Meningitis       
+		   0.94,        0.01,        0.01,        0.01,        0.01,        0.01,        0.01,         // Mesial_temporal_ 
+		   0.11,        0.05,        0.8,         0.01,        0.01,        0.01,        0.01,         // Metabolic_poison 
+		   0.37,        0.17,        0.13,        0.06,        0.18,        0.02,        0.07,         // Metastasis_intra 
+		   0.03,        0.01,        0.01,        0.03,        0.03,        0.05,        0.84,         // Metastasis_lepto 
+		   0.05,        0.9,         0.01,        0.01,        0.01,        0.01,        0.01,         // Migraine         
+		   0.4,         0.06,        0.45,        0.06,        0.01,        0.01,        0.01,         // Mitochondrial_di 
+		   0.16,        0.4,         0.4,         0.01,        0.01,        0.01,        0.01,         // Moyamoya_disease 
+		   0.04,        0.59,        0.13,        0.09,        0.13,        0.01,        0.01,         // Multiple_scleros 
+		   0.05,        0.75,        0.1,         0.04,        0.04,        0.01,        0.01,         // Multiple_scleros 
+		   0.05,        0.03,        0.4,         0.4,         0.1,         0.01,        0.01,         // Multiple_system_ 
+		   0.01,        0.1,         0.1,         0.76,        0.01,        0.01,        0.01,         // Myelinolysis_acu 
+		   0.01,        0.01,        0.9,         0.05,        0.01,        0.01,        0.01,         // Myelinolysis_ext 
+		   0.01,        0.05,        0.1,         0.01,        0.01,        0.81,        0.01,         // Neurocytoma_cent 
+		   0.01,        0.05,        0.61,        0.01,        0.01,        0.01,        0.3,          // Neurofibromatosi 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.05,        0.9,          // Neurofibromatosi 
+		   0.19,        0.25,        0.16,        0.11,        0.11,        0.08,        0.1,          // Normal           
+		   0.7,         0.21,        0.05,        0.01,        0.01,        0.01,        0.01,         // Oligodendrogliom 
+		   0.45,        0.01,        0.5,         0.01,        0.01,        0.01,        0.01,         // Parkinson_plus   
+		   0.01,        0.85,        0.1,         0.01,        0.01,        0.01,        0.01,         // Periventricular_ 
+		   0.01,        0.01,        0.05,        0.05,        0.01,        0.8,         0.07,         // Pineal_neoplasm  
+		   0.94,        0.01,        0.01,        0.01,        0.01,        0.01,        0.01,         // Pleomorphic_xant 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.4,         0.55,         // Pneumocephalus   
+		   0.4,         0.2,         0.15,        0.01,        0.05,        0.18,        0.01,         // Porencephalic_cy 
+		   0.2,         0.71,        0.05,        0.01,        0.01,        0.01,        0.01,         // Posterior_revers 
+		   0.75,        0.1,         0.1,         0.01,        0.01,        0.02,        0.01,         // Primitive_neuroe 
+		   0.01,        0.79,        0.05,        0.03,        0.1,         0.01,        0.01,         // Progressive_mult 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.94,        0.01,         // Pseudotumor      
+		   0.01,        0.01,        0.04,        0.83,        0.09,        0.01,        0.01,         // Rhombencephaliti 
+		   0.01,        0.1,         0.06,        0.01,        0.01,        0.01,        0.8,          // Sarcoidosis      
+		   0.94,        0.01,        0.01,        0.01,        0.01,        0.01,        0.01,         // Schizencephaly   
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Schwannoma       
+		   0.01,        0.72,        0.15,        0.05,        0.05,        0.01,        0.01,         // Small_vessel_isc 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Subarachnoid_hem 
+		   0.01,        0.01,        0.01,        0.94,        0.01,        0.01,        0.01,         // Syringobulbia    
+		   0.05,        0.05,        0.1,         0.01,        0.05,        0.44,        0.3,          // Teratoma         
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Thromboembolism_ 
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.01,        0.94,         // Thrombosis_venou 
+		   0.05,        0.1,         0.65,        0.06,        0.12,        0.01,        0.01,         // Toxoplasmosis    
+		   0.2,         0.05,        0.05,        0.05,        0.05,        0.05,        0.55,         // Tuberculosis     
+		   0.7,         0.25,        0.01,        0.01,        0.01,        0.01,        0.01,         // Tuberous_scleros 
+		   0.01,        0.9,         0.05,        0.01,        0.01,        0.01,        0.01,         // Vasculitis       
+		   0.01,        0.01,        0.01,        0.01,        0.01,        0.9,         0.05,         // Ventricultis_Epe 
+		   0.01,        0.62,        0.2,         0.1,         0.05,        0.01,        0.01,         // Wallerian_degene 
+		   0.01,        0.01,        0.55,        0.4,         0.01,        0.01,        0.01,         // Wernicke_encepha 
+		   0.01,        0.01,        0.85,        0.1,         0.01,        0.01,        0.01,         // Wilson_disease   
+		   0.01,        0.02,        0.02,        0.01,        0.01,        0.92,        0.01);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.1945984, 0.1950984, 0.1599303, 0.06972951, 0.06882377, 0.12675, 0.1850697);
+	visual V1 {
+		center = (834, 66);
+		height = 8;
+		link 1 {
+			path = ((745, 392), (818, 127));
+			};
+		};
+	};
+
+node Number {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Single, Multiple);
+	parents = (Disease);
+	probs = 
+		// Single       Multiple      // Disease          
+		  (0.7,         0.3,          // Abscess          
+		   0.1,         0.9,          // Acute_disseminat 
+		   0.6,         0.4,          // Acute_hemorrhagi 
+		   0.5,         0.5,          // AIDS_HIV_encepha 
+		   0.99,        0.01,         // Alzheimer_diseas 
+		   0.05,        0.95,         // Amyloid_angiopat 
+		   0.85,        0.15,         // Aneurysm         
+		   0.95,        0.05,         // Aneurysm_thrombo 
+		   0.9,         0.1,          // Angiomatosis_lep 
+		   0.95,        0.05,         // Arachnoid_cyst   
+		   0.95,        0.05,         // Arteriovenous_ma 
+		   0.95,        0.05,         // Astrocytoma_high 
+		   0.95,        0.05,         // Astrocytoma_low_ 
+		   0.3,         0.7,          // Behcet           
+		   0.01,        0.99,         // CADASIL          
+		   0.8,         0.2,          // Capillary_telang 
+		   0.7,         0.3,          // Cavernous_malfor 
+		   0.95,        0.05,         // Cephalocele      
+		   0.77,        0.23,         // Cerebritis       
+		   0.05,        0.95,         // Chiari_malformat 
+		   0.95,        0.05,         // Choroid_plexus_p 
+		   0.99,        0.01,         // Colloid_cyst     
+		   0.2,         0.8,          // Contusion_cerebr 
+		   0.9,         0.1,          // Cortical_dysypla 
+		   0.99,        0.01,         // Craniopharyngiom 
+		   0.05,        0.95,         // Cryptococcosis   
+		   0.2,         0.8,          // Cysticercosis    
+		   0.6,         0.4,          // Cytomegalovirus  
+		   0.95,        0.05,         // Dandy_Walker_mal 
+		   0.95,        0.05,         // Dermoid          
+		   0.1,         0.9,          // Diffuse_axonal_i 
+		   0.98,        0.02,         // Dysembroplastic_ 
+		   0.8,         0.2,          // Empyema_subdural 
+		   0.5,         0.5,          // Encephalitis     
+		   0.15,        0.85,         // Encephalomalacia 
+		   0.95,        0.05,         // Ependymal_tumors 
+		   0.95,        0.05,         // Epidermoid_cyst  
+		   0.8,         0.2,          // Epilepsy_seizure 
+		   0.05,        0.95,         // Fahr_disease     
+		   0.6,         0.4,          // Foreign_Body     
+		   0.9,         0.1,          // Frontotemporal_D 
+		   0.99,        0.01,         // Gangliocytoma_ga 
+		   0.8,         0.2,          // Germinoma        
+		   0.7,         0.3,          // Giant_cell_astro 
+		   0.88,        0.12,         // Glioblastoma     
+		   0.95,        0.05,         // Gliomatosis_cere 
+		   0.65,        0.35,         // Gliosis          
+		   0.99,        0.01,         // Hamartoma_of_tub 
+		   0.65,        0.35,         // Hemangioblastoma 
+		   0.95,        0.05,         // Hemangiopericyto 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.2,         0.8,          // Hematoma_intrave 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.8,         0.2,          // Hemosiderosis_le 
+		   0.05,        0.95,         // Hepatic_encephal 
+		   0.35,        0.65,         // Herpes_simplex_e 
+		   0.1,         0.9,          // Heterotypic_gray 
+		   0.05,        0.95,         // Huntington_disea 
+		   0.95,        0.05,         // Hydrocephalus_co 
+		   0.95,        0.05,         // Hydrocephalus_no 
+		   0.8,         0.2,          // Hygroma_subdural 
+		   0.05,        0.95,         // Hypoxic_ischemic 
+		   0.7,         0.3,          // Infarction_acute 
+		   0.3,         0.7,          // Infarction_chron 
+		   0.7,         0.3,          // Infarction_subac 
+		   0.1,         0.9,          // Jakob_Creutzfeld 
+		   0.95,        0.05,         // Lhermitte_Duclos 
+		   0.95,        0.05,         // Lipoma           
+		   0.05,        0.95,         // Lyme_disease     
+		   0.5,         0.5,          // Lymphoma         
+		   0.95,        0.05,         // Medulloblastoma  
+		   0.9,         0.1,          // Meningioma       
+		   0.5,         0.5,          // Meningitis       
+		   0.9,         0.1,          // Mesial_temporal_ 
+		   0.05,        0.95,         // Metabolic_poison 
+		   0.27,        0.73,         // Metastasis_intra 
+		   0.15,        0.85,         // Metastasis_lepto 
+		   0.04,        0.96,         // Migraine         
+		   0.4,         0.6,          // Mitochondrial_di 
+		   0.05,        0.95,         // Moyamoya_disease 
+		   0.04,        0.96,         // Multiple_scleros 
+		   0.6,         0.4,          // Multiple_scleros 
+		   0.05,        0.95,         // Multiple_system_ 
+		   0.7,         0.3,          // Myelinolysis_acu 
+		   0.05,        0.95,         // Myelinolysis_ext 
+		   0.95,        0.05,         // Neurocytoma_cent 
+		   0.05,        0.95,         // Neurofibromatosi 
+		   0.05,        0.95,         // Neurofibromatosi 
+		   0.7,         0.3,          // Normal           
+		   0.99,        0.01,         // Oligodendrogliom 
+		   0.05,        0.95,         // Parkinson_plus   
+		   0.04,        0.96,         // Periventricular_ 
+		   0.95,        0.05,         // Pineal_neoplasm  
+		   0.99,        0.01,         // Pleomorphic_xant 
+		   0.1,         0.9,          // Pneumocephalus   
+		   0.95,        0.05,         // Porencephalic_cy 
+		   0.1,         0.9,          // Posterior_revers 
+		   0.95,        0.05,         // Primitive_neuroe 
+		   0.15,        0.85,         // Progressive_mult 
+		   0.95,        0.05,         // Pseudotumor      
+		   0.91,        0.09,         // Rhombencephaliti 
+		   0.05,        0.95,         // Sarcoidosis      
+		   0.8,         0.2,          // Schizencephaly   
+		   0.95,        0.05,         // Schwannoma       
+		   0.05,        0.95,         // Small_vessel_isc 
+		   0.8,         0.2,          // Subarachnoid_hem 
+		   0.95,        0.05,         // Syringobulbia    
+		   0.95,        0.05,         // Teratoma         
+		   0.85,        0.15,         // Thromboembolism_ 
+		   0.85,        0.15,         // Thrombosis_venou 
+		   0.2,         0.8,          // Toxoplasmosis    
+		   0.2,         0.8,          // Tuberculosis     
+		   0.1,         0.9,          // Tuberous_scleros 
+		   0.05,        0.95,         // Vasculitis       
+		   0.2,         0.8,          // Ventricultis_Epe 
+		   0.9,         0.1,          // Wallerian_degene 
+		   0.8,         0.2,          // Wernicke_encepha 
+		   0.05,        0.95,         // Wilson_disease   
+		   0.47,        0.53);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.5985574, 0.4014426);
+	visual V1 {
+		center = (912, 156);
+		height = 9;
+		};
+	};
+
+node Side {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Unilateral, Bilateral);
+	parents = (Disease);
+	probs = 
+		// Unilateral   Bilateral     // Disease          
+		  (0.7,         0.3,          // Abscess          
+		   0.2,         0.8,          // Acute_disseminat 
+		   0.2,         0.8,          // Acute_hemorrhagi 
+		   0.1,         0.9,          // AIDS_HIV_encepha 
+		   0.01,        0.99,         // Alzheimer_diseas 
+		   0.05,        0.95,         // Amyloid_angiopat 
+		   0.9,         0.1,          // Aneurysm         
+		   0.95,        0.05,         // Aneurysm_thrombo 
+		   0.95,        0.05,         // Angiomatosis_lep 
+		   0.95,        0.05,         // Arachnoid_cyst   
+		   0.9,         0.1,          // Arteriovenous_ma 
+		   0.6,         0.4,          // Astrocytoma_high 
+		   0.7,         0.3,          // Astrocytoma_low_ 
+		   0.1,         0.9,          // Behcet           
+		   0.01,        0.99,         // CADASIL          
+		   0.8,         0.2,          // Capillary_telang 
+		   0.7,         0.3,          // Cavernous_malfor 
+		   0.15,        0.85,         // Cephalocele      
+		   0.6,         0.4,          // Cerebritis       
+		   0.05,        0.95,         // Chiari_malformat 
+		   0.95,        0.05,         // Choroid_plexus_p 
+		   0.99,        0.01,         // Colloid_cyst     
+		   0.2,         0.8,          // Contusion_cerebr 
+		   0.9,         0.1,          // Cortical_dysypla 
+		   0.05,        0.95,         // Craniopharyngiom 
+		   0.05,        0.95,         // Cryptococcosis   
+		   0.05,        0.95,         // Cysticercosis    
+		   0.05,        0.95,         // Cytomegalovirus  
+		   0.05,        0.95,         // Dandy_Walker_mal 
+		   0.95,        0.05,         // Dermoid          
+		   0.2,         0.8,          // Diffuse_axonal_i 
+		   0.98,        0.02,         // Dysembroplastic_ 
+		   0.85,        0.15,         // Empyema_subdural 
+		   0.3,         0.7,          // Encephalitis     
+		   0.8,         0.2,          // Encephalomalacia 
+		   0.7,         0.3,          // Ependymal_tumors 
+		   0.95,        0.05,         // Epidermoid_cyst  
+		   0.85,        0.15,         // Epilepsy_seizure 
+		   0.05,        0.95,         // Fahr_disease     
+		   0.8,         0.2,          // Foreign_Body     
+		   0.05,        0.95,         // Frontotemporal_D 
+		   0.99,        0.01,         // Gangliocytoma_ga 
+		   0.1,         0.9,          // Germinoma        
+		   0.7,         0.3,          // Giant_cell_astro 
+		   0.7,         0.3,          // Glioblastoma     
+		   0.2,         0.8,          // Gliomatosis_cere 
+		   0.8,         0.2,          // Gliosis          
+		   0.01,        0.99,         // Hamartoma_of_tub 
+		   0.6,         0.4,          // Hemangioblastoma 
+		   0.95,        0.05,         // Hemangiopericyto 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.9,         0.1,          // Hematoma_intrace 
+		   0.3,         0.7,          // Hematoma_intrave 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.8,         0.2,          // Hematoma_subdura 
+		   0.2,         0.8,          // Hemosiderosis_le 
+		   0.05,        0.95,         // Hepatic_encephal 
+		   0.35,        0.65,         // Herpes_simplex_e 
+		   0.05,        0.95,         // Heterotypic_gray 
+		   0.05,        0.95,         // Huntington_disea 
+		   0.01,        0.99,         // Hydrocephalus_co 
+		   0.1,         0.9,          // Hydrocephalus_no 
+		   0.8,         0.2,          // Hygroma_subdural 
+		   0.05,        0.95,         // Hypoxic_ischemic 
+		   0.7,         0.3,          // Infarction_acute 
+		   0.5,         0.5,          // Infarction_chron 
+		   0.7,         0.3,          // Infarction_subac 
+		   0.05,        0.95,         // Jakob_Creutzfeld 
+		   0.95,        0.05,         // Lhermitte_Duclos 
+		   0.05,        0.95,         // Lipoma           
+		   0.05,        0.95,         // Lyme_disease     
+		   0.5,         0.5,          // Lymphoma         
+		   0.1,         0.9,          // Medulloblastoma  
+		   0.9,         0.1,          // Meningioma       
+		   0.1,         0.9,          // Meningitis       
+		   0.9,         0.1,          // Mesial_temporal_ 
+		   0.05,        0.95,         // Metabolic_poison 
+		   0.3,         0.7,          // Metastasis_intra 
+		   0.1,         0.9,          // Metastasis_lepto 
+		   0.05,        0.95,         // Migraine         
+		   0.2,         0.8,          // Mitochondrial_di 
+		   0.3,         0.7,          // Moyamoya_disease 
+		   0.05,        0.95,         // Multiple_scleros 
+		   0.6,         0.4,          // Multiple_scleros 
+		   0.05,        0.95,         // Multiple_system_ 
+		   0.1,         0.9,          // Myelinolysis_acu 
+		   0.05,        0.95,         // Myelinolysis_ext 
+		   0.85,        0.15,         // Neurocytoma_cent 
+		   0.05,        0.95,         // Neurofibromatosi 
+		   0.15,        0.85,         // Neurofibromatosi 
+		   0.8,         0.2,          // Normal           
+		   0.95,        0.05,         // Oligodendrogliom 
+		   0.05,        0.95,         // Parkinson_plus   
+		   0.05,        0.95,         // Periventricular_ 
+		   0.05,        0.95,         // Pineal_neoplasm  
+		   0.99,        0.01,         // Pleomorphic_xant 
+		   0.4,         0.6,          // Pneumocephalus   
+		   0.95,        0.05,         // Porencephalic_cy 
+		   0.1,         0.9,          // Posterior_revers 
+		   0.9,         0.1,          // Primitive_neuroe 
+		   0.15,        0.85,         // Progressive_mult 
+		   0.01,        0.99,         // Pseudotumor      
+		   0.1,         0.9,          // Rhombencephaliti 
+		   0.05,        0.95,         // Sarcoidosis      
+		   0.8,         0.2,          // Schizencephaly   
+		   0.95,        0.05,         // Schwannoma       
+		   0.05,        0.95,         // Small_vessel_isc 
+		   0.6,         0.4,          // Subarachnoid_hem 
+		   0.05,        0.95,         // Syringobulbia    
+		   0.1,         0.9,          // Teratoma         
+		   0.85,        0.15,         // Thromboembolism_ 
+		   0.85,        0.15,         // Thrombosis_venou 
+		   0.7,         0.3,          // Toxoplasmosis    
+		   0.2,         0.8,          // Tuberculosis     
+		   0.1,         0.9,          // Tuberous_scleros 
+		   0.05,        0.95,         // Vasculitis       
+		   0.2,         0.8,          // Ventricultis_Epe 
+		   0.95,        0.05,         // Wallerian_degene 
+		   0.1,         0.9,          // Wernicke_encepha 
+		   0.05,        0.95,         // Wilson_disease   
+		   0.2,         0.8);         // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.4854303, 0.5145696);
+	visual V1 {
+		center = (984, 216);
+		height = 10;
+		};
+	};
+
+node Size {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Small, Medium, Large);
+	parents = (Disease);
+	probs = 
+		// Small        Medium       Large         // Disease          
+		  (0.17,        0.61,        0.22,         // Abscess          
+		   0.05,        0.7,         0.25,         // Acute_disseminat 
+		   0.01,        0.3,         0.69,         // Acute_hemorrhagi 
+		   0.1,         0.4,         0.5,          // AIDS_HIV_encepha 
+		   0.98,        0.01,        0.01,         // Alzheimer_diseas 
+		   0.3,         0.5,         0.2,          // Amyloid_angiopat 
+		   0.85,        0.13,        0.02,         // Aneurysm         
+		   0.1,         0.8,         0.1,          // Aneurysm_thrombo 
+		   0.01,        0.09,        0.9,          // Angiomatosis_lep 
+		   0.05,        0.75,        0.2,          // Arachnoid_cyst   
+		   0.1,         0.5,         0.4,          // Arteriovenous_ma 
+		   0.01,        0.15,        0.84,         // Astrocytoma_high 
+		   0.05,        0.2,         0.75,         // Astrocytoma_low_ 
+		   0.1,         0.8,         0.1,          // Behcet           
+		   0.8,         0.19,        0.01,         // CADASIL          
+		   0.85,        0.1,         0.05,         // Capillary_telang 
+		   0.6,         0.35,        0.05,         // Cavernous_malfor 
+		   0.1,         0.6,         0.3,          // Cephalocele      
+		   0.13,        0.7,         0.17,         // Cerebritis       
+		   0.6,         0.3,         0.1,          // Chiari_malformat 
+		   0.01,        0.3,         0.69,         // Choroid_plexus_p 
+		   0.5,         0.45,        0.05,         // Colloid_cyst     
+		   0.3,         0.5,         0.2,          // Contusion_cerebr 
+		   0.4,         0.4,         0.2,          // Cortical_dysypla 
+		   0.08,        0.63,        0.29,         // Craniopharyngiom 
+		   0.8,         0.19,        0.01,         // Cryptococcosis   
+		   0.85,        0.14,        0.01,         // Cysticercosis    
+		   0.9,         0.09,        0.01,         // Cytomegalovirus  
+		   0.01,        0.4,         0.59,         // Dandy_Walker_mal 
+		   0.1,         0.7,         0.2,          // Dermoid          
+		   0.8,         0.15,        0.05,         // Diffuse_axonal_i 
+		   0.4,         0.59,        0.01,         // Dysembroplastic_ 
+		   0.04,        0.4,         0.56,         // Empyema_subdural 
+		   0.1,         0.35,        0.55,         // Encephalitis     
+		   0.1,         0.5,         0.4,          // Encephalomalacia 
+		   0.05,        0.45,        0.5,          // Ependymal_tumors 
+		   0.1,         0.8,         0.1,          // Epidermoid_cyst  
+		   0.1,         0.4,         0.5,          // Epilepsy_seizure 
+		   0.1,         0.7,         0.2,          // Fahr_disease     
+		   0.05,        0.3,         0.65,         // Foreign_Body     
+		   0.01,        0.09,        0.9,          // Frontotemporal_D 
+		   0.1,         0.6,         0.3,          // Gangliocytoma_ga 
+		   0.05,        0.8,         0.15,         // Germinoma        
+		   0.15,        0.75,        0.1,          // Giant_cell_astro 
+		   0.03,        0.25,        0.72,         // Glioblastoma     
+		   0.01,        0.04,        0.95,         // Gliomatosis_cere 
+		   0.6,         0.3,         0.1,          // Gliosis          
+		   0.2,         0.7,         0.1,          // Hamartoma_of_tub 
+		   0.1,         0.7,         0.2,          // Hemangioblastoma 
+		   0.01,        0.74,        0.25,         // Hemangiopericyto 
+		   0.1,         0.5,         0.4,          // Hematoma_intrace 
+		   0.25,        0.7,         0.05,         // Hematoma_intrace 
+		   0.17,        0.56,        0.27,         // Hematoma_intrace 
+		   0.2,         0.5,         0.3,          // Hematoma_intrave 
+		   0.2,         0.7,         0.1,          // Hematoma_subdura 
+		   0.7,         0.29,        0.01,         // Hematoma_subdura 
+		   0.35,        0.6,         0.05,         // Hematoma_subdura 
+		   0.1,         0.4,         0.5,          // Hemosiderosis_le 
+		   0.01,        0.79,        0.2,          // Hepatic_encephal 
+		   0.01,        0.05,        0.94,         // Herpes_simplex_e 
+		   0.4,         0.5,         0.1,          // Heterotypic_gray 
+		   0.5,         0.49,        0.01,         // Huntington_disea 
+		   0.01,        0.5,         0.49,         // Hydrocephalus_co 
+		   0.01,        0.5,         0.49,         // Hydrocephalus_no 
+		   0.8,         0.15,        0.05,         // Hygroma_subdural 
+		   0.01,        0.2,         0.79,         // Hypoxic_ischemic 
+		   0.28,        0.47,        0.25,         // Infarction_acute 
+		   0.35,        0.5,         0.15,         // Infarction_chron 
+		   0.3,         0.5,         0.2,          // Infarction_subac 
+		   0.05,        0.65,        0.3,          // Jakob_Creutzfeld 
+		   0.01,        0.2,         0.79,         // Lhermitte_Duclos 
+		   0.3,         0.6,         0.1,          // Lipoma           
+		   0.8,         0.19,        0.01,         // Lyme_disease     
+		   0.1,         0.5,         0.4,          // Lymphoma         
+		   0.01,        0.3,         0.69,         // Medulloblastoma  
+		   0.15,        0.7,         0.15,         // Meningioma       
+		   0.05,        0.4,         0.55,         // Meningitis       
+		   0.6,         0.3,         0.1,          // Mesial_temporal_ 
+		   0.05,        0.65,        0.3,          // Metabolic_poison 
+		   0.37,        0.48,        0.15,         // Metastasis_intra 
+		   0.05,        0.4,         0.55,         // Metastasis_lepto 
+		   0.76,        0.22,        0.02,         // Migraine         
+		   0.05,        0.5,         0.45,         // Mitochondrial_di 
+		   0.8,         0.15,        0.05,         // Moyamoya_disease 
+		   0.76,        0.22,        0.02,         // Multiple_scleros 
+		   0.15,        0.7,         0.15,         // Multiple_scleros 
+		   0.05,        0.8,         0.15,         // Multiple_system_ 
+		   0.05,        0.9,         0.05,         // Myelinolysis_acu 
+		   0.05,        0.85,        0.1,          // Myelinolysis_ext 
+		   0.05,        0.3,         0.65,         // Neurocytoma_cent 
+		   0.1,         0.7,         0.2,          // Neurofibromatosi 
+		   0.25,        0.7,         0.05,         // Neurofibromatosi 
+		   0.84,        0.09,        0.07,         // Normal           
+		   0.01,        0.1,         0.89,         // Oligodendrogliom 
+		   0.01,        0.7,         0.29,         // Parkinson_plus   
+		   0.05,        0.65,        0.3,          // Periventricular_ 
+		   0.05,        0.9,         0.05,         // Pineal_neoplasm  
+		   0.3,         0.6,         0.1,          // Pleomorphic_xant 
+		   0.2,         0.7,         0.1,          // Pneumocephalus   
+		   0.1,         0.8,         0.1,          // Porencephalic_cy 
+		   0.01,        0.3,         0.69,         // Posterior_revers 
+		   0.01,        0.3,         0.69,         // Primitive_neuroe 
+		   0.05,        0.65,        0.3,          // Progressive_mult 
+		   0.94,        0.05,        0.01,         // Pseudotumor      
+		   0.23,        0.7,         0.07,         // Rhombencephaliti 
+		   0.6,         0.35,        0.05,         // Sarcoidosis      
+		   0.4,         0.5,         0.1,          // Schizencephaly   
+		   0.25,        0.7,         0.05,         // Schwannoma       
+		   0.8,         0.15,        0.05,         // Small_vessel_isc 
+		   0.9,         0.09,        0.01,         // Subarachnoid_hem 
+		   0.9,         0.09,        0.01,         // Syringobulbia    
+		   0.1,         0.2,         0.7,          // Teratoma         
+		   0.7,         0.2,         0.1,          // Thromboembolism_ 
+		   0.7,         0.2,         0.1,          // Thrombosis_venou 
+		   0.33,        0.57,        0.1,          // Toxoplasmosis    
+		   0.1,         0.7,         0.2,          // Tuberculosis     
+		   0.2,         0.75,        0.05,         // Tuberous_scleros 
+		   0.2,         0.75,        0.05,         // Vasculitis       
+		   0.05,        0.3,         0.65,         // Ventricultis_Epe 
+		   0.75,        0.2,         0.05,         // Wallerian_degene 
+		   0.15,        0.8,         0.05,         // Wernicke_encepha 
+		   0.1,         0.6,         0.3,          // Wilson_disease   
+		   0.47,        0.5,         0.03);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.3561271, 0.4036639, 0.240209);
+	visual V1 {
+		center = (1068, 282);
+		height = 11;
+		link 1 {
+			path = ((745, 687), (1042, 315));
+			};
+		};
+	};
+
+node Mass {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Positive, Normal, Negative);
+	parents = (Disease);
+	probs = 
+		// Positive     Normal       Negative      // Disease          
+		  (0.75,        0.24,        0.01,         // Abscess          
+		   0.8,         0.19,        0.01,         // Acute_disseminat 
+		   0.9,         0.09,        0.01,         // Acute_hemorrhagi 
+		   0.01,        0.19,        0.8,          // AIDS_HIV_encepha 
+		   0.01,        0.09,        0.9,          // Alzheimer_diseas 
+		   0.5,         0.4,         0.1,          // Amyloid_angiopat 
+		   0.09,        0.9,         0.01,         // Aneurysm         
+		   0.89,        0.1,         0.01,         // Aneurysm_thrombo 
+		   0.01,        0.01,        0.98,         // Angiomatosis_lep 
+		   0.6,         0.39,        0.01,         // Arachnoid_cyst   
+		   0.1,         0.8,         0.1,          // Arteriovenous_ma 
+		   0.95,        0.04,        0.01,         // Astrocytoma_high 
+		   0.7,         0.29,        0.01,         // Astrocytoma_low_ 
+		   0.05,        0.55,        0.4,          // Behcet           
+		   0.01,        0.19,        0.8,          // CADASIL          
+		   0.01,        0.98,        0.01,         // Capillary_telang 
+		   0.05,        0.94,        0.01,         // Cavernous_malfor 
+		   0.01,        0.7,         0.29,         // Cephalocele      
+		   0.2,         0.78,        0.02,         // Cerebritis       
+		   0.7,         0.29,        0.01,         // Chiari_malformat 
+		   0.9,         0.09,        0.01,         // Choroid_plexus_p 
+		   0.8,         0.19,        0.01,         // Colloid_cyst     
+		   0.69,        0.3,         0.01,         // Contusion_cerebr 
+		   0.05,        0.9,         0.05,         // Cortical_dysypla 
+		   0.73,        0.26,        0.01,         // Craniopharyngiom 
+		   0.1,         0.89,        0.01,         // Cryptococcosis   
+		   0.1,         0.89,        0.01,         // Cysticercosis    
+		   0.01,        0.1,         0.89,         // Cytomegalovirus  
+		   0.15,        0.1,         0.75,         // Dandy_Walker_mal 
+		   0.8,         0.19,        0.01,         // Dermoid          
+		   0.75,        0.2,         0.05,         // Diffuse_axonal_i 
+		   0.2,         0.79,        0.01,         // Dysembroplastic_ 
+		   0.9,         0.09,        0.01,         // Empyema_subdural 
+		   0.3,         0.69,        0.01,         // Encephalitis     
+		   0.01,        0.2,         0.79,         // Encephalomalacia 
+		   0.95,        0.04,        0.01,         // Ependymal_tumors 
+		   0.85,        0.14,        0.01,         // Epidermoid_cyst  
+		   0.1,         0.89,        0.01,         // Epilepsy_seizure 
+		   0.01,        0.24,        0.75,         // Fahr_disease     
+		   0.9,         0.09,        0.01,         // Foreign_Body     
+		   0.01,        0.01,        0.98,         // Frontotemporal_D 
+		   0.1,         0.89,        0.01,         // Gangliocytoma_ga 
+		   0.95,        0.04,        0.01,         // Germinoma        
+		   0.2,         0.79,        0.01,         // Giant_cell_astro 
+		   0.86,        0.13,        0.01,         // Glioblastoma     
+		   0.9,         0.05,        0.05,         // Gliomatosis_cere 
+		   0.01,        0.29,        0.7,          // Gliosis          
+		   0.3,         0.69,        0.01,         // Hamartoma_of_tub 
+		   0.8,         0.19,        0.01,         // Hemangioblastoma 
+		   0.95,        0.04,        0.01,         // Hemangiopericyto 
+		   0.95,        0.04,        0.01,         // Hematoma_intrace 
+		   0.01,        0.1,         0.89,         // Hematoma_intrace 
+		   0.56,        0.4,         0.04,         // Hematoma_intrace 
+		   0.5,         0.49,        0.01,         // Hematoma_intrave 
+		   0.9,         0.09,        0.01,         // Hematoma_subdura 
+		   0.1,         0.7,         0.2,          // Hematoma_subdura 
+		   0.75,        0.24,        0.01,         // Hematoma_subdura 
+		   0.01,        0.89,        0.1,          // Hemosiderosis_le 
+		   0.1,         0.85,        0.05,         // Hepatic_encephal 
+		   0.9,         0.09,        0.01,         // Herpes_simplex_e 
+		   0.01,        0.98,        0.01,         // Heterotypic_gray 
+		   0.01,        0.04,        0.95,         // Huntington_disea 
+		   0.98,        0.01,        0.01,         // Hydrocephalus_co 
+		   0.98,        0.01,        0.01,         // Hydrocephalus_no 
+		   0.05,        0.75,        0.2,          // Hygroma_subdural 
+		   0.4,         0.59,        0.01,         // Hypoxic_ischemic 
+		   0.53,        0.46,        0.01,         // Infarction_acute 
+		   0.01,        0.1,         0.89,         // Infarction_chron 
+		   0.6,         0.3,         0.1,          // Infarction_subac 
+		   0.01,        0.04,        0.95,         // Jakob_Creutzfeld 
+		   0.8,         0.19,        0.01,         // Lhermitte_Duclos 
+		   0.05,        0.94,        0.01,         // Lipoma           
+		   0.05,        0.9,         0.05,         // Lyme_disease     
+		   0.95,        0.04,        0.01,         // Lymphoma         
+		   0.98,        0.01,        0.01,         // Medulloblastoma  
+		   0.7,         0.29,        0.01,         // Meningioma       
+		   0.05,        0.94,        0.01,         // Meningitis       
+		   0.01,        0.04,        0.95,         // Mesial_temporal_ 
+		   0.1,         0.8,         0.1,          // Metabolic_poison 
+		   0.73,        0.26,        0.01,         // Metastasis_intra 
+		   0.05,        0.94,        0.01,         // Metastasis_lepto 
+		   0.01,        0.98,        0.01,         // Migraine         
+		   0.15,        0.8,         0.05,         // Mitochondrial_di 
+		   0.01,        0.35,        0.64,         // Moyamoya_disease 
+		   0.06,        0.69,        0.25,         // Multiple_scleros 
+		   0.65,        0.34,        0.01,         // Multiple_scleros 
+		   0.01,        0.05,        0.94,         // Multiple_system_ 
+		   0.1,         0.89,        0.01,         // Myelinolysis_acu 
+		   0.1,         0.89,        0.01,         // Myelinolysis_ext 
+		   0.95,        0.04,        0.01,         // Neurocytoma_cent 
+		   0.15,        0.84,        0.01,         // Neurofibromatosi 
+		   0.2,         0.79,        0.01,         // Neurofibromatosi 
+		   0.03,        0.94,        0.03,         // Normal           
+		   0.75,        0.24,        0.01,         // Oligodendrogliom 
+		   0.01,        0.01,        0.98,         // Parkinson_plus   
+		   0.01,        0.05,        0.94,         // Periventricular_ 
+		   0.95,        0.04,        0.01,         // Pineal_neoplasm  
+		   0.3,         0.69,        0.01,         // Pleomorphic_xant 
+		   0.7,         0.29,        0.01,         // Pneumocephalus   
+		   0.05,        0.2,         0.75,         // Porencephalic_cy 
+		   0.3,         0.69,        0.01,         // Posterior_revers 
+		   0.98,        0.01,        0.01,         // Primitive_neuroe 
+		   0.15,        0.84,        0.01,         // Progressive_mult 
+		   0.6,         0.39,        0.01,         // Pseudotumor      
+		   0.16,        0.82,        0.02,         // Rhombencephaliti 
+		   0.1,         0.85,        0.05,         // Sarcoidosis      
+		   0.01,        0.98,        0.01,         // Schizencephaly   
+		   0.2,         0.79,        0.01,         // Schwannoma       
+		   0.01,        0.19,        0.8,          // Small_vessel_isc 
+		   0.2,         0.79,        0.01,         // Subarachnoid_hem 
+		   0.4,         0.4,         0.2,          // Syringobulbia    
+		   0.95,        0.04,        0.01,         // Teratoma         
+		   0.5,         0.49,        0.01,         // Thromboembolism_ 
+		   0.2,         0.79,        0.01,         // Thrombosis_venou 
+		   0.47,        0.51,        0.02,         // Toxoplasmosis    
+		   0.7,         0.29,        0.01,         // Tuberculosis     
+		   0.05,        0.94,        0.01,         // Tuberous_scleros 
+		   0.05,        0.9,         0.05,         // Vasculitis       
+		   0.4,         0.59,        0.01,         // Ventricultis_Epe 
+		   0.01,        0.05,        0.94,         // Wallerian_degene 
+		   0.05,        0.85,        0.1,          // Wernicke_encepha 
+		   0.01,        0.1,         0.89,         // Wilson_disease   
+		   0.11,        0.88,        0.01);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.3272213, 0.5063607, 0.166418);
+	visual V1 {
+		center = (1140, 360);
+		height = 12;
+		};
+	};
+
+node Age {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (Young, Adult, Old);
+	parents = (Disease);
+	probs = 
+		// Young        Adult        Old           // Disease          
+		  (0.17,        0.53,        0.3,          // Abscess          
+		   0.3,         0.6,         0.1,          // Acute_disseminat 
+		   0.3,         0.6,         0.1,          // Acute_hemorrhagi 
+		   0.05,        0.9,         0.05,         // AIDS_HIV_encepha 
+		   0.01,        0.05,        0.94,         // Alzheimer_diseas 
+		   0.01,        0.09,        0.9,          // Amyloid_angiopat 
+		   0.05,        0.65,        0.3,          // Aneurysm         
+		   0.03,        0.77,        0.2,          // Aneurysm_thrombo 
+		   0.9,         0.09,        0.01,         // Angiomatosis_lep 
+		   0.33,        0.34,        0.33,         // Arachnoid_cyst   
+		   0.4,         0.5,         0.1,          // Arteriovenous_ma 
+		   0.05,        0.35,        0.6,          // Astrocytoma_high 
+		   0.6,         0.35,        0.05,         // Astrocytoma_low_ 
+		   0.05,        0.9,         0.05,         // Behcet           
+		   0.02,        0.9,         0.08,         // CADASIL          
+		   0.1,         0.8,         0.1,          // Capillary_telang 
+		   0.1,         0.8,         0.1,          // Cavernous_malfor 
+		   0.85,        0.14,        0.01,         // Cephalocele      
+		   0.17,        0.56,        0.27,         // Cerebritis       
+		   0.6,         0.39,        0.01,         // Chiari_malformat 
+		   0.7,         0.29,        0.01,         // Choroid_plexus_p 
+		   0.1,         0.8,         0.1,          // Colloid_cyst     
+		   0.4,         0.5,         0.1,          // Contusion_cerebr 
+		   0.4,         0.55,        0.05,         // Cortical_dysypla 
+		   0.6,         0.25,        0.15,         // Craniopharyngiom 
+		   0.05,        0.9,         0.05,         // Cryptococcosis   
+		   0.4,         0.59,        0.01,         // Cysticercosis    
+		   0.1,         0.85,        0.05,         // Cytomegalovirus  
+		   0.6,         0.3,         0.1,          // Dandy_Walker_mal 
+		   0.2,         0.7,         0.1,          // Dermoid          
+		   0.3,         0.6,         0.1,          // Diffuse_axonal_i 
+		   0.8,         0.19,        0.01,         // Dysembroplastic_ 
+		   0.1,         0.5,         0.4,          // Empyema_subdural 
+		   0.3,         0.6,         0.1,          // Encephalitis     
+		   0.2,         0.3,         0.5,          // Encephalomalacia 
+		   0.6,         0.35,        0.05,         // Ependymal_tumors 
+		   0.05,        0.9,         0.05,         // Epidermoid_cyst  
+		   0.4,         0.5,         0.1,          // Epilepsy_seizure 
+		   0.3,         0.6,         0.1,          // Fahr_disease     
+		   0.4,         0.5,         0.1,          // Foreign_Body     
+		   0.01,        0.09,        0.9,          // Frontotemporal_D 
+		   0.5,         0.49,        0.01,         // Gangliocytoma_ga 
+		   0.8,         0.15,        0.05,         // Germinoma        
+		   0.85,        0.1,         0.05,         // Giant_cell_astro 
+		   0.07,        0.36,        0.57,         // Glioblastoma     
+		   0.01,        0.19,        0.8,          // Gliomatosis_cere 
+		   0.2,         0.4,         0.4,          // Gliosis          
+		   0.9,         0.09,        0.01,         // Hamartoma_of_tub 
+		   0.3,         0.55,        0.15,         // Hemangioblastoma 
+		   0.05,        0.9,         0.05,         // Hemangiopericyto 
+		   0.05,        0.45,        0.5,          // Hematoma_intrace 
+		   0.05,        0.45,        0.5,          // Hematoma_intrace 
+		   0.05,        0.45,        0.5,          // Hematoma_intrace 
+		   0.05,        0.7,         0.25,         // Hematoma_intrave 
+		   0.05,        0.5,         0.45,         // Hematoma_subdura 
+		   0.05,        0.5,         0.45,         // Hematoma_subdura 
+		   0.05,        0.5,         0.45,         // Hematoma_subdura 
+		   0.05,        0.7,         0.25,         // Hemosiderosis_le 
+		   0.05,        0.5,         0.45,         // Hepatic_encephal 
+		   0.05,        0.55,        0.4,          // Herpes_simplex_e 
+		   0.7,         0.29,        0.01,         // Heterotypic_gray 
+		   0.1,         0.85,        0.05,         // Huntington_disea 
+		   0.1,         0.1,         0.8,          // Hydrocephalus_co 
+		   0.3,         0.4,         0.3,          // Hydrocephalus_no 
+		   0.05,        0.25,        0.7,          // Hygroma_subdural 
+		   0.1,         0.5,         0.4,          // Hypoxic_ischemic 
+		   0.04,        0.33,        0.63,         // Infarction_acute 
+		   0.04,        0.23,        0.73,         // Infarction_chron 
+		   0.04,        0.33,        0.63,         // Infarction_subac 
+		   0.01,        0.09,        0.9,          // Jakob_Creutzfeld 
+		   0.2,         0.79,        0.01,         // Lhermitte_Duclos 
+		   0.33,        0.34,        0.33,         // Lipoma           
+		   0.3,         0.65,        0.05,         // Lyme_disease     
+		   0.1,         0.45,        0.45,         // Lymphoma         
+		   0.95,        0.04,        0.01,         // Medulloblastoma  
+		   0.05,        0.8,         0.15,         // Meningioma       
+		   0.4,         0.5,         0.1,          // Meningitis       
+		   0.6,         0.39,        0.01,         // Mesial_temporal_ 
+		   0.3,         0.6,         0.1,          // Metabolic_poison 
+		   0.05,        0.48,        0.47,         // Metastasis_intra 
+		   0.05,        0.4,         0.55,         // Metastasis_lepto 
+		   0.1,         0.8,         0.1,          // Migraine         
+		   0.7,         0.29,        0.01,         // Mitochondrial_di 
+		   0.6,         0.3,         0.1,          // Moyamoya_disease 
+		   0.1,         0.8,         0.1,          // Multiple_scleros 
+		   0.1,         0.8,         0.1,          // Multiple_scleros 
+		   0.05,        0.7,         0.25,         // Multiple_system_ 
+		   0.05,        0.55,        0.4,          // Myelinolysis_acu 
+		   0.05,        0.55,        0.4,          // Myelinolysis_ext 
+		   0.2,         0.7,         0.1,          // Neurocytoma_cent 
+		   0.75,        0.24,        0.01,         // Neurofibromatosi 
+		   0.3,         0.65,        0.05,         // Neurofibromatosi 
+		   0.47,        0.38,        0.15,         // Normal           
+		   0.05,        0.9,         0.05,         // Oligodendrogliom 
+		   0.01,        0.14,        0.85,         // Parkinson_plus   
+		   0.95,        0.04,        0.01,         // Periventricular_ 
+		   0.85,        0.14,        0.01,         // Pineal_neoplasm  
+		   0.2,         0.79,        0.01,         // Pleomorphic_xant 
+		   0.3,         0.6,         0.1,          // Pneumocephalus   
+		   0.3,         0.4,         0.3,          // Porencephalic_cy 
+		   0.01,        0.7,         0.29,         // Posterior_revers 
+		   0.89,        0.1,         0.01,         // Primitive_neuroe 
+		   0.05,        0.9,         0.05,         // Progressive_mult 
+		   0.1,         0.8,         0.1,          // Pseudotumor      
+		   0.23,        0.54,        0.23,         // Rhombencephaliti 
+		   0.05,        0.9,         0.05,         // Sarcoidosis      
+		   0.7,         0.29,        0.01,         // Schizencephaly   
+		   0.15,        0.75,        0.1,          // Schwannoma       
+		   0.05,        0.15,        0.8,          // Small_vessel_isc 
+		   0.05,        0.7,         0.25,         // Subarachnoid_hem 
+		   0.35,        0.6,         0.05,         // Syringobulbia    
+		   0.9,         0.09,        0.01,         // Teratoma         
+		   0.05,        0.1,         0.85,         // Thromboembolism_ 
+		   0.05,        0.4,         0.55,         // Thrombosis_venou 
+		   0.18,        0.73,        0.09,         // Toxoplasmosis    
+		   0.3,         0.65,        0.05,         // Tuberculosis     
+		   0.7,         0.29,        0.01,         // Tuberous_scleros 
+		   0.1,         0.85,        0.05,         // Vasculitis       
+		   0.15,        0.65,        0.2,          // Ventricultis_Epe 
+		   0.05,        0.2,         0.75,         // Wallerian_degene 
+		   0.05,        0.65,        0.3,          // Wernicke_encepha 
+		   0.35,        0.64,        0.01,         // Wilson_disease   
+		   0.24,        0.24,        0.52);        // Xanthogranuloma_ ;
+	whenchanged = 1423608156;
+	belief = (0.2969344, 0.4737787, 0.2292869);
+	visual V1 {
+		center = (1140, 516);
+		height = 13;
+		};
+	};
+NodeSet target {Nodes = (Disease);};
+ElimOrder = (T1_Post, T2_Susc, Homogeneous, Number, Side, T1, T2, FLAIR, ADC, Size, Mass, Age, Disease, Location);
+};

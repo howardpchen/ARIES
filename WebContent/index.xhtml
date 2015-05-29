@@ -18,6 +18,14 @@
 <h:form>
 <h:inputHidden value="#{serverModel.prePageLoad}"/>
 
+Current Network: 
+
+<h:selectOneMenu value="#{serverModel.networkInput}"  onchange="this.form.submit()">
+  <f:selectItems value="#{serverModel.selectNetworkInputs}"/>   
+</h:selectOneMenu>
+
+
+
 <h2>Your Inputs:</h2>
 
 <h:selectOneMenu value="#{serverModel.nodeInput}"  onchange="this.form.submit()">
@@ -31,7 +39,7 @@
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
 
-<h2>Probability of Diagnoses: </h2>
+<h2>Probability of Diagnoses (top 10): </h2>
 <p>
 <h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 </p>

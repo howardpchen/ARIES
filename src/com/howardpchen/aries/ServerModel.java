@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -32,12 +33,21 @@ public class ServerModel {
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
+	private String networkName = "Neuro.dne";
+	private int topDdx = 10;
 	
-			
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		registerSession();
 		System.out.println("Called constructor.");
+	}
+
+	public void setNetworkInput(String s) {
+		networkName = s;
+	}
+
+	public String getNetworkInput() {
+		return networkName;
 	}
 	
 	public void setNodeInput(String s) {
@@ -91,6 +101,12 @@ public class ServerModel {
 		return sb.toString();
 	}
 
+	public List<String> getSelectNetworkInputs() {
+		List<String> returnString = new ArrayList<String>();
+		returnString.add("Neuro.dne");
+		returnString.add("NV_M2_P1c.dne");
+		return returnString;
+	}
 	public List<String> getSelectMenuInputs() {
 		List<String> returnString = new ArrayList<String>();
 		returnString.add("-- Click to Select --");
@@ -111,18 +127,24 @@ public class ServerModel {
 		return returnString;
 	}
 	
-	public synchronized String getDiagnosisNode() {
+	public String getDiagnosisNode() {
 		// Update the diagnosis node first
+		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
 		Iterator<String> it = s.iterator();
 		while (it.hasNext()) {
 			String key = it.next();
 			String response = userInputs.get(key);
 			if (response.equals("[Clear]")) {
-				userInputs.remove(key);
+				toRemove.add(key);				
 				dw.clearNodeState(key);
 			}
 			else dw.setNodeState(key, response);
+		}
+		
+		it = toRemove.iterator();
+		while (it.hasNext()) {
+			userInputs.remove(it.next());
 		}
 		
 		// Then produce the node output
@@ -132,9 +154,11 @@ public class ServerModel {
 		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 		s = values.keySet();
 		it = s.iterator();
-		while (it.hasNext()) {
+		int count = 0;
+		while (it.hasNext() && ++count <= topDdx) {
 			String key = it.next();
-			sb.append("<tr><td>" + key).append("<td>").append(convertToPercentage(values.get(key))).append("%</tr>");
+			String diag =  key.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2");
+			sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("%</tr>");
 		}			
 		sb.append("</table>");
 		return sb.toString();
@@ -148,7 +172,7 @@ public class ServerModel {
 	public String getPrePageLoad() {
 	    System.out.println("DNET Wrapper session started");
 		try {
-			dw = new DNETWrapper("WebContent/Neuro.dne");
+			dw = new DNETWrapper("WebContent/" + networkName);
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
 			
