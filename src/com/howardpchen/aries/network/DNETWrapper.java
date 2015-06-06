@@ -16,7 +16,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	Net net;
 	public DNETWrapper(String filename) throws NetworkLoadingException {
 		try {
-			env = new Environ(null);
+			env = new Environ("+BotzolakisE/UPenn/120,310-6-A/53080");
 			net = new Net(new Streamer(filename));
 			net.compile();
 		} catch (NeticaException e) {

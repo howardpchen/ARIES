@@ -4,7 +4,7 @@ import java.util.Map;
 
 public abstract class NetworkWrapper {
 	public Map<String,Double> getDiagnosisProbs() {
-		return getNodeProbs("Disease");
+		return getNodeProbs("Diseases");
 	}
 	public abstract Map<String, Double> getNodeProbs(String nodeName);
 	public abstract String[] getNodeNames();

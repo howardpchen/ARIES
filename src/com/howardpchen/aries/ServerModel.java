@@ -1,6 +1,7 @@
 package com.howardpchen.aries;
 
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,13 +34,14 @@ public class ServerModel {
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
-	private String networkName = "Neuro.dne";
+	private String networkName = "PP_M2_P3a - ARIES.dne";
 	private int topDdx = 10;
 	
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		registerSession();
 		System.out.println("Called constructor.");
+
 	}
 
 	public void setNetworkInput(String s) {
@@ -86,7 +88,7 @@ public class ServerModel {
 		String[] nodeNames = dw.getNodeNames();
 		StringBuffer sb = new StringBuffer("");
 		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeNames[i].equals("Disease")) continue;
+			if (nodeNames[i].equals("Diseases")) continue;
 			sb.append("<p class='node-title'>" + nodeNames[i] + "</p>");
 			sb.append("<table>");
 			Map<String, Double> values = dw.getNodeProbs(nodeNames[i]);
@@ -103,8 +105,9 @@ public class ServerModel {
 
 	public List<String> getSelectNetworkInputs() {
 		List<String> returnString = new ArrayList<String>();
-		returnString.add("Neuro.dne");
-		returnString.add("NV_M2_P1c.dne");
+		returnString.add("NV_M2_P1c - ARIES.dne");
+		returnString.add("BG_M2_P2 - ARIES.dne");
+		returnString.add("PP_M2_P3a - ARIES.dne");
 		return returnString;
 	}
 	public List<String> getSelectMenuInputs() {
@@ -112,7 +115,7 @@ public class ServerModel {
 		returnString.add("-- Click to Select --");
 		String[] nodeNames = dw.getNodeNames();
 		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeNames[i].equals("Disease")) continue;
+			if (nodeNames[i].equals("Diseases")) continue;
 			Map<String, Double> values = dw.getNodeProbs(nodeNames[i]);
 			Set<String> s = values.keySet();
 			Iterator<String> it = s.iterator();
@@ -176,6 +179,8 @@ public class ServerModel {
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
 			
+		} catch (Exception e) {
+			System.out.println("Error converting filename.");
 		}
 		return this.pageLoad;
 	}
