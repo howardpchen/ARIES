@@ -11,6 +11,7 @@ tmp/
 local.properties
 .settings/
 .loadpath
+*.dne
 
 # Library needs to be separately downloaded 
 WebContent/WEB-INF/lib/*
