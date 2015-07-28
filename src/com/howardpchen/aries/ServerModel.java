@@ -34,21 +34,30 @@ public class ServerModel {
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
-	private String networkName = "PP_M2_P3a - ARIES.dne";
+	private String networkName = "";
 	private int topDdx = 10;
-	
+	private List<String> networkFileList = new ArrayList<String>();
+
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		registerSession();
+		networkFileList.add("NV_M2_P1c - ARIES.dne");
+		networkFileList.add("BG_M2_P2 - ARIES.dne");
+		networkFileList.add("PP_M2_P3a - ARIES.dne");
+
+		networkName = networkFileList.get(0);
 		System.out.println("Called constructor.");
 
 	}
 
 	public void setNetworkInput(String s) {
+		if (!s.equals(networkName)) {
+			userInputs.clear();
+		}
 		networkName = s;
 	}
 
-	public String getNetworkInput() {
+	public String getNetworkInput() {		
 		return networkName;
 	}
 	
@@ -104,11 +113,7 @@ public class ServerModel {
 	}
 
 	public List<String> getSelectNetworkInputs() {
-		List<String> returnString = new ArrayList<String>();
-		returnString.add("NV_M2_P1c - ARIES.dne");
-		returnString.add("BG_M2_P2 - ARIES.dne");
-		returnString.add("PP_M2_P3a - ARIES.dne");
-		return returnString;
+		return networkFileList;
 	}
 	public List<String> getSelectMenuInputs() {
 		List<String> returnString = new ArrayList<String>();
@@ -160,7 +165,8 @@ public class ServerModel {
 		int count = 0;
 		while (it.hasNext() && ++count <= topDdx) {
 			String key = it.next();
-			String diag =  key.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2");
+			//String diag =  key.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2");
+			String diag = key.replaceAll("_",  " ");
 			sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("%</tr>");
 		}			
 		sb.append("</table>");
