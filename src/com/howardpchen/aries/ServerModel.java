@@ -1,7 +1,5 @@
 package com.howardpchen.aries;
 
-
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,7 +35,9 @@ public class ServerModel {
 	private String networkName = "";
 	private int topDdx = 10;
 	private List<String> networkFileList = new ArrayList<String>();
-
+	private String[] nodes;
+	private String currentFeature = "";
+	
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		registerSession();
@@ -52,6 +52,7 @@ public class ServerModel {
 
 	public void setNetworkInput(String s) {
 		if (!s.equals(networkName)) {
+			System.out.println("Cleared user inputs.");
 			userInputs.clear();
 		}
 		networkName = s;
@@ -64,10 +65,12 @@ public class ServerModel {
 	public void setNodeInput(String s) {
 		String[] inputs = s.split(":");
 		if (inputs.length == 2)	userInputs.put(inputs[0], inputs[1]);
+		else if (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
 	}
 	
 	public String getNodeInput() {
-		return "";
+		if (!currentFeature.equals("")) return currentFeature + ":" + userInputs.get(currentFeature);
+		else return "";
 	}
 	
 	public String getNodeInputString() {
@@ -84,6 +87,11 @@ public class ServerModel {
 		return sb.toString();
 	}
 	
+	public String currentFeature(String cf) {
+		currentFeature = cf;
+		return "";
+	}
+	
 	public String nodeInputHandler() {
 	    return("index");  // return to index or refresh index
 	}
@@ -94,13 +102,13 @@ public class ServerModel {
 	
 	public String getTestNodes() {
 		System.out.println("Called getTestNodes()");
-		String[] nodeNames = dw.getNodeNames();
+		
 		StringBuffer sb = new StringBuffer("");
-		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeNames[i].equals("Diseases")) continue;
-			sb.append("<p class='node-title'>" + nodeNames[i] + "</p>");
+		for (int i = 0; i < nodes.length; i++) {
+			if (nodes[i].equals("Diseases")) continue;
+			sb.append("<p class='node-title'>" + nodes[i] + "</p>");
 			sb.append("<table>");
-			Map<String, Double> values = dw.getNodeProbs(nodeNames[i]);
+			Map<String, Double> values = dw.getNodeProbs(nodes[i]);
 			Set<String> s = values.keySet();
 			Iterator<String> it = s.iterator();
 			while (it.hasNext()) {
@@ -115,23 +123,38 @@ public class ServerModel {
 	public List<String> getSelectNetworkInputs() {
 		return networkFileList;
 	}
-	public List<String> getSelectMenuInputs() {
-		List<String> returnString = new ArrayList<String>();
-		returnString.add("-- Click to Select --");
-		String[] nodeNames = dw.getNodeNames();
-		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeNames[i].equals("Diseases")) continue;
-			Map<String, Double> values = dw.getNodeProbs(nodeNames[i]);
-			Set<String> s = values.keySet();
-			Iterator<String> it = s.iterator();
-			while (it.hasNext()) {
-				String key = it.next();
-				returnString.add(nodeNames[i] + ":" + key);
-			}			
-			returnString.add(nodeNames[i] + ":[Clear]");
-			returnString.add("------------------------------");
-		}
+	
+	public List<String> getSelectMenuFeatures() {
+		List<String> features = new ArrayList<String>();
 		
+		for (int i = 0; i < nodes.length; i++) {
+			if (nodes[i].equals("Diseases")) continue;
+			features.add(nodes[i]);
+		}		
+		
+		return features;
+	}
+
+	public String currentFeatureValue(String nodeName) {
+		return userInputs.get(nodeName);
+	}
+	public String featureClass(String nodeName) {
+		if (userInputs.containsKey(nodeName) && !userInputs.get(nodeName).equals("[Clear]")) return "hasChoice";
+		else return "";
+	}
+
+	public List<String> selectMenuInputs(String nodeName) {
+		List<String> returnString = new ArrayList<String>();
+		Map<String, Double> values = dw.getNodeProbs(nodeName);
+		Set<String> s = values.keySet();
+		Iterator<String> it = s.iterator();
+		returnString.add(nodeName);
+		while (it.hasNext()) {
+			String key = it.next();
+			returnString.add(nodeName + ":" + key);
+		}			
+		//returnString.add(nodeName + ":[Clear]");
+	
 		return returnString;
 	}
 	
@@ -182,6 +205,7 @@ public class ServerModel {
 	    System.out.println("DNET Wrapper session started");
 		try {
 			dw = new DNETWrapper("WebContent/" + networkName);
+			nodes = dw.getNodeNames();
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
 			
@@ -237,7 +261,21 @@ public class ServerModel {
 		System.out.println("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
 	}
 
+class Feature {
+	private String featureName;
+	private String featureValue;
+	public Feature(String name, String value) {
+		featureName = name;
+		featureValue = value;
+	}
+	public String getName() {
+		return featureName;
+	}
+	public String getValue() {
+		return featureValue;
+	}
 	
+}
 	
 	
 }

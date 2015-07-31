@@ -79,7 +79,6 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				names[current++] = n.getName();
 			}
 		} catch (NeticaException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -90,7 +89,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		Node myNode;
 		try {
 			myNode = net.getNode(nodeName);
-			myNode.finding().setState(state);
+			if (myNode != null) myNode.finding().setState(state);
 			
 		} catch (NeticaException e) {
 			System.err.println("Error: Node not found!");
@@ -102,7 +101,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		Node myNode;
 		try {
 			myNode = net.getNode(nodeName);
-			myNode.finding().clear();
+			if (myNode != null) myNode.finding().clear();
 			
 		} catch (NeticaException e) {
 			System.err.println("Error: Node not found!");
@@ -119,8 +118,6 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			//e.printStackTrace();
 		}
 	}
-	
-	
 	
 }
 

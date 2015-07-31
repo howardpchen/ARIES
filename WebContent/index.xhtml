@@ -9,46 +9,78 @@
 <h:head>
 <title>ARIES Example</title>
 <link href="./css/style.css" rel="stylesheet" type="text/css"/> 
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="./js/collapseTable.js"></script>
+
+
+
 </h:head>
 <h:body>
 
 <h1> Adaptive Radiology Interpretation &amps; Education System (ARIES)</h1>
-<h3> Pre-pre-pre-alpha version</h3>
+<h3> Pre-pre-alpha version</h3>
+
+
+Current Network: 
+<h:form>
+<h:selectOneMenu value="#{serverModel.networkInput}"  onchange="this.form.submit()">
+  <f:selectItems value="#{serverModel.selectNetworkInputs}"/>   
+</h:selectOneMenu>
+</h:form>
+
+<h2>Your Inputs:</h2>
 
 <h:form>
 <h:inputHidden value="#{serverModel.prePageLoad}"/>
 
-Current Network: 
+<h:panelGrid style="width:90%;">
+<ui:repeat var="feature" value="#{serverModel.selectMenuFeatures}">
 
-<h:selectOneMenu value="#{serverModel.networkInput}"  onchange="this.form.submit()">
-  <f:selectItems value="#{serverModel.selectNetworkInputs}"/>   
+<h:outputText value="#{serverModel.currentFeature(feature)}"/>
+
+<h:selectOneMenu class="features ${serverModel.featureClass(feature)}" value="#{serverModel.nodeInput}"  onchange="this.form.submit()">
+  <f:selectItems 
+  	value="#{serverModel.selectMenuInputs(feature)}"/>
 </h:selectOneMenu>
 
+</ui:repeat>
+</h:panelGrid>
 
+<p>
+<h:commandButton value="Reset" action="#{serverModel.resetHandler}"/>
+</p>
 
-<h2>Your Inputs:</h2>
-
-<h:selectOneMenu value="#{serverModel.nodeInput}"  onchange="this.form.submit()">
-  <f:selectItems value="#{serverModel.selectMenuInputs}"/>
-   
-</h:selectOneMenu>
-<h:commandButton value="Reset" 
-                 action="#{serverModel.resetHandler}"/>
-
+<!-- 
 <p>
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
-
+ -->
+ 
 <h2>Probability of Diagnoses (top 10): </h2>
 <p>
 <h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 </p>
 
-<h2>"Under the Hood" Network Values</h2>
+<div class="graphheader"><input type="button" id="lnkHood" value="[-]" class="togglebutton" onclick="toggle_visibility('tblHood','lnkHood')"/>
+<input type="button" class="togglebutton title" value="Pop the Hood on Bayesian Network Values" onclick="toggle_visibility('tblHood','lnkHood')"/></div>
+<div id="tblHood"><br/>
 <p>
 <h:outputText value="#{serverModel.testNodes}" escape="false" />
 </p>
+</div>
+<script>toggle_visibility('tblHood','lnkHood')</script>
+
 <h:inputHidden value="#{serverModel.postPageLoad}"/>
 </h:form>
+<p>
+</p><table border="0" width="600" align="center"><tr><td align="center"><a href="/ARIES/"><img alt="ARIES" src="logo.png"/></a><br/><font size="-2">Build 7-27-2015</font></td>
+<td>
+<font size="-1">Hospital of University of Pennsylvania<br/>
+Department of Radiology <br/>
+Po-Hao (Howard) Chen <br/><a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+</font></td>
+</tr></table>
+
 </h:body>
+
 </html>

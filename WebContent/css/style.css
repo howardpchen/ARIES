@@ -11,11 +11,51 @@ a:visited {text-decoration:underline;}
 a:hover {text-decoration:underline;}
 a:active {text-decoration:underline;}
 
+select {
+	-moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+	
+}
+select.features {
+	position: relative;
+	display: inline-block;
+	background: #77F;
+	background-image: -moz-linear-gradient(top, #77F, #337);
+	background-image: -webkit-linear-gradient(top, #77F, #337);
+	background-image: -o-linear-gradient(top, #77F, #337);
+	background-image: -ms-linear-gradient(top, #77F, #337);
+	background-image: linear-gradient(top, #77F, #337);
+	border-radius: 8px;
+	box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;
+	text-shadow: -1px -1px 0 rgba(0,0,0,1);
+	color: #fff !important;
+	text-decoration: none;
+	font-size: 0.95em;
+	letter-spacing: 0.075em;
+	padding: 1em 1em 1em 1em;
+	outline: 0;
+	white-space: nowrap;
+	width:300px;
+	border:0px;
+}
+
+select.hasChoice {
+	background: #939;
+	background-image: -moz-linear-gradient(top, #939, #F7F);
+	background-image: -webkit-linear-gradient(top, #939, #F7F);
+	background-image: -o-linear-gradient(top, #939, #F7F);
+	background-image: -ms-linear-gradient(top, #939, #F7F);
+	background-image: linear-gradient(top, #939, #F7F);
+	box-shadow: inset 0px 0px 0px 1px #F7F, inset 0px 2px 1px 0px #939;
+}
+
+a {
+	color:#99f;
+}
 a.button, .radiobuttons label, select, input[type=text], input[type=password] {
     text-align:center;
     display:inline-block;
-    width:135pt;
-    height:20pt;
     background-color:#000;
     border:3px;
     color:#fff;
@@ -29,6 +69,7 @@ a.button, .radiobuttons label, select, input[type=text], input[type=password] {
     line-height:20pt;
     margin:6pt;
 }
+
 select:disabled, input:disabled  {
     color:#222;
     background-color:#222;
@@ -114,6 +155,9 @@ h4 {font-size:12px;}
 h5 {font-size:11px;}
 h6 {font-size:10px;}
 
+table {
+	width: 700px;
+}
 .formTable {
   display: table;
 }
@@ -138,10 +182,7 @@ p.node-title {
 
 tr:nth-child(even) {background: #669}
 tr:nth-child(odd) {background: #667}
-table {
-	width: 500px;
-	
-}
+
 td {
 	margin-left: 0.5em;  
 }
@@ -175,6 +216,43 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
   color: red;
   font-weight: bold;
 }
+
+
+	.graphheader {
+		border: solid;
+		border-top-width: 3px;
+		border-bottom-width: 0;
+		border-left-width: 0;
+		border-right-width: 0;
+		border-color: #CCF;
+		background: #77F;
+		width: 700px;
+		color: #333;
+		font-weight:800;
+		line-height:2em;
+		margin-top:1em;
+	}
+	.togglebutton  {
+		border:none;
+		background-color:transparent;
+		border-style:none;
+		border-radius:0px;
+		border-width:0px;
+		background:transparent;
+		
+		font-family:courier;
+		font-weight:700;
+        color:#FFF;
+        margin: 0;
+	}
+    .togglebutton.title {
+		font-family: verdana,helvetica,'Open Sans', sans-serif;
+        font-size:10pt;
+        color:#FFF;
+        width:initial;
+    }
+
+
 /* So that in Chrome and IE, the bullets are next to the text in centered lists. Already OK in Firefox. */
 [align="center"] li {
   list-style-position: inside;
