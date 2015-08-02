@@ -214,6 +214,30 @@ public class ServerModel {
 		return sb.toString();
 	}
 
+	public String getParetoTable() {
+		// Update the diagnosis node first
+		updateDiagnosisNode();
+		Set<String> s = userInputs.keySet();
+		Iterator<String> it = s.iterator();
+		
+		// Then produce the node output
+		
+		StringBuffer sb = new StringBuffer("");
+		sb.append("<table id='paretotable'><tr><td>Top Diagnoses</td><td>Probability (%)<td>Cumulative Probability (%)</td></tr>");
+		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
+		s = values.keySet();
+		it = s.iterator();
+		int count = 0;
+		double cumulative = 0;
+		while (it.hasNext() && ++count <= topDdx) {
+			String key = it.next();
+			cumulative += values.get(key);
+			sb.append("<tr><td>" + count).append("<td>").append(convertToPercentage(values.get(key))).append("<td>").append(convertToPercentage(cumulative)).append("</tr>");
+		}			
+		sb.append("</table>");
+		return sb.toString();
+	}
+
 	public void setPrePageLoad(String pl) {
 		this.pageLoad = pl;
 	}

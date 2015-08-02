@@ -7,19 +7,25 @@
 
 
 <h:head>
-<title>ARIES Example</title>
+<title>Adaptive Radiology Interpretation / Education System (ARIES)</title>
+<link href="./css/skel-noscript.css" rel="stylesheet" type="text/css"/> 
 <link href="./css/style.css" rel="stylesheet" type="text/css"/> 
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script type="text/javascript" src="./js/collapseTable.js"></script>
+<script type="text/javascript" src="./js/skel.min.js"></script>
+<script type="text/javascript" src="./js/skel-panels.min.js"></script>
 <script type="text/javascript" src="./js/highcharts.js"></script>
 <script type="text/javascript" src="./js/themes/dark-unica.js"></script>
 <script type="text/javascript" src="./js/modules/data.js"></script>
 
 </h:head>
 <h:body>
+<div class='row'>
 <h1> Adaptive Radiology Interpretation &amps; Education System (ARIES)</h1>
+</div>
+<div class='row'>
 <h3> Pre-pre-alpha version</h3>
-
+</div>
 
 <h:form>
 Current Network: 
@@ -55,12 +61,17 @@ Current Network:
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
  -->
-
-<div id="container" style="min-width:350px; max-width: 1200px; height: 400px"></div>
-
+<div class='row'>
+<div class='6u'>
+<div id="diagGraph" style="min-width:550px; max-width: 1000px; height: 400px; margin:20px"></div>
+</div>
+<div class='3u'>
+<div id="paretoGraph" style="min-width:350px; max-width: 500px; height: 400px; margin:20px"></div>
+</div>
+</div>
 <script>
 $(function () {
-    $('#container').highcharts({
+    $('#diagGraph').highcharts({
         data: {
             table: 'diagnosistable'
         },
@@ -72,14 +83,11 @@ $(function () {
             }
         },
         title: {
-            text: 'Top 10 Diagnoses',
+            text: 'Top 10 Differential Diagnoses',
             
         },
         yAxis: {
             allowDecimals: false,
-            title: {
-                text: 'Units'
-            },
             max: 100
         },
         xAxis: {
@@ -95,33 +103,85 @@ $(function () {
             }
         }
     });
+    $('#paretoGraph').highcharts({
+        data: {
+            table: 'paretotable'
+        },
+        chart: {
+            type: 'spline',
+            style: {
+                fontSize:'14',
+                fontFamily:'Sans Serif'
+            }
+        },
+        title: {
+            text: 'Pareto Performance',
+            
+        },
+        yAxis: {
+            allowDecimals: false,
+            max: 100
+        },
+        xAxis: {
+            allowDecimals: false,
+        	labels: {
+                style: {
+                    fontSize:'12'
+                }
+            }
+        },
+        
+        series: [{type:'column'}, {type:'spline'}],
+        
+        tooltip: {
+            formatter: function () {
+            	if (this.series.name == 'Probability (%)') {
+            		return 'The #' + this.point.x + ' diagnosis has probability of ' + this.point.y + '%.';
+            	}
+            	else if (this.series.name == 'Cumulative Probability (%)') {
+            		return 'The top ' + this.point.x + ' diagnoses account for total of ' + this.point.y + '%.';
+            	}
+            }
+        }
+    });
 });
 </script>
-
+<div class='row'>
+<div class='12u'>
 <div class="graphheader"><input type="button" id="lnkHood" value="[+]" class="togglebutton" onclick="toggle_visibility('tblHood','lnkHood')"/>
 <input type="button" class="togglebutton title" value="Pop the Hood on Bayesian Network Values" onclick="toggle_visibility('tblHood','lnkHood')"/></div>
 <div id="tblHood" style="display:none"><br/>
 <p>
 <h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 </p>
+
+<p>
+<h:outputText value="#{serverModel.paretoTable}" escape="false" />
+</p>
+
 <p>
 <h:outputText value="#{serverModel.testNodes}" escape="false" />
 </p>
 </div>
 
 <h:inputHidden value="#{serverModel.postPageLoad}"/>
+</div>
+</div>
 </h:form>
-<p>
-</p><table border="0" width="600" align="center"><tr><td align="center"><a href="/ARIES/"><img alt="ARIES" src="aries.png"/></a><br/>
-<font size="-2">Build 7-30-2015</font></td>
-<td>
+
+<div class='row'><div class='3u'>&nbsp;</div>
+<div class='3u'>
+<a href="/ARIES/"><img alt="ARIES" src="aries.png"/></a><br/>
+<font size="-2">Build 7-30-2015</font>
+</div>
+<div class='3u'>
 <font size="-1">Hospital of University of Pennsylvania<br/>
 Department of Radiology <br/>
 Based on the Work of Emmanuel Botzolakis <br/>
 Designed by Howard Chen <br/>
 <a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
-</font></td>
-</tr></table>
+</font>
+</div></div>
 </h:body>
 
 </html>
