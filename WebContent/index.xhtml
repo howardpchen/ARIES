@@ -21,8 +21,8 @@
 <h3> Pre-pre-alpha version</h3>
 
 
-Current Network: 
 <h:form>
+Current Network: 
 <h:selectOneMenu value="#{serverModel.networkInput}"  onchange="this.form.submit()">
   <f:selectItems value="#{serverModel.selectNetworkInputs}"/>   
 </h:selectOneMenu>
@@ -61,23 +61,25 @@ Current Network:
 <h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 </p>
 
-<div class="graphheader"><input type="button" id="lnkHood" value="[-]" class="togglebutton" onclick="toggle_visibility('tblHood','lnkHood')"/>
+<div class="graphheader"><input type="button" id="lnkHood" value="[+]" class="togglebutton" onclick="toggle_visibility('tblHood','lnkHood')"/>
 <input type="button" class="togglebutton title" value="Pop the Hood on Bayesian Network Values" onclick="toggle_visibility('tblHood','lnkHood')"/></div>
-<div id="tblHood"><br/>
+<div id="tblHood" style="display:none"><br/>
 <p>
 <h:outputText value="#{serverModel.testNodes}" escape="false" />
 </p>
 </div>
-<script>toggle_visibility('tblHood','lnkHood')</script>
 
 <h:inputHidden value="#{serverModel.postPageLoad}"/>
 </h:form>
 <p>
-</p><table border="0" width="600" align="center"><tr><td align="center"><a href="/ARIES/"><img alt="ARIES" src="logo.png"/></a><br/><font size="-2">Build 7-27-2015</font></td>
+</p><table border="0" width="600" align="center"><tr><td align="center"><a href="/ARIES/"><img alt="ARIES" src="aries.png"/></a><br/>
+<font size="-2">Build 7-30-2015</font></td>
 <td>
 <font size="-1">Hospital of University of Pennsylvania<br/>
 Department of Radiology <br/>
-Po-Hao (Howard) Chen <br/><a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+Based on the Work of Emmanuel Botzolakis <br/>
+Designed by Howard Chen <br/>
+<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
 </font></td>
 </tr></table>
 

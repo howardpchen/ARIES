@@ -1,5 +1,7 @@
 package com.howardpchen.aries;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +31,7 @@ public class ServerModel {
 	 */
 //	private static final long serialVersionUID = -9026586621419425189L;
 	
+	private final String PATH = "WebContent/networks"; 
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
@@ -41,10 +44,21 @@ public class ServerModel {
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		registerSession();
-		networkFileList.add("NV_M2_P1c - ARIES.dne");
-		networkFileList.add("BG_M2_P2 - ARIES.dne");
-		networkFileList.add("PP_M2_P3a - ARIES.dne");
 
+		File folder = new File(PATH);
+		File[] listOfFiles = folder.listFiles(
+			new FilenameFilter() {
+			    public boolean accept(File dir, String name) {
+			    	if (name.toLowerCase().endsWith(".dne")) {
+				    	System.out.println("Found " + name);
+				        return true;
+			    	} else return false;
+			    }
+			}
+		);
+		for (int i = 0; i < listOfFiles.length; i++) {
+			networkFileList.add(listOfFiles[i].getName());
+		}
 		networkName = networkFileList.get(0);
 		System.out.println("Called constructor.");
 
@@ -131,7 +145,7 @@ public class ServerModel {
 			if (nodes[i].equals("Diseases")) continue;
 			features.add(nodes[i]);
 		}		
-		
+		Collections.sort(features);
 		return features;
 	}
 
@@ -204,7 +218,7 @@ public class ServerModel {
 	public String getPrePageLoad() {
 	    System.out.println("DNET Wrapper session started");
 		try {
-			dw = new DNETWrapper("WebContent/" + networkName);
+			dw = new DNETWrapper(PATH + "/" + networkName);
 			nodes = dw.getNodeNames();
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
