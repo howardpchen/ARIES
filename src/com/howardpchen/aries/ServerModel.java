@@ -3,6 +3,7 @@ package com.howardpchen.aries;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSessionBindingEvent;
 
+import com.google.gson.Gson;
 import com.howardpchen.aries.network.DNETWrapper;
 import com.howardpchen.aries.network.NetworkLoadingException;
 import com.howardpchen.aries.network.NetworkWrapper;
@@ -116,7 +118,6 @@ public class ServerModel {
 	
 	public String getTestNodes() {
 		System.out.println("Called getTestNodes()");
-		
 		StringBuffer sb = new StringBuffer("");
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i].equals("Diseases")) continue;
@@ -145,7 +146,6 @@ public class ServerModel {
 			if (nodes[i].equals("Diseases")) continue;
 			features.add(nodes[i]);
 		}		
-		Collections.sort(features);
 		return features;
 	}
 
@@ -172,8 +172,7 @@ public class ServerModel {
 		return returnString;
 	}
 	
-	public String getDiagnosisNode() {
-		// Update the diagnosis node first
+	public void updateDiagnosisNode() {
 		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
 		Iterator<String> it = s.iterator();
@@ -191,25 +190,30 @@ public class ServerModel {
 		while (it.hasNext()) {
 			userInputs.remove(it.next());
 		}
+	}
+	
+	public String getDiagnosisNode() {
+		// Update the diagnosis node first
+		updateDiagnosisNode();
+		Set<String> s = userInputs.keySet();
+		Iterator<String> it = s.iterator();
 		
 		// Then produce the node output
 		
 		StringBuffer sb = new StringBuffer("");
-		sb.append("<table>");
+		sb.append("<table id='diagnosistable'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
 		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 		s = values.keySet();
 		it = s.iterator();
 		int count = 0;
 		while (it.hasNext() && ++count <= topDdx) {
 			String key = it.next();
-			//String diag =  key.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2");
 			String diag = key.replaceAll("_",  " ");
-			sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("%</tr>");
+			sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
 		}			
 		sb.append("</table>");
 		return sb.toString();
 	}
-
 
 	public void setPrePageLoad(String pl) {
 		this.pageLoad = pl;
@@ -220,6 +224,7 @@ public class ServerModel {
 		try {
 			dw = new DNETWrapper(PATH + "/" + networkName);
 			nodes = dw.getNodeNames();
+			Arrays.sort(nodes);
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
 			
