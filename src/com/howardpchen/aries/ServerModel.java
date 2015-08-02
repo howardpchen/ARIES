@@ -20,7 +20,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSessionBindingEvent;
 
-import com.google.gson.Gson;
 import com.howardpchen.aries.network.DNETWrapper;
 import com.howardpchen.aries.network.NetworkLoadingException;
 import com.howardpchen.aries.network.NetworkWrapper;
