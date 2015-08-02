@@ -81,7 +81,8 @@ input[type=submit] {
     font-color:#000;
     font-weight:bold;
     cursor:pointer;
-    border-radius: 15px 15px; 
+    border-radius: 15px 15px;
+    margin: 0.5em; 
     }
 a.btnConfirm, a.btnNext, a.btnPrev, a.btnSubmit  {
     background-color:#227;
@@ -233,7 +234,8 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 		border-right-width: 0;
 		border-color: #CCF;
 		background: #77F;
-		width: 1000px;
+		min-width: 500px;
+		max-width: 1000px;
 		color: #333;
 		font-weight:800;
 		line-height:2em;
