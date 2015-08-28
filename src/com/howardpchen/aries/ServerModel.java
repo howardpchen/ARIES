@@ -32,14 +32,14 @@ public class ServerModel {
 	 */
 //	private static final long serialVersionUID = -9026586621419425189L;
 	
-	private final String PATH = "WebContent/networks"; 
+	private final String PATH = "networks"; 
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
 	private String networkName = "";
 	private int topDdx = 10;
 	private List<String> networkFileList = new ArrayList<String>();
-	private String[] nodes;
+	private String[] nodes = new String[0];
 	private String currentFeature = "";
 	
 	public ServerModel() {
