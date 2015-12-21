@@ -1,187 +1,273 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	  xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
 
 
 <h:head>
-<title>Adaptive Radiology Interpretation / Education System (ARIES)</title>
-<link href="./css/skel-noscript.css" rel="stylesheet" type="text/css"/> 
-<link href="./css/style.css" rel="stylesheet" type="text/css"/> 
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="./js/collapseTable.js"></script>
-<script type="text/javascript" src="./js/skel.min.js"></script>
-<script type="text/javascript" src="./js/skel-panels.min.js"></script>
-<script type="text/javascript" src="./js/highcharts.js"></script>
-<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
-<script type="text/javascript" src="./js/modules/data.js"></script>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+	<link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+	<link href="./css/style.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript"
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/collapseTable.js"></script>
+	<script type="text/javascript" src="./js/skel.min.js"></script>
+	<script type="text/javascript" src="./js/skel-panels.min.js"></script>
+	<script type="text/javascript" src="./js/highcharts.js"></script>
+	<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+	<script type="text/javascript" src="./js/modules/data.js"></script>
 
 </h:head>
 <h:body>
-<div class='row'>
-<h1> Adaptive Radiology Interpretation &amps; Education System (ARIES)</h1>
-</div>
-<div class='row'>
-<h3> Pre-pre-alpha version</h3>
-</div>
 
-<h:form>
-Current Network: 
-<h:selectOneMenu value="#{serverModel.networkInput}"  onchange="this.form.submit()">
-  <f:selectItems value="#{serverModel.selectNetworkInputs}"/>   
-</h:selectOneMenu>
-</h:form>
+	<div class='row'>
+		<div class='3u'>
+			<a href="/ARIES/"><img alt="ARIES" src="aries.png" /></a><br /> <font
+				size="-2">Build 7-30-2015</font>
+		</div>
+		<div class='row'>
+			<br />
+			<h1>
+				Adaptive Radiology Interpretation
+				&amps;
+				Education System (ARIES)
+			</h1>
+		</div>
+		<div class='3u'>
+			<br /> <font size="-1">Hospital of University of Pennsylvania<br />
+				Department of Radiology <br /> Based on the Work of Emmanuel
+				Botzolakis <br /> Designed by Howard Chen <br /> <a
+				href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+			</font>
+		</div>
+	</div>
 
-<h2>Your Inputs:</h2>
+	<div class='row'></div>
 
-<h:form>
-<h:inputHidden value="#{serverModel.prePageLoad}"/>
+	<h:form>
+		<h2>Current Network:</h2>
+		<h:selectOneMenu value="#{serverModel.networkInput}"
+			onchange="this.form.submit()">
+			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
+		</h:selectOneMenu>
+	</h:form>
 
-<h:panelGrid style="width:90%;">
-<ui:repeat var="feature" value="#{serverModel.selectMenuFeatures}">
+	<h2>Your Inputs:</h2>
 
-<h:outputText value="#{serverModel.currentFeature(feature)}"/>
+	<h:form>
+		<h:inputHidden value="#{serverModel.prePageLoad}" />
 
-<h:selectOneMenu class="features ${serverModel.featureClass(feature)}" value="#{serverModel.nodeInput}"  onchange="this.form.submit()">
-  <f:selectItems 
-  	value="#{serverModel.selectMenuInputs(feature)}"/>
-</h:selectOneMenu>
+		<!-- changes starts for CR101 -->
+		<ui:repeat var="networkPrefix"
+			value="#{serverModel.networkPrefixList}">
 
-</ui:repeat>
-</h:panelGrid>
+			<h:panelGrid style="width:90%;">
+				<h:outputText style="font-size: 28px;"
+					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
-<p>
-<h:commandButton value="Reset" action="#{serverModel.resetHandler}"/>
-</p>
+				<ui:repeat var="feature"
+					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
 
-<!-- 
+					<h:outputText value="#{serverModel.currentFeature(feature)}" />
+
+					<h:selectOneMenu
+						class="features ${serverModel.featureClass(feature)}"
+						value="#{serverModel.nodeInput}" onchange="this.form.submit()">
+						<f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
+					</h:selectOneMenu>
+
+				</ui:repeat>
+			</h:panelGrid>
+
+		</ui:repeat>
+
+		<!-- changes ends for CR101 -->
+
+		<p>
+			<h:commandButton value="Reset" action="#{serverModel.resetHandler}" />
+		</p>
+
+		<!-- 
 <p>
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
  -->
-<div class='row'>
-<div class='6u'>
-<div id="diagGraph" style="min-width:350px; max-width: 1000px; height: 400px;"></div>
-</div>
-<div class='3u'>
-<div id="paretoGraph" style="min-width:200px; max-width: 500px; height: 400px;"></div>
-</div>
-</div>
-<script>
-$(function () {
-    $('#diagGraph').highcharts({
-        data: {
-            table: 'diagnosistable'
-        },
-        chart: {
-            type: 'bar',
-            style: {
-                fontSize:'14',
-                fontFamily:'Sans Serif'
-            }
-        },
-        title: {
-            text: 'Top 10 Differential Diagnoses',
-            
-        },
-        yAxis: {
-            allowDecimals: false,
-            max: 100
-        },
-        xAxis: {
-        	labels: {
-                style: {
-                    fontSize:'12'
-                }
-            }
-        },
-        tooltip: {
-            formatter: function () {
-                return this.point.y + '% probability of ' + this.point.name;
-            }
-        }
-    });
-    $('#paretoGraph').highcharts({
-        data: {
-            table: 'paretotable'
-        },
-        chart: {
-            type: 'spline',
-            style: {
-                fontSize:'14',
-                fontFamily:'Sans Serif'
-            }
-        },
-        title: {
-            text: 'Pareto Distribution',
-            
-        },
-        yAxis: {
-            allowDecimals: false,
-            max: 100
-        },
-        xAxis: {
-            allowDecimals: false,
-        	labels: {
-                style: {
-                    fontSize:'12'
-                }
-            }
-        },
-        
-        series: [{type:'column'}, {type:'spline'}],
-        
-        tooltip: {
-            formatter: function () {
-            	if (this.series.name == 'Probability (%)') {
-            		return 'The #' + this.point.x + ' diagnosis has probability of ' + this.point.y + '%.';
-            	}
-            	else if (this.series.name == 'Cumulative Probability (%)') {
-            		return 'The top ' + this.point.x + ' diagnoses account for a total of ' + this.point.y + '%.';
-            	}
-            }
-        }
-    });
-});
-</script>
-<div class='row'>
-<div class='12u'>
-<div class="graphheader"><input type="button" id="lnkHood" value="[+]" class="togglebutton" onclick="toggle_visibility('tblHood','lnkHood')"/>
-<input type="button" class="togglebutton title" value="Pop the Hood on Bayesian Network Values" onclick="toggle_visibility('tblHood','lnkHood')"/></div>
-<div id="tblHood" style="display:none"><br/>
-<p>
-<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
-</p>
+		<div class='row'>
+			<div class='6u'>
+				<div id="diagGraph"
+					style="min-width: 350px; max-width: 1000px; height: 400px;"></div>
+			</div>
+			<div class='3u'>
+				<div id="paretoGraph"
+					style="min-width: 200px; max-width: 500px; height: 400px;"></div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+				$('#diagGraph')
+						.highcharts(
+								{
+									data : {
+										table : 'diagnosistable'
+									},
+									colors : [ '#7777FF', '#50B432', '#ED561B' ],
+									chart : {
+										type : 'bar',
+										style : {
+											fontSize : '18',
+											fontFamily : 'Arial, Helvetica, sans-serif'
+										},
+										backgroundColor : {
+											linearGradient : {
+												x1 : 0,
+												y1 : 0,
+												x2 : 1,
+												y2 : 1
+											},
+											stops : [
+													[ 0, 'rgb(FFF, 255, 255)' ],
+													[ 1, 'rgb(FFF, 240, 255)' ] ]
+										},
+										plotBackgroundColor : 'rgba(FFF, 255, 255, .9)',
+										plotShadow : true,
+									},
+									title : {
+										text : 'Top 10 Differential Diagnoses',
 
-<p>
-<h:outputText value="#{serverModel.paretoTable}" escape="false" />
-</p>
+									},
+									yAxis : {
+										allowDecimals : false,
+										max : 100,
+										labels : {
+											style : {
+												fontSize : '18',
+												fontFamily : 'Arial, Helvetica, sans-serif'
+											}
+										}
+									},
+									xAxis : {
+										labels : {
+											style : {
+												fontSize : '18',
+												fontFamily : 'Arial, Helvetica, sans-serif'
+											}
+										}
+									},
+									tooltip : {
+										formatter : function() {
+											return this.point.y
+													+ '% probability of '
+													+ this.point.name;
+										}
+									}
+								});
+				$('#paretoGraph')
+						.highcharts(
+								{
+									data : {
+										table : 'paretotable'
+									},
+									colors : [ '#7777FF', '#50B432', '#ED561B' ],
+									chart : {
+										type : 'spline',
+										style : {
+											fontSize : '18',
+											fontFamily : 'Arial, Helvetica, sans-serif'
+										},
+										backgroundColor : {
+											linearGradient : {
+												x1 : 0,
+												y1 : 0,
+												x2 : 1,
+												y2 : 1
+											},
+											stops : [
+													[ 0, 'rgb(FFF, 255, 255)' ],
+													[ 1, 'rgb(FFF, 240, 255)' ] ]
+										},
+										plotBackgroundColor : 'rgba(FFF, 255, 255, .9)',
+										plotShadow : true,
+									},
+									title : {
+										text : 'Pareto Distribution',
 
-<p>
-<h:outputText value="#{serverModel.testNodes}" escape="false" />
-</p>
-</div>
+									},
+									yAxis : {
+										allowDecimals : false,
+										max : 100,
+										labels : {
+											style : {
+												fontSize : '18',
+												fontFamily : 'Arial, Helvetica, sans-serif'
+											}
+										}
+									},
+									xAxis : {
+										allowDecimals : false,
+										labels : {
+											style : {
+												fontSize : '18',
+												fontFamily : 'Arial, Helvetica, sans-serif'
+											}
+										}
+									},
 
-<h:inputHidden value="#{serverModel.postPageLoad}"/>
-</div>
-</div>
-</h:form>
+									series : [ {
+										type : 'column'
+									}, {
+										type : 'spline'
+									} ],
 
-<div class='row'><div class='3u'>&nbsp;</div>
-<div class='3u'>
-<a href="/ARIES/"><img alt="ARIES" src="aries.png"/></a><br/>
-<font size="-2">Build 7-30-2015</font>
-</div>
-<div class='3u'>
-<font size="-1">Hospital of University of Pennsylvania<br/>
-Department of Radiology <br/>
-Based on the Work of Emmanuel Botzolakis <br/>
-Designed by Howard Chen <br/>
-<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
-</font>
-</div></div>
+									tooltip : {
+										formatter : function() {
+											if (this.series.name == 'Probability (%)') {
+												return 'The #'
+														+ this.point.x
+														+ ' diagnosis has probability of '
+														+ this.point.y + '%.';
+											} else if (this.series.name == 'Cumulative Probability (%)') {
+												return 'The top '
+														+ this.point.x
+														+ ' diagnoses account for a total of '
+														+ this.point.y + '%.';
+											}
+										}
+									}
+								});
+			});
+		</script>
+		<div class='row'>
+			<div class='12u'>
+				<div class="graphheader">
+					<input type="button" id="lnkHood" value="[+]" class="togglebutton"
+						onclick="toggle_visibility('tblHood','lnkHood')" /> <input
+						type="button" class="togglebutton title"
+						value="Pop the Hood on Bayesian Network Values"
+						onclick="toggle_visibility('tblHood','lnkHood')" />
+				</div>
+				<div id="tblHood" style="display: none">
+					<br />
+					<p>
+						<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
+					</p>
+
+					<p>
+						<h:outputText value="#{serverModel.paretoTable}" escape="false" />
+					</p>
+
+					<p>
+						<h:outputText value="#{serverModel.testNodes}" escape="false" />
+					</p>
+				</div>
+
+				<h:inputHidden value="#{serverModel.postPageLoad}" />
+			</div>
+		</div>
+	</h:form>
+
 </h:body>
 
 </html>

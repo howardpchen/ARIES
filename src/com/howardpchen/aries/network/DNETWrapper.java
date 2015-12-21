@@ -45,6 +45,85 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		return returnMap;
 	}
 	
+	//added for CR102
+	public String getHighestSensitiveNodeName(Map<String, String> userInputs)
+	{
+		String highestSensitiveNodeName = null;
+		try {
+			
+			Map<String, String> selectedNodeStateMapping = new HashMap<String, String>();
+			
+			for (Map.Entry<String, String> entry : userInputs.entrySet())
+			{
+				String state = entry.getValue();
+
+				if("[Clear]".equals(state))
+				{
+					continue;
+				}
+				else
+				{
+					selectedNodeStateMapping.put(entry.getKey(), entry.getValue());
+				}
+			}			
+			
+			Node targetNode = net.getNode("Diseases");		
+			
+			NodeList nodeList = new NodeList(net);
+			nodeList.clear();
+			
+			NodeList nl = net.getNodes();
+			@SuppressWarnings("unchecked")
+			Iterator<Node> it = nl.iterator();
+			int current = 0;
+			while (it.hasNext())
+			{
+				Node n = it.next();
+				
+				if(selectedNodeStateMapping.containsKey(n.getName()))
+				{
+					n.finding().setState(selectedNodeStateMapping.get(n.getName()));
+				}
+				
+				if(!"Diseases".equals(n.getName()))
+				{
+					nodeList.add(n);
+				}
+			}
+			
+			Sensitivity sensitivity = new Sensitivity(targetNode, nodeList, Sensitivity.ENTROPY_SENSV);
+			Double highestSensitiveValue = 0.0d;
+		
+			
+			for (String varyingNodeName : getNodeNames()) 
+			{
+				if("Diseases".equals(varyingNodeName))
+				{
+					continue;
+				}
+				
+				Double nextValue = sensitivity.getMutualInfo(net.getNode(varyingNodeName));
+				
+				if(nextValue > highestSensitiveValue)
+				{
+					highestSensitiveValue = nextValue;
+					highestSensitiveNodeName = varyingNodeName;
+				}
+				
+				/*System.err.println( varyingNodeName + " : " + nextValue.toString());*/
+			}
+			
+			sensitivity.finalize();
+			
+		} catch (NeticaException e) {
+			System.err.println("Problem calculating the senstivity");
+			//e.printStackTrace();
+		}
+		
+		
+		return highestSensitiveNodeName;
+	}	
+	
 	
 	public String[] getStates(String nodeName) {
 		String[] states = null;

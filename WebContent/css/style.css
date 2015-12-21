@@ -1,22 +1,41 @@
-body,p,h1,h2,h3,h4,ul,ol,textarea,input {
-	background:#000000;
-	font-family:verdana,helvetica,arial,sans-serif;
-	color:#F0F4F6;
+body, p, h1, h2, h3, h4, ul, ol, textarea, input {
+	background: #000000;
+	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
+	color: #F0F4F6;
 }
 
-a.topnav:link,a.topnav:visited {color:#cccccc;text-decoration:underline;}
-a.topnav:hover,a.topnav:active {color:#999999;text-decoration:underline;}
-a:link {text-decoration:underline;}
-a:visited {text-decoration:underline;}
-a:hover {text-decoration:underline;}
-a:active {text-decoration:underline;}
+a.topnav:link, a.topnav:visited {
+	color: #cccccc;
+	text-decoration: underline;
+}
+
+a.topnav:hover, a.topnav:active {
+	color: #999999;
+	text-decoration: underline;
+}
+
+a:link {
+	text-decoration: underline;
+}
+
+a:visited {
+	text-decoration: underline;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:active {
+	text-decoration: underline;
+}
 
 select {
 	-moz-appearance: none;
-    text-indent: 0.01px;
-    text-overflow: '';
-	
+	text-indent: 0.01px;
+	text-overflow: '';
 }
+
 select.features {
 	position: relative;
 	display: inline-block;
@@ -28,16 +47,16 @@ select.features {
 	background-image: linear-gradient(top, #77F, #337);
 	border-radius: 8px;
 	box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;
-	text-shadow: -1px -1px 0 rgba(0,0,0,1);
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 1);
 	color: #fff !important;
 	text-decoration: none;
-	font-size: 0.95em;
+	font-size: 18px; /*change for CR102 */
 	letter-spacing: 0.075em;
 	padding: 1em 1em 1em 1em;
 	outline: 0;
 	white-space: nowrap;
-	width:300px;
-	border:0px;
+	width: 300px;
+	border: 0px;
 }
 
 select.hasChoice {
@@ -50,95 +69,109 @@ select.hasChoice {
 	box-shadow: inset 0px 0px 0px 1px #F7F, inset 0px 2px 1px 0px #939;
 }
 
+/*added for CR102 */
+select.sensitive {
+	border: 10px
+	border-radius: 15pt;
+	border-style: solid;
+	border-width: 5px;
+	border-color: #FF0 #FF0;
+}
+
 a {
-	color:#99f;
-}
-a.button, .radiobuttons label, select, input[type=text], input[type=password] {
-    text-align:center;
-    display:inline-block;
-    background-color:#000;
-    border:3px;
-    color:#fff;
-    font-size: 11pt;
-    cursor:pointer;
-    text-decoration:none;
-    border-radius: 15pt;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #77F #77F;
-    line-height:20pt;
-    margin:6pt;
+	color: #99f;
 }
 
-select:disabled, input:disabled  {
-    color:#222;
-    background-color:#222;
+a.button, .radiobuttons label, select, input[type=text], input[type=password]
+	{
+	text-align: center;
+	display: inline-block;
+	background-color: #000;
+	border: 3px;
+	color: #fff;
+	font-size: 11pt;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 15pt;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #77F #77F;
+	line-height: 20pt;
+	margin: 6pt;
 }
 
+select:disabled, input:disabled {
+	color: #222;
+	background-color: #222;
+}
 
 input[type=submit] {
-    padding:5px 15px; background:#77F; border:0 none;
-    font-color:#000;
-    font-weight:bold;
-    cursor:pointer;
-    border-radius: 15px 15px;
-    margin: 0.5em; 
-    }
-a.btnConfirm, a.btnNext, a.btnPrev, a.btnSubmit  {
-    background-color:#227;
-    border:1px outset #2683cf;
-    color:#FFF;
-    font-size: 14px;
-    font-weight:bold;
-    padding:5px 10px 5px 10px;
-    margin:1px;
-    cursor:pointer;
-    text-decoration:none;
-    border-radius: 15px;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #77F #77F;
-    line-height: 30px;
+	padding: 5px 15px;
+	background: #77F;
+	border: 0 none;
+	font-color: #000;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 15px 15px;
+	margin: 0.5em;
 }
-a.btnConfirmDisabled  {
-	display:none;
+
+a.btnConfirm, a.btnNext, a.btnPrev, a.btnSubmit {
+	background-color: #227;
+	border: 1px outset #2683cf;
+	color: #FFF;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 1px;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #77F #77F;
+	line-height: 30px;
+}
+
+a.btnConfirmDisabled {
+	display: none;
 }
 
 a.btnNextDisabled, a.btnNextDisabled:active {
-    border:1px outset #2683cf;
-    font-size: 14px;
-    font-weight:bold;
-    padding:5px 10px 5px 10px;
-    margin:1px;
-    text-decoration:none;
-    border-radius: 15px;
-    border-style: solid;
-    border-width: 3px;
-    line-height: 30px;
-    border-color: #777 #777;
-    background-color:#222;
-    color: #555;
-    cursor:default;
-}
-a.btnNext:active, a.btnPrev:active, a.btnSubmit:active  {
-    background-color:#77F;
-    border:1px outset #2683cf;
-    color:#FFF;
-    font-size: 14px;
-    font-weight:bold;
-    padding:5px 10px 5px 10px;
-    margin:1px;
-    cursor:pointer;
-    text-decoration:none;
-    border-radius: 15px;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #7777FF #7777FF;
-    line-height: 30px;
+	border: 1px outset #2683cf;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 1px;
+	text-decoration: none;
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 3px;
+	line-height: 30px;
+	border-color: #777 #777;
+	background-color: #222;
+	color: #555;
+	cursor: default;
 }
 
+a.btnNext:active, a.btnPrev:active, a.btnSubmit:active {
+	background-color: #77F;
+	border: 1px outset #2683cf;
+	color: #FFF;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 1px;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #7777FF #7777FF;
+	line-height: 30px;
+}
 
-textarea  {
+textarea {
 	width: 80%;
 	height: 10em;
 	border-radius: 15pt;
@@ -149,121 +182,164 @@ textarea  {
 	color: #eee;
 }
 
-h1 {font-size:28px;margin-top:0px;font-weight:normal}
-h2 {font-size:22px;margin-top:10px;margin-bottom:10px;font-weight:normal}
-h3 {font-size:17px;font-weight:normal}
-h4 {font-size:12px;}
-h5 {font-size:11px;}
-h6 {font-size:10px;}
+h1 {
+	font-size: 28px;
+	margin-top: 0px;
+	font-weight: normal
+}
+
+h2 {
+	font-size: 22px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-weight: normal
+}
+
+h3 {
+	font-size: 17px;
+	font-weight: normal
+}
+
+h4 {
+	font-size: 14px;
+}
+
+h5 {
+	font-size: 11px;
+}
+
+h6 {
+	font-size: 10px;
+}
 
 table {
 	width: 700px;
 	margin: 1em;
 }
+
 .formTable {
-  display: table;
+	display: table;
 }
 /* If prompt and input are in two cells of one row, the prompt will be R-aligned. */
 .formTable td:first-child {
-  text-align: right;
+	text-align: right;
 }
 /* Third table cell shows the error message, so make it bold and red. Used in validation examples that have h:message. */
 .formTable td:nth-child(3) {
-  color: red;
-  font-weight: bold;
+	color: red;
+	font-weight: bold;
 }
 
 p.node-title {
 	width: 500px;
-    background-color: #77F;
-    border-width: 3px;
-    font-size: 16px;
-    font-weight:bold;
-    padding:5px 10px 5px 10px;	
-    margin:0.5em;
+	background-color: #77F;
+	border-width: 3px;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 0.5em;
 }
 
-tr:nth-child(even) {background: #669}
-tr:nth-child(odd) {background: #667}
+tr:nth-child(even) {
+	background: #669
+}
+
+tr:nth-child(odd) {
+	background: #667
+}
 
 tr:first-child {
-	font-weight:900;
+	font-weight: 900;
 }
 
 td {
 	margin-left: 0.5em;
-	padding:0.5em;  
+	padding: 0.5em;
 }
-th { background-color: #afc4d6;
-     font-size: 110%;
-     font-family: Arial, Helvetica, sans-serif;
+
+th {
+	background-color: #afc4d6;
+	font-size: 110%;
+	font-family: Arial, Helvetica, sans-serif; /*change for CR102 */
 }
+
 legend {
-  font-weight: bold;
-  color: black;
-  background-color: #afc4d6;
-  border: 1px solid #1a55bf;
-  padding: 3px 5px;
-  border-radius: 3px;
+	font-weight: bold;
+	color: black;
+	background-color: #afc4d6;
+	border: 1px solid #1a55bf;
+	padding: 3px 5px;
+	border-radius: 3px;
 }
+
 fieldset {
-  border-radius: 6px;
-  display: block;
+	border-radius: 6px;
+	display: block;
 }
+
 input, textarea {
-  background-color: #ecedf2;
-  text-align: left;
+	background-color: #ecedf2;
+	text-align: left;
 }
+
 input[type="checkbox"] {
-  background-color: transparent;  /* For IE 7-9 -- doesn't matter in FF, Chrome, or IE 10+ */
+	background-color: transparent;
+	/* For IE 7-9 -- doesn't matter in FF, Chrome, or IE 10+ */
 }
+
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-  background-color: #9fd1ff;
+	background-color: #9fd1ff;
 }
+
 .error {
-  color: red;
-  font-weight: bold;
+	color: red;
+	font-weight: bold;
 }
 
+.graphheader {
+	border: solid;
+	border-top-width: 3px;
+	border-bottom-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-color: #CCF;
+	background: #77F;
+	min-width: 500px;
+	max-width: 1000px;
+	color: #333;
+	font-weight: 800;
+	line-height: 2em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
 
-	.graphheader {
-		border: solid;
-		border-top-width: 3px;
-		border-bottom-width: 0;
-		border-left-width: 0;
-		border-right-width: 0;
-		border-color: #CCF;
-		background: #77F;
-		min-width: 500px;
-		max-width: 1000px;
-		color: #333;
-		font-weight:800;
-		line-height:2em;
-		margin-top:1em;
-		margin-bottom:1em;
-	}
-	.togglebutton  {
-		border:none;
-		background-color:transparent;
-		border-style:none;
-		border-radius:0px;
-		border-width:0px;
-		background:transparent;
-		
-		font-family:courier;
-		font-weight:700;
-        color:#FFF;
-        margin: 0;
-	}
-    .togglebutton.title {
-		font-family: verdana,helvetica,'Open Sans', sans-serif;
-        font-size:10pt;
-        color:#FFF;
-        width:initial;
-    }
+.togglebutton {
+	border: none;
+	background-color: transparent;
+	border-style: none;
+	border-radius: 0px;
+	border-width: 0px;
+	background: transparent;
+	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
+	font-weight: 700;
+	color: #FFF;
+	margin: 0;
+}
 
+.togglebutton.title {
+	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
+	font-size: 10pt;
+	color: #FFF;
+	width: initial;
+}
 
 /* So that in Chrome and IE, the bullets are next to the text in centered lists. Already OK in Firefox. */
 [align="center"] li {
-  list-style-position: inside;
+	list-style-position: inside;
+}
+
+panelgridheader {
+	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
+	font-weight: 700;
+	color: #FFF;
 }

@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.faces.bean.ManagedBean;
@@ -32,7 +33,8 @@ public class ServerModel {
 	 */
 //	private static final long serialVersionUID = -9026586621419425189L;
 	
-	private final String PATH = "networks"; 
+	private final String PATH = "networks";
+	/*private final String PATH = "/home/shalini/Desktop/ARIESNEW/networks/";*/
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
 	private String pageLoad = ""; 
@@ -42,8 +44,23 @@ public class ServerModel {
 	private String[] nodes = new String[0];
 	private String currentFeature = "";
 	
+	//changes starts for CR102
+	private String highestSensitiveNodeName = "";
+	//changes ends for CR102	
+	
+	//changes starts for CR101
+	private Map<String, String> nodeNameDirectMapping = new HashMap<String, String>();
+	private Map<String, String> nodeNameReverseMapping = new HashMap<String, String>();
+	private TreeMap<String, List<String>> prefixNodeListMapping = new TreeMap<String, List<String>>();
+	private ArrayList<String> networkPrefixList = new ArrayList<String>();
+	private Map<String, String> prefixNameMapping = new HashMap<String, String>();	
+	//changes ends for CR101
+	
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
+		//changes starts for CR101
+		populateNetworkList();
+		//changes ends for CR101
 		registerSession();
 
 		File folder = new File(PATH);
@@ -64,6 +81,93 @@ public class ServerModel {
 		System.out.println("Called constructor.");
 
 	}
+	
+	//changes starts for CR101
+	
+	private void populateNetworkList()
+	{
+		networkPrefixList = new ArrayList<String>();
+		networkPrefixList.add("SI");
+		networkPrefixList.add("SP");
+		networkPrefixList.add("CL");
+		networkPrefixList.add("MS");
+		
+		prefixNameMapping = new HashMap<String, String>();
+		prefixNameMapping.put("SI", "Signal");
+		prefixNameMapping.put("SP", "Spatial");
+		prefixNameMapping.put("CL", "Clinical");
+		prefixNameMapping.put("MS", "Miscellaneous");
+	}
+	
+	public List<String> getNetworkPrefixList() 
+	{		
+		return networkPrefixList;
+	}
+	
+	public String getNetworkPrefixName(String prefix) 
+	{		
+		return prefixNameMapping.get(prefix);
+	}
+	
+	public List<String> getSelectMenuFeatures(String prefix) {
+		List<String> features = new ArrayList<String>();
+		List<String> prefixNodeList = prefixNodeListMapping.get(prefix);
+		
+		if(prefixNodeList != null)
+		{
+			for (String nodeName : prefixNodeList) {
+				if (nodeName.equals("Diseases")) continue;
+				features.add(nodeName);
+			}			
+		}
+		
+		return features;
+	}
+	
+	private void processNodePrefixes()
+	{
+		nodeNameDirectMapping = new HashMap<String, String>();
+		nodeNameReverseMapping = new HashMap<String, String>();
+		prefixNodeListMapping = new TreeMap<String, List<String>>();
+		
+		for (int i = 0; i < nodes.length; i++) 
+		{
+/*			if (oldNodeArray[i].equals("Diseases")) continue;*/
+			
+			String nodeNameWithPrefix = nodes[i];
+			String nodeNameWithoutPrefix = nodes[i];
+			String[] stringArray = nodeNameWithPrefix.split("_");
+			String prefix = stringArray[0];
+			
+			if(networkPrefixList.contains(prefix))
+			{
+				nodeNameWithoutPrefix = nodeNameWithPrefix.replace(prefix + "_", "");
+			}
+			else
+			{
+				prefix = "MS";
+			}
+			
+			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
+			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);
+			
+			List<String> prefixNodeList = prefixNodeListMapping.get(prefix);			
+			if(prefixNodeList == null)
+			{
+				prefixNodeList = new ArrayList<String>();
+			}
+			prefixNodeList.add(nodeNameWithoutPrefix);
+			prefixNodeListMapping.put(prefix, prefixNodeList);
+		}
+		
+		for (Map.Entry<String, List<String>> entry : prefixNodeListMapping.entrySet())
+		{
+			List<String> prefixNodeList = entry.getValue();
+			java.util.Collections.sort(prefixNodeList);
+		}
+	}
+	
+	//changes ends for CR101
 
 	public void setNetworkInput(String s) {
 		if (!s.equals(networkName)) {
@@ -79,12 +183,21 @@ public class ServerModel {
 	
 	public void setNodeInput(String s) {
 		String[] inputs = s.split(":");
-		if (inputs.length == 2)	userInputs.put(inputs[0], inputs[1]);
-		else if (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
+		//old before CR101
+/*		if (inputs.length == 2)	userInputs.put(inputs[0], inputs[1]);
+		else if (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");*/
+		
+		//changes starts for CR101
+		if (inputs.length == 2)	userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+		else if (inputs.length == 1) userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+		//changes ends for CR101
 	}
 	
 	public String getNodeInput() {
-		if (!currentFeature.equals("")) return currentFeature + ":" + userInputs.get(currentFeature);
+		//old before CR101
+		/*if (!currentFeature.equals("")) return currentFeature + ":" + userInputs.get(currentFeature);*/
+		//one line change for CR101
+		if (!currentFeature.equals("")) return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
 		else return "";
 	}
 	
@@ -138,7 +251,8 @@ public class ServerModel {
 		return networkFileList;
 	}
 	
-	public List<String> getSelectMenuFeatures() {
+	//commented for CR101
+/*	public List<String> getSelectMenuFeatures() {
 		List<String> features = new ArrayList<String>();
 		
 		for (int i = 0; i < nodes.length; i++) {
@@ -146,19 +260,40 @@ public class ServerModel {
 			features.add(nodes[i]);
 		}		
 		return features;
-	}
+	}*/
 
 	public String currentFeatureValue(String nodeName) {
 		return userInputs.get(nodeName);
 	}
 	public String featureClass(String nodeName) {
-		if (userInputs.containsKey(nodeName) && !userInputs.get(nodeName).equals("[Clear]")) return "hasChoice";
+		//old before CR101
+		/*if (userInputs.containsKey(nodeName) && !userInputs.get(nodeName).equals("[Clear]")) return "hasChoice";*/
+		//one line change for CR101
+		//commented for CR102
+		/*if (userInputs.containsKey(nodeNameReverseMapping.get(nodeName)) && !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) return "hasChoice";*/
+		
+		if (userInputs.containsKey(nodeNameReverseMapping.get(nodeName)) 
+				&& !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]"))
+		{
+			return "hasChoice";
+		}		
+		//changes starts for CR102
+		else if(nodeNameReverseMapping.get(nodeName).equals(highestSensitiveNodeName))
+		{
+			return "sensitive";
+		}
+		//changes ends for CR102		
 		else return "";
+		
+		
 	}
 
 	public List<String> selectMenuInputs(String nodeName) {
 		List<String> returnString = new ArrayList<String>();
-		Map<String, Double> values = dw.getNodeProbs(nodeName);
+		//old before CR101
+		/*Map<String, Double> values = dw.getNodeProbs(nodeName);*/
+		//one line change for CR101
+		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName));
 		Set<String> s = values.keySet();
 		Iterator<String> it = s.iterator();
 		returnString.add(nodeName);
@@ -247,6 +382,15 @@ public class ServerModel {
 		try {
 			dw = new DNETWrapper(PATH + "/" + networkName);
 			nodes = dw.getNodeNames();
+			//changes starts for CR101			
+			processNodePrefixes();
+			//changes ends for CR101
+			
+			
+			//changes starts for CR102
+			highestSensitiveNodeName = dw.getHighestSensitiveNodeName(userInputs);
+			//changes ends for CR102			
+			
 			Arrays.sort(nodes);
 		} catch (NetworkLoadingException e) {
 			System.out.println ("Error loading the network.");
