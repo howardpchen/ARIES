@@ -33,7 +33,7 @@ public class ServerModel {
 	 */
 //	private static final long serialVersionUID = -9026586621419425189L;
 	
-	private final String PATH = "networks";
+	private final String PATH = "D:/WorkSpace/ARIES/networks";
 	/*private final String PATH = "/home/shalini/Desktop/ARIESNEW/networks/";*/
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
@@ -44,9 +44,12 @@ public class ServerModel {
 	private String[] nodes = new String[0];
 	private String currentFeature = "";
 	
-	//changes starts for CR102
-	private String highestSensitiveNodeName = "";
-	//changes ends for CR102	
+	//changes starts for CR102,CR103
+	private String highestSISensitiveNodeName = "";
+	private String highestSPSensitiveNodeName = "";
+	private String highestCLSensitiveNodeName = "";
+	private String highestMSSensitiveNodeName = "";
+	//changes ends for CR102,CR103	
 	
 	//changes starts for CR101
 	private Map<String, String> nodeNameDirectMapping = new HashMap<String, String>();
@@ -56,7 +59,15 @@ public class ServerModel {
 	private Map<String, String> prefixNameMapping = new HashMap<String, String>();	
 	//changes ends for CR101
 	
-	public ServerModel() {
+	//changes starts for CR103
+	private boolean sensityvityOn = false;
+	public boolean isSensityvityOn() {
+		return this.sensityvityOn;
+	}
+	public void setSensityvityOn(boolean sensityvityOn) {
+		this.sensityvityOn = sensityvityOn;
+	}
+ 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		//changes starts for CR101
 		populateNetworkList();
@@ -76,8 +87,10 @@ public class ServerModel {
 		);
 		for (int i = 0; i < listOfFiles.length; i++) {
 			networkFileList.add(listOfFiles[i].getName());
+			System.out.println("N/W"+listOfFiles[i].getName());
 		}
 		networkName = networkFileList.get(0);
+		System.out.println("networkName"+networkName);
 		System.out.println("Called constructor.");
 
 	}
@@ -108,6 +121,26 @@ public class ServerModel {
 	{		
 		return prefixNameMapping.get(prefix);
 	}
+	
+	
+	/**
+	 * CR103 starts here
+	 * @param prefix
+	 * @return
+	 */
+	public boolean getNetworkNodeSize(String prefix) 
+	{		
+		for(Map.Entry<String, List<String>> entry : prefixNodeListMapping.entrySet()){
+			if(entry.getKey().equals(prefix)){
+				if(prefix.equals("MS") && entry.getValue().size() == 1){
+					return false;
+				}else return true;
+			}
+		}
+		return false;
+		
+	}
+	//CR103 Ends here
 	
 	public List<String> getSelectMenuFeatures(String prefix) {
 		List<String> features = new ArrayList<String>();
@@ -151,7 +184,7 @@ public class ServerModel {
 			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
 			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);
 			
-			List<String> prefixNodeList = prefixNodeListMapping.get(prefix);			
+			List<String> prefixNodeList = prefixNodeListMapping.get(prefix);	
 			if(prefixNodeList == null)
 			{
 				prefixNodeList = new ArrayList<String>();
@@ -271,18 +304,19 @@ public class ServerModel {
 		//one line change for CR101
 		//commented for CR102
 		/*if (userInputs.containsKey(nodeNameReverseMapping.get(nodeName)) && !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) return "hasChoice";*/
-		
 		if (userInputs.containsKey(nodeNameReverseMapping.get(nodeName)) 
 				&& !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]"))
 		{
 			return "hasChoice";
 		}		
-		//changes starts for CR102
-		else if(nodeNameReverseMapping.get(nodeName).equals(highestSensitiveNodeName))
-		{
+		//changes starts for CR102,CR103
+		else if((nodeNameReverseMapping.get(nodeName).equals(highestSISensitiveNodeName) ||
+				nodeNameReverseMapping.get(nodeName).equals(highestSPSensitiveNodeName) ||
+				nodeNameReverseMapping.get(nodeName).equals(highestCLSensitiveNodeName) ||
+				nodeNameReverseMapping.get(nodeName).equals(highestMSSensitiveNodeName)) && (this.isSensityvityOn())){
 			return "sensitive";
 		}
-		//changes ends for CR102		
+		//changes ends for CR102,CR103		
 		else return "";
 		
 		
@@ -387,9 +421,12 @@ public class ServerModel {
 			//changes ends for CR101
 			
 			
-			//changes starts for CR102
-			highestSensitiveNodeName = dw.getHighestSensitiveNodeName(userInputs);
-			//changes ends for CR102			
+			//changes starts for CR102,CR103
+			highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
+			highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
+			highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
+			highestMSSensitiveNodeName = dw.getHighestMSSensitiveNodeName(userInputs);
+			//changes ends for CR102,CR103			
 			
 			Arrays.sort(nodes);
 		} catch (NetworkLoadingException e) {

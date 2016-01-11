@@ -22,7 +22,7 @@
 
 </h:head>
 <h:body>
-
+    
 	<div class='row'>
 		<div class='3u'>
 			<a href="/ARIES/"><img alt="ARIES" src="aries.png" /></a><br /> <font
@@ -44,15 +44,21 @@
 			</font>
 		</div>
 	</div>
-
+	
 	<div class='row'></div>
 
-	<h:form>
+	<h:form id ="network">
+	    
 		<h2>Current Network:</h2>
 		<h:selectOneMenu value="#{serverModel.networkInput}"
 			onchange="this.form.submit()">
 			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
 		</h:selectOneMenu>
+		
+		Sensitivity:
+		<h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()" > 
+        </h:selectBooleanCheckbox>
+       
 	</h:form>
 
 	<h2>Your Inputs:</h2>
@@ -64,7 +70,7 @@
 		<ui:repeat var="networkPrefix"
 			value="#{serverModel.networkPrefixList}">
 
-			<h:panelGrid style="width:90%;">
+			<h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
 				<h:outputText style="font-size: 28px;"
 					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
@@ -73,9 +79,9 @@
 
 					<h:outputText value="#{serverModel.currentFeature(feature)}" />
 
-					<h:selectOneMenu
-						class="features ${serverModel.featureClass(feature)}"
-						value="#{serverModel.nodeInput}" onchange="this.form.submit()">
+					<h:selectOneMenu id="sensitivity" 
+						class="features ${serverModel.featureClass(feature)}" 
+						value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
 						<f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
 					</h:selectOneMenu>
 
@@ -100,9 +106,41 @@
 				<div id="diagGraph"
 					style="min-width: 350px; max-width: 1000px; height: 400px;"></div>
 			</div>
-			<div class='3u'>
-				<div id="paretoGraph"
-					style="min-width: 200px; max-width: 500px; height: 400px;"></div>
+			
+		</div>
+				<div class='row'>
+			<div class='12u'>
+				<div class="graphheader">
+					<input type="button" id="lnkHood" value="[+]" class="togglebutton"
+						onclick="toggle_visibility('tblHood','lnkHood')" /> <input
+						type="button" class="togglebutton title"
+						value="Pop the Hood on Bayesian Network Values"
+						onclick="toggle_visibility('tblHood','lnkHood')" />
+				</div>
+				<div id="tblHood" style="display: none">
+					<br />
+					
+					
+					<div class='3u'>
+						<div id="paretoGraph"
+							style="min-width: 400px; max-width: 1000px; height: 400px;"></div>
+					</div>
+					
+
+					<p>
+						<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
+					</p>
+
+					<p>
+						<h:outputText value="#{serverModel.paretoTable}" escape="false" />
+					</p>
+
+					<p>
+						<h:outputText value="#{serverModel.testNodes}" escape="false" />
+					</p>
+				</div>
+
+				<h:inputHidden value="#{serverModel.postPageLoad}" />
 			</div>
 		</div>
 		<script>
@@ -239,33 +277,6 @@
 								});
 			});
 		</script>
-		<div class='row'>
-			<div class='12u'>
-				<div class="graphheader">
-					<input type="button" id="lnkHood" value="[+]" class="togglebutton"
-						onclick="toggle_visibility('tblHood','lnkHood')" /> <input
-						type="button" class="togglebutton title"
-						value="Pop the Hood on Bayesian Network Values"
-						onclick="toggle_visibility('tblHood','lnkHood')" />
-				</div>
-				<div id="tblHood" style="display: none">
-					<br />
-					<p>
-						<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
-					</p>
-
-					<p>
-						<h:outputText value="#{serverModel.paretoTable}" escape="false" />
-					</p>
-
-					<p>
-						<h:outputText value="#{serverModel.testNodes}" escape="false" />
-					</p>
-				</div>
-
-				<h:inputHidden value="#{serverModel.postPageLoad}" />
-			</div>
-		</div>
 	</h:form>
 
 </h:body>
