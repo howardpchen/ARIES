@@ -33,7 +33,7 @@ public class ServerModel {
 	 */
 //	private static final long serialVersionUID = -9026586621419425189L;
 	
-	private final String PATH = "D:/WorkSpace/ARIES/networks";
+	private final String PATH = "networks";
 	/*private final String PATH = "/home/shalini/Desktop/ARIESNEW/networks/";*/
 	private Map<String, String> userInputs;
 	private NetworkWrapper dw;
