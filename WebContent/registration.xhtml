@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+<h:head>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Bootstrap -->
+	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="./resources/js/bootstrap.min.js"></script>
+
+	<style>
+input[type=radio] {
+	margin-right: 5px;
+	margin-left: 14px;
+}
+a{
+    color: #cccccc;
+    text-decoration: underline;
+}
+</style>
+
+
+</h:head>
+
+<h:body id="bodyStyle">
+
+	<h:form role="form" id="registrationForm">
+
+		<div class="navbar navbar-default">
+
+			<div class='row' id="divStyle" style="color:white;">
+				<div class="col-md-3">
+					<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
+						7-30-2015</font>
+				</div>
+				<div class="col-md-6">
+
+					<br></br> <br></br>
+					<h3>
+						Adaptive Radiology Interpretation
+						&amps;
+						Education System (ARIES)
+					</h3>
+
+				</div>
+				<div class="col-md-3">
+					<br></br> <br></br> <font size="-1">Hospital of University
+						of Pennsylvania <br /> Department of Radiology Based on <br />the
+						Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br /> <a
+						href="https://www.gnu.org/copyleft/gpl.html">GNU Public
+							License</a>
+					</font>
+				</div>
+
+			</div>
+		</div>
+		
+		<br></br>
+		<div class="col-md-3"></div>
+		<h:messages globalOnly="true"
+			style="color:#47B247;font-weight:bold;color:red;"></h:messages>
+
+		<div class="container">
+			<p>
+				<br />
+			</p>
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-4">
+					<div class="panel panel-primary" style="background-color:#00CCFF">
+						<div class="panel-heading">
+			    		<h3 class="panel-title">Please sign up for ARIES <small>It's free!</small></h3>
+			 			</div>
+						<div class="panel-body">
+                            <div class="form-group">
+								<label for="fullname">Fullname</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-off"></span></span>
+									<h:inputText id="fullname" class="form-control"
+										title="Enter Your Name" value="#{loginBean.fullname}"/>
+
+								</div>
+								<div id="error1" style="color: red"></div>
+							</div> 
+							
+							<div class="form-group">
+								<label for="username">Desired Username</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-tag"></span></span>
+									<h:inputText id="username" class="form-control"
+										title="Enter UserName" value="#{loginBean.uname}" />
+
+								</div>
+								<div id="error2" style="color: red"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="Password">Password</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-lock"></span></span>
+
+									<h:inputSecret id="Password" class="form-control"
+										title="Enter Password" value="#{loginBean.password}" ></h:inputSecret>
+
+								</div>
+								<div id="error3" style="color: red;"></div>
+							</div>
+							
+							<hr />
+
+
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									<h:commandButton id="register" icon="glyphicon glyphicon-lock"
+										class="btn btn-success" value="Register"
+										action="#{loginBean.register}" onclick="return validate()" />
+								</div>
+								<div class="col-md-4">
+									<h:commandButton icon="glyphicon glyphicon-lock"
+										class="btn btn-primary" value="Back"
+										action="#{serverModel.backtoLogin}"/>
+								</div>
+							</div>
+
+                          
+					
+					</div>
+						</div>
+						 
+				</div>
+			</div>
+		</div> 
+	</h:form>
+
+	<script language="JavaScript">
+	
+	
+	function validate(){
+		var flag = 0;
+		document.getElementById("error1").innerText="";
+		document.getElementById("error2").innerText="";
+		document.getElementById("error3").innerText="";
+		document.getElementById("error4").innerText="";
+		document.getElementById("error1").textContent="";
+		document.getElementById("error2").textContent="";
+		document.getElementById("error3").textContent="";
+		document.getElementById("error4").textContent="";
+		var fullname = document.getElementById("registrationForm:fullname").value;
+		var userName = document.getElementById("registrationForm:username").value;
+		var PassWord = document.getElementById("registrationForm:Password").value;
+		var PassWordcfm = document.getElementById("registrationForm:Passwordcfm").value;
+		alert('yamuna');
+		if(fullname == ""){
+			document.getElementById("error1").innerText = "Please Enter a Fullname";
+			document.getElementById("error1").textContent = "Please Enter a Fullname";
+			flag = 1;
+			
+		}
+	    else if(userName == ""){
+			document.getElementById("error2").innerText = "Please Enter a UserName";
+			document.getElementById("error2").textContent = "Please Enter a UserName";
+			flag = 1;
+			
+		}
+	    else if(PassWord == ""){
+			document.getElementById("error3").innerText = "Please Enter a Password";
+			document.getElementById("error3").textContent = "Please Enter a Password";
+			flag = 1;
+		}
+		else if(PassWordcfm == ""){
+				document.getElementById("error4").innerText = "Please Enter a Confirm Password";
+				document.getElementById("error4").textContent = "Please Enter a Confirm Password";
+				flag = 1;
+		}
+			
+		
+		if(flag==1) return false;
+		return true;
+	}
+	
+	</script>
+</h:body>
+</html>

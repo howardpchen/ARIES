@@ -19,17 +19,42 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 	private static final long serialVersionUID = 223891435872906573L;
 	Environ env;
 	Net net;
-	public DNETWrapper(String filename) throws NetworkLoadingException {
+	public DNETWrapper(String filename) throws NetworkLoadingException{
 		try {
+			
 			env = new Environ("+BotzolakisE/UPenn/120,310-6-A/53080");
 			net = new Net(new Streamer(filename));
 			net.compile();
+			
 		} catch (NeticaException e) {
 			System.err.println("Problem loading network on Netica.");
 			e.printStackTrace();
 			throw new NetworkLoadingException();
 		}
 	}
+	
+	@Override
+	public Map<String, Double> getNodeProbs1(String nodeName) {
+		Map<String, Double> returnMap = new HashMap<String, Double>();
+		if(!nodeName.startsWith("CL_")){
+		
+		Node myNode = null;
+		try {
+			myNode = net.getNode(nodeName);
+			int st = net.getNode(nodeName).getNumStates();
+			for (int i = 0; i < st; i++) {
+				String title = myNode.state(i).getName();
+				double val = myNode.getBelief(title);
+				returnMap.put(title, val);
+			}
+		} catch (NeticaException e) {
+			System.err.println("Error getting node probabilities.");
+			//e.printStackTrace();
+		}
+		}
+		return returnMap;
+	}
+	
 	@Override
 	public Map<String, Double> getNodeProbs(String nodeName) {
 		Map<String, Double> returnMap = new HashMap<String, Double>();
@@ -126,7 +151,7 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 		return highestSensitiveNodeName;
 	}	
 
-	
+	@Override
 	public String[] getStates(String nodeName) {
 		String[] states = null;
 		Node myNode = null;
@@ -240,6 +265,102 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 		}
 		return MSNames;
 	}
+	
+	// added for CR103
+		@SuppressWarnings("unchecked")
+		public String getSensitiveForDisease(String disease,Map<String, String> userInputs) {
+			String sensitiveForDisease = null;
+			try {
+				Map<String, String> userSIInputs = new HashMap<String, String>();
+				Map<String, String> selectedSINodeStateMapping = new HashMap<String, String>();
+				System.out.println("userInputs.entrySet().." + userInputs.entrySet());
+				for (Map.Entry<String, String> entry : userInputs.entrySet()) {
+					if (entry.getKey().contains("SI_")) {
+						userSIInputs.put(entry.getKey(), entry.getValue());
+					}
+				}
+				System.out.println("userSIInputs SIMAP : " + userSIInputs.entrySet());
+				for (Map.Entry<String, String> entry : userSIInputs.entrySet()) {
+					String state = entry.getValue();
+
+					if ("[Clear]".equals(state)) {
+						continue;
+					} else {
+						selectedSINodeStateMapping.put(entry.getKey(), entry.getValue());
+					}
+				}
+				/*String[] states = null;
+				Node targetNode = net.getNode("Diseases");
+				int st=targetNode.getNumStates();
+				targetNode.remove
+				states = new String[st];
+			   
+					for (int i = 0; i < st; i++) {
+						String title = targetNode.state(i).getName();
+						states[i] = title;
+					}*/
+			    
+				//targetNode.getNumStates()
+				//System.out.println(""+targetNode.state(disease));
+				//System.out.println("dkjhd "+targetNode.getNumStates());
+				//Node targetNode = new Node("Disease",disease, net);
+				//targetNode.setStateFuncTable(arg0, arg1);
+				Node targetNode = net.getNode("Diseases");
+				
+				NodeList nodeList = new NodeList(net);
+				nodeList.clear();
+
+				NodeList nl = net.getNodes();
+
+				Iterator<Node> it = nl.iterator();
+				int current = 0;
+				while (it.hasNext()) {
+					Node n = it.next();
+
+					if (selectedSINodeStateMapping.containsKey(n.getName())) {
+						n.finding().setState(selectedSINodeStateMapping.get(n.getName()));
+					}
+
+					// if(!"Diseases".equals(n.getName()))
+					System.out.println("n.getName : " + n.getName());
+					if (n.getName().startsWith("SI_")) {
+						nodeList.add(n);
+					}
+
+				}
+				System.out.println("nodeList .... " + nodeList.size());
+				System.out.println(nodeList.toString());
+                System.out.println(" .... "+targetNode.getNumStates());
+				Sensitivity sensitivity = new Sensitivity(targetNode, nodeList, Sensitivity.ENTROPY_SENSV);
+				Double highestSensitiveValue = 0.0d;
+
+				for (String varyingNodeName : getSINodeNames()) {
+					/*
+					 * if("Diseases".equals(varyingNodeName)) { continue; }
+					 */
+
+					Double nextValue = sensitivity.getMutualInfo(net.getNode(varyingNodeName));
+					if (nextValue > highestSensitiveValue) {
+						highestSensitiveValue = nextValue;
+						sensitiveForDisease = varyingNodeName;
+					}
+
+					/*
+					 * System.err.println( varyingNodeName + " : " +
+					 * nextValue.toString());
+					 */
+				}
+				targetNode.finalize();
+				sensitivity.finalize();
+
+			} catch (NeticaException e) {
+				System.err.println("Problem calculating the senstivity");
+				e.printStackTrace();
+			}
+
+			return sensitiveForDisease;
+		}
+
 
 	// added for CR103
 	@SuppressWarnings("unchecked")
@@ -265,7 +386,6 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 				}
 			}
 			Node targetNode = net.getNode("Diseases");
-			System.out.println("targetNode ... " + targetNode);
 			NodeList nodeList = new NodeList(net);
 			nodeList.clear();
 
@@ -277,14 +397,12 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 				Node n = it.next();
 
 				if (selectedSINodeStateMapping.containsKey(n.getName())) {
-					System.out.println("n..." + n.getName());
 					n.finding().setState(selectedSINodeStateMapping.get(n.getName()));
 				}
 
 				// if(!"Diseases".equals(n.getName()))
 				System.out.println("n.getName : " + n.getName());
 				if (n.getName().startsWith("SI_")) {
-					System.out.println("Yamuna");
 					nodeList.add(n);
 				}
 
@@ -301,7 +419,6 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 				 */
 
 				Double nextValue = sensitivity.getMutualInfo(net.getNode(varyingNodeName));
-				System.out.println("nextValue..." + nextValue + " varyingNodeName.. " + varyingNodeName);
 				if (nextValue > highestSensitiveValue) {
 					highestSensitiveValue = nextValue;
 					highestSISensitiveNodeName = varyingNodeName;
@@ -422,7 +539,6 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 				}
 			}
 			Node targetNode = net.getNode("Diseases");
-			System.out.println("targetNode ... " + targetNode);
 			NodeList nodeList = new NodeList(net);
 			nodeList.clear();
 
@@ -554,7 +670,6 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 		return highestMSSensitiveNodeName;
 
 	}
-		
 	
 }
 

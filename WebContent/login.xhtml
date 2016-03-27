@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+<h:head>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Bootstrap -->
+	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="./resources/js/bootstrap.min.js"></script>
+
+	<style>
+input[type=radio] {
+	margin-right: 5px;
+	margin-left: 14px;
+}
+</style>
+
+
+</h:head>
+
+<h:body id="bodyStyle">
+
+
+	<h:form role="form" id="loginForm">
+
+		<div class="navbar navbar-default">
+
+			<div class='row' id="divStyle" style="color:white;">
+				<div class="col-md-3">
+					<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
+						7-30-2015</font>
+				</div>
+				<div class="col-md-6">
+
+					<br></br> <br></br>
+					<h3>
+						Adaptive Radiology Interpretation
+						&amps;
+						Education System (ARIES)
+					</h3>
+
+				</div>
+				<div class="col-md-3">
+					<br></br> <br></br> <font size="-1">Hospital of University
+						of Pennsylvania <br /> Department of Radiology Based on <br />the
+						Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br /> <a
+						href="https://www.gnu.org/copyleft/gpl.html">GNU Public
+							License</a>
+					</font>
+				</div>
+
+			</div>
+		</div>
+		
+		
+		
+				<!--	<ul class="nav nav-tabs">
+  <li class="active"><a href="/ARIES/">Home</a></li>
+   <li><a href="/ARIES/index.jsf">Clinical</a></li>
+  <li><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
+  <li><a href="/ARIES/research.jsf">Research</a></li> 
+  
+</ul>-->
+		<div class="row" style="color:white;">
+			<div class="col-md-2"></div>
+			<div class="col-md-5" align="center">
+				<h:selectOneRadio id="radioBut" value="#{loginBean.option}"
+					onchange="this.form.submit()" required="true">
+
+					<f:selectItem itemValue="Clinical" itemLabel=" Clinical " />
+
+					<f:selectItem itemValue="Submit Case" itemLabel=" SubmitCase  " />
+
+					<f:selectItem itemValue="Research" itemLabel=" Research  " />
+
+					<f:selectItem itemValue="Education" itemLabel=" Education  " />
+					
+					<f:selectItem itemValue="QC" itemLabel="QC" />
+				</h:selectOneRadio>
+			</div>
+		</div>
+		<br></br>
+		<div class="col-md-3"></div>
+		<h:messages globalOnly="true"
+			style="color:#47B247;font-weight:bold;color:red;"></h:messages>
+
+		<div class="container">
+			<p>
+				<br />
+			</p>
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-4">
+					<div class="panel panel-primary" style="background-color:#00CCFF">
+						<div class="panel-body">
+
+							<div class="form-group">
+								<label for="exampleInputEmail1">Username</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-user"></span></span>
+									<h:inputText id="exampleInputEmail1" class="form-control"
+										title="Enter UserName" value="#{loginBean.uname}" />
+
+								</div>
+								<div id="error1" style="color: red"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="exampleInputPassword1">Password</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-star"></span></span>
+
+									<h:inputSecret id="exampleInputPassword1d" class="form-control"
+										title="Enter Password" value="#{loginBean.password}" redisplay="true"></h:inputSecret>
+
+								</div>
+								<div id="errors2" style="color: red;"></div>
+							</div>
+							<hr />
+
+
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-3">
+									<h:commandButton id="Login" icon="glyphicon glyphicon-lock"
+										class="btn btn-primary" value="Login"
+										action="#{loginBean.loginProject}" onclick="return validate()" />
+								</div>
+								
+							</div>
+
+                          
+					
+					</div>
+						</div>
+						 <div class="row">
+                          <div class="col-md-1"></div>
+                           <div class="col-md-8" style="color:white;">
+                           <h:outputText value="Not a User? " />
+                           <h:link value ="Register here" outcome="registration"></h:link>
+                           </div>
+                           </div>
+				</div>
+			</div>
+		</div> 
+	</h:form>
+
+	<script language="JavaScript">
+	
+	
+	function validate(){
+		var flag = 0;
+		document.getElementById("error1").innerText="";
+		document.getElementById("errors2").innerText="";
+		document.getElementById("error1").textContent="";
+		document.getElementById("errors2").textContent="";
+		var userName = document.getElementById("loginForm:exampleInputEmail1").value;
+		if(userName == ""){
+			document.getElementById("error1").innerText = "Please Enter a UserName";
+			document.getElementById("error1").textContent = "Please Enter a UserName";
+			flag = 1;
+			
+		}	else{
+		var PassWord = document.getElementById("loginForm:exampleInputPassword1d").value;
+		if(PassWord == ""){
+			document.getElementById("errors2").innerText = "Please Enter a Password";
+			document.getElementById("errors2").textContent = "Please Enter a Password";
+			flag = 1;
+		}}
+		
+		if(flag==1) return false;
+		return true;
+	}
+	
+	</script>
+
+</h:body>
+
+</html>

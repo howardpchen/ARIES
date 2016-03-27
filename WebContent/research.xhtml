@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+<h:head>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Bootstrap -->
+	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="./resources/js/bootstrap.min.js"></script>
+	<style>
+a {
+	text-decoration: underline;
+}
+
+input[type=checkbox], input[type=radio] {
+	margin-right: 1px;
+	margin-left: 1px;
+}
+.nav-tabs {
+    border-bottom: 0px solid #ddd;
+}
+</style>
+
+</h:head>
+<h:body id="bodyStyle">
+	<f:view>
+		<h:form role="form" id="research">
+
+			
+
+				<div class='row' id="divStyle" style="color:white;">
+					<div class="col-md-3">
+						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
+							7-30-2015</font>
+					</div>
+					<div class="col-md-6">
+
+						<br></br> <br></br>
+						<h3>
+							Adaptive Radiology Interpretation
+							&amps;
+							Education System (ARIES)
+						</h3>
+ 
+					</div>
+					<div class="col-md-3">
+						<br></br> <br></br> <font size="-1">Hospital of University
+							of Pennsylvania <br /> Department of Radiology Based on <br />the
+							Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br />
+							<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public
+								License</a>
+						</font>
+					</div>
+
+				</div>
+			<div style="background-color:  #37373B;">
+
+	<div  style="color:white;">
+	 <label >Welcome, #{loginBean.uname}</label>
+    </div>
+	
+			<div class="row">
+
+<div class="col-md-11">
+            <ul class="nav nav-tabs">
+  <li><a href="/ARIES/">Home</a></li>
+   <li><a href="/ARIES/index.jsf">Clinical</a></li>
+  <li><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
+  <li class="active"><a href="/ARIES/research.jsf" >Research</a></li> 
+  
+  
+</ul>
+</div>
+<div class="col-md-1">
+	 <h:commandButton icon="glyphicon glyphicon-lock"
+										class="btn btn-primary" value="Logout"
+										action="#{loginBean.logout}"/>
+										</div>
+</div>
+
+</div>
+			<!-- <div>
+
+				<a href="/ARIES/">Back To Home</a>
+
+			</div> -->
+			<p><br/></p>
+			<div class="row">
+
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+				    <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
+					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+				</div>
+			</div>
+			<div class="container">
+				<p>
+					<br />
+				</p>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-10">
+						<div class="panel panel-primary" style="background-color:#00CCFF">
+							<div class="panel-heading" align="center"><h4>Research</h4>
+							</div>
+							<div class="panel-body">
+ 
+ 
+ 								
+								<div class="form-group" style="text-align: center;">
+									<div class="col-md-4">
+										<label for="network">Network :<font color="red">*</font> </label>
+									</div>
+									<div class="input-group">
+									
+
+										<h:selectOneMenu id="network" value="#{serverModel.nwNameforResearch}" 
+										onchange="this.form.submit()" valueChangeListener="#{serverModel.researchPageLoad}" reRender="diagnosis" >
+											<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+											<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems> 
+										</h:selectOneMenu> 
+
+									</div> 
+								</div>
+
+                                  <h:panelGroup rendered="#{serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0}" >
+                                  
+                             <div>
+                                <h3>Enter Inputs for Case No:#{serverModel.randomCaseNo} and Accession #{serverModel.rsrchAccessionNo}</h3>
+								<ui:repeat var="networkPrefix"
+									value="#{serverModel.networkPrefixList}">
+                                    
+									<h:panelGrid id="pg_inputs" cellspacing="2"  
+										rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
+										<h:outputText 
+											value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+
+										<ui:repeat var="feature" 
+											value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+
+											<h:outputText value="#{serverModel.currentFeature(feature)}" />
+
+											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClass(feature)}" 
+												value="#{serverModel.researchNodeInput}" onchange="this.form.submit()" valueChangeListener="#{serverModel.saveFeatures}" >
+												<f:selectItems
+													value="#{serverModel.selectMenuInputsForResearch(feature)}" /> 
+											</h:selectOneMenu>
+											
+
+										</ui:repeat>
+									</h:panelGrid>
+
+								</ui:repeat>
+								 <p><br/></p> 
+								</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0 }">
+								<div class="form-group" style="text-align: center;">
+									<div class="col-md-4">
+									<label for="firstdiag">First Diagnosis :<font color="red">*</font></label>
+									</div>
+									<div class="input-group"> 
+
+										<h:selectOneMenu id="firstdiag"
+											value="#{serverModel.firstDx}" >
+											<f:selectItem itemLabel="-select-"></f:selectItem>
+											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+										</h:selectOneMenu>
+									</div>
+									<br/>
+									<div class="col-md-4">
+									<label for="seconddiag">Second Diagnosis :<font color="red">*</font></label>
+									</div>
+									<div class="input-group"> 
+
+										<h:selectOneMenu id="seconddiag"
+											value="#{serverModel.secondDx}">
+											<f:selectItem itemLabel="-select-"></f:selectItem>
+											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+										</h:selectOneMenu>
+									</div>
+									<br/>
+									<div class="col-md-4">
+									<label for="thirdddiag">Third Diagnosis :<font color="red">*</font></label>
+									</div>
+									<div class="input-group"> 
+
+										<h:selectOneMenu id="thirdddiag"
+											value="#{serverModel.thirdDx}"  >
+											<f:selectItem itemLabel="-select-" ></f:selectItem>
+											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+										</h:selectOneMenu>
+									</div>
+									
+								</div>
+								</h:panelGroup>
+								
+								 <p><br/></p>
+								 <div class="form-group">
+									<div class="col-md-4"></div>
+                                    <div class="col-md-1"> 
+										<h:commandButton id="skip_btn" class="btn btn-primary"
+											value="Skip" action="#{serverModel.clearInput}" />
+									</div>
+									<div class="col-md-2"> 
+										<h:commandButton id="done_btn" class="btn btn-success"
+											value="Done" action="#{serverModel.actionCompleted}" />
+									</div> 
+									
+								</div>
+		                        
+							</div> 
+	
+								</div> 
+                               
+                        
+							
+						</div>   
+					</div>
+				</div>
+			
+			<h:inputHidden value="#{serverModel.postResearchPageLoad}" />
+          </h:form>  
+          
+ 
+	</f:view>
+	
+</h:body>
+
+</html>

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core"
+	>
 
 
 <h:head>
@@ -19,43 +20,86 @@
 	<script type="text/javascript" src="./js/highcharts.js"></script>
 	<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
 	<script type="text/javascript" src="./js/modules/data.js"></script>
+	
+	
+	
+	
+	<style>
+	ul { list-style-type:none; margin:0; padding:0; }
+li { display:inline; float:left; padding:0 10px; margin:0; }
+	</style>
 
 </h:head>
 <h:body>
     
-	<div class='row'>
-		<div class='3u'>
-			<a href="/ARIES/"><img alt="ARIES" src="aries.png" /></a><br /> <font
-				size="-2">Build 1-11-2016</font>
-		</div>
-		<div class='row'>
-			<br />
-			<h1>
-				Adaptive Radiology Interpretation
-				&amps;
-				Education System (ARIES)
-			</h1>
-		</div>
-		<div class='3u'>
-			<br /> <font size="-1">Hospital of University of Pennsylvania<br />
-				Department of Radiology <br /> Based on the Work of Emmanuel
-				Botzolakis <br /> Designed by Howard Chen <br /> <a
-				href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
-			</font>
-		</div>
-	</div>
+				<div class="navbar navbar-default">
+
+				<div class='row' id="divStyle">
+					<div class="col-md-3">
+						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
+							7-30-2015</font>
+					</div>
+					<div class="col-md-6"> 
+
+						<br></br> <br></br>
+						<h3 style="font-size:24px;">
+							Adaptive Radiology Interpretation
+							&amps;
+							Education System (ARIES) 
+						</h3>
+ 
+					</div>
+					<div class="col-md-3">
+						<br></br> <br></br> <font size="-1">Hospital of University
+							of Pennsylvania <br /> Department of Radiology Based on <br />the
+							Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br />
+							<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public
+								License</a>
+						</font>
+					</div>
+
+				</div> 
+			</div>
+			<p><br/></p>
+
+
+	<div>
 	
-	<div class='row'></div>
+	
+	</div>
 
 	<h:form id ="network">
-	    
+	   
+						<div>
+			<div >
+			<label>Welcome, #{loginBean.uname}</label></div>
+			<p><br/></p>
+	<div class="row">
+		<div class="9u">
+			<ul class="nav nav-tabs">
+
+				<li class="active"><a href="/ARIES/">Home</a></li>
+				<li><a href="/ARIES/index.jsf">Clinical</a></li>
+				<li><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
+				<li><a href="/ARIES/research.jsf">Research</a></li>
+
+			</ul>
+		</div>
+		<div class="3u">
+			<h:commandButton 
+				 value="Logout" action="#{loginBean.logout}" />
+		</div>
+	</div>
+
+</div>
+		
 		<h2>Current Network:</h2>
 		<h:selectOneMenu value="#{serverModel.networkInput}"
 			onchange="this.form.submit()">
 			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
 		</h:selectOneMenu>
 		
-		Sensitivity:
+		 Sensitivity:
 		<h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()" > 
         </h:selectBooleanCheckbox>
        
@@ -63,18 +107,32 @@
 
 	<h2>Your Inputs:</h2>
 
-	<h:form>
-		<h:inputHidden value="#{serverModel.prePageLoad}" />
-
+	<h:form >
+		
+	<h:inputHidden value="#{serverModel.prePageLoad}" />
+	<h3>Diseases:</h3>
+	 <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.getDiseaseAction}">
+											<f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
+											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+										</h:selectOneMenu> 
 		<!-- changes starts for CR101 -->
-		<ui:repeat var="networkPrefix"
+		<div class="row">
+					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+				
+			</div>
+									<div >
+											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
+												escape="false"></h:outputText>
+										</div>
+										<br></br>
+		<ui:repeat var="networkPrefix" id="networkPrefixID" 
 			value="#{serverModel.networkPrefixList}">
 
 			<h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
 				<h:outputText style="font-size: 28px;"
 					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
-				<ui:repeat var="feature"
+				<ui:repeat var="feature" id="networkFeatureID" 
 					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
 
 					<h:outputText value="#{serverModel.currentFeature(feature)}" />
@@ -103,13 +161,17 @@
  -->
 		<div class='row'>
 			<div class='6u'>
-				<div id="diagGraph"
-					style="min-width: 350px; max-width: 1000px; height: 400px;"></div>
+				<div id="diagGraph1"
+					style="min-width: 350px; max-width: 700px; height: 400px;"></div>
 			</div>
+			<div class='6u'>
+						<div id="diagGraphRadio"
+							style="min-width: 350px; max-width: 700px; height: 400px;"></div>
+					</div>
 			
-		</div>
+		</div>  
 				<div class='row'>
-			<div class='12u'>
+			<div class='12u'> 
 				<div class="graphheader">
 					<input type="button" id="lnkHood" value="[+]" class="togglebutton"
 						onclick="toggle_visibility('tblHood','lnkHood')" /> <input
@@ -121,7 +183,7 @@
 					<br />
 					
 					
-					<div class='3u'>
+					<div class='3u'> 
 						<div id="paretoGraph"
 							style="min-width: 400px; max-width: 1000px; height: 400px;"></div>
 					</div>
@@ -129,8 +191,10 @@
 
 					<p>
 						<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
-					</p>
-
+					
+						<h:outputText id="hideTab" value="#{serverModel.radiographicDiag}" escape="false" />
+					</p> 
+ 
 					<p>
 						<h:outputText value="#{serverModel.paretoTable}" escape="false" />
 					</p>
@@ -138,18 +202,21 @@
 					<p>
 						<h:outputText value="#{serverModel.testNodes}" escape="false" />
 					</p>
-				</div>
-
+				</div>  
+				
+				
 				<h:inputHidden value="#{serverModel.postPageLoad}" />
+				
 			</div>
 		</div>
 		<script>
 			$(function() {
-				$('#diagGraph')
+
+				$('#diagGraph1')
 						.highcharts(
 								{
 									data : {
-										table : 'diagnosistable'
+										table : 'diagnosistable1'
 									},
 									colors : [ '#7777FF', '#50B432', '#ED561B' ],
 									chart : {
@@ -173,7 +240,7 @@
 										plotShadow : true,
 									},
 									title : {
-										text : 'Top 10 Differential Diagnoses',
+										text : 'Clinical Differential Diagnoses',
 
 									},
 									yAxis : {
@@ -202,6 +269,64 @@
 										}
 									}
 								});
+				$('#diagGraphRadio')
+				.highcharts(
+						{
+							data : {
+								table : 'radiodiagnosistable'
+							},
+							colors : [ '#7777FF', '#50B432', '#ED561B' ],
+							chart : {
+								type : 'bar',
+								style : {
+									fontSize : '18',
+									fontFamily : 'Arial, Helvetica, sans-serif'
+								},
+								backgroundColor : {
+									linearGradient : {
+										x1 : 0,
+										y1 : 0,
+										x2 : 1,
+										y2 : 1
+									},
+									stops : [
+											[ 0, 'rgb(FFF, 255, 255)' ],
+											[ 1, 'rgb(FFF, 240, 255)' ] ]
+								},
+								plotBackgroundColor : 'rgba(FFF, 255, 255, .9)',
+								plotShadow : true,
+							},
+							title : {
+								text : 'Radiographic Differential Diagnoses',
+
+							},
+							yAxis : {
+								allowDecimals : false,
+								max : 100,
+								labels : {
+									style : {
+										fontSize : '18',
+										fontFamily : 'Arial, Helvetica, sans-serif'
+									}
+								}
+							},
+							xAxis : {
+								labels : {
+									style : {
+										fontSize : '18',
+										fontFamily : 'Arial, Helvetica, sans-serif'
+									}
+								}
+							},
+							tooltip : {
+								formatter : function() {
+									return this.point.y
+											+ '% probability of '
+											+ this.point.name;
+								}
+							}
+						});
+				
 				$('#paretoGraph')
 						.highcharts(
 								{
@@ -276,6 +401,8 @@
 									}
 								});
 			});
+	
+			
 		</script>
 	</h:form>
 

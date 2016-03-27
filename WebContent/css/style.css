@@ -272,9 +272,15 @@ legend {
 	border-radius: 3px;
 }
 
-fieldset {
-	border-radius: 6px;
-	display: block;
+#fs { 
+	border-radius: 30px;
+    border: 1px solid green;
+    border-width: thick;
+    float: left;
+  padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
 }
 
 input, textarea {
@@ -282,10 +288,7 @@ input, textarea {
 	text-align: left;
 }
 
-input[type="checkbox"] {
-	background-color: transparent;
-	/* For IE 7-9 -- doesn't matter in FF, Chrome, or IE 10+ */
-}
+
 
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	background-color: #9fd1ff;

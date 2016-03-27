@@ -1,0 +1,63 @@
+ #divStyle {
+ /* background-color: rgba(70, 184, 218, 1); */
+ background-color:#000;
+ 
+ }
+ 
+ #bodyStyle {
+    background-color:#000;
+ /* background-color: rgba(231, 231, 231, 1); */
+ 
+ }
+ 
+ #fs { 
+			border-radius: 30px;
+		    border: 1px solid;
+		    border-width: thick;
+		    float: left;
+		  padding-top: 0.35em;
+		    padding-bottom: 0.625em;
+		    padding-left: 0.75em;
+		    padding-right: 0.75em;
+		}
+
+select.features {
+	position: relative;
+	display: inline-block;
+	background: #77F;
+	background-image: -moz-linear-gradient(top, #77F, #337);
+	background-image: -webkit-linear-gradient(top, #77F, #337);
+	background-image: -o-linear-gradient(top, #77F, #337);
+	background-image: -ms-linear-gradient(top, #77F, #337);
+	background-image: linear-gradient(top, #77F, #337);
+	border-radius: 8px;
+	box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 1);
+	color: #fff !important;
+	text-decoration: none;
+	font-size: 18px; /*change for CR102 */
+	letter-spacing: 0.075em;
+	padding: 1em 1em 1em 1em;
+	outline: 0;
+	white-space: nowrap;
+	width: 300px;
+	border: 0px;
+}
+
+select.hasChoice {
+	background: #939;
+	background-image: -moz-linear-gradient(top, #939, #F7F);
+	background-image: -webkit-linear-gradient(top, #939, #F7F);
+	background-image: -o-linear-gradient(top, #939, #F7F);
+	background-image: -ms-linear-gradient(top, #939, #F7F);
+	background-image: linear-gradient(top, #939, #F7F);
+	box-shadow: inset 0px 0px 0px 1px #F7F, inset 0px 2px 1px 0px #939;
+}
+
+/*added for CR102 */
+select.sensitive {
+	border: 10px border-radius: 15pt;
+	border-style: solid;
+	border-width: 5px;
+	border-color: #FF0 #FF0;
+}
