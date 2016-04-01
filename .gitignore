@@ -12,6 +12,7 @@ local.properties
 .settings/
 .loadpath
 *.dne
+*Config.java
 
 # Library needs to be separately downloaded 
 WebContent/WEB-INF/lib/*
