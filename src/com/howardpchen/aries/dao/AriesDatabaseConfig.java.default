@@ -1,5 +1,8 @@
 package com.howardpchen.aries.dao;
 
+// Change the code to reflect your own database connections
+// Copy the file and then rename it to AriesDatabaseConfig.java
+
 public class AriesDatabaseConfig {
 	public static final String DB_URL="jdbc:mysql://yoururl/ariesdb";
 	public static final String DB_USERNAME="username";
