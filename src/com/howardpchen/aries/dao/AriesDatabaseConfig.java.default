@@ -1,0 +1,8 @@
+package com.howardpchen.aries.dao;
+
+public class AriesDatabaseConfig {
+	public static final String DB_URL="jdbc:mysql://yoururl/ariesdb";
+	public static final String DB_USERNAME="username";
+	public static final String DB_PASSWORD="password";
+
+}
