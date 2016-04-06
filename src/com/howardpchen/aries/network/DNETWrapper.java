@@ -22,7 +22,7 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 	public DNETWrapper(String filename) throws NetworkLoadingException{
 		try {
 			
-			env = new Environ("+BotzolakisE/UPenn/120,310-6-A/53080");
+			env = new Environ(com.howardpchen.aries.AriesConfig.NETWORK_CODE);
 			net = new Net(new Streamer(filename));
 			net.compile();
 			

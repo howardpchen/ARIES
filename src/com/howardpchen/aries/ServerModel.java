@@ -44,9 +44,6 @@ public class ServerModel {
 	// private static final long serialVersionUID = -9026586621419425189L;
 
 	private final String PATH = "/mnt/networks";
-	/*
-	 * private final String PATH = "/home/shalini/Desktop/ARIESNEW/networks/";
-	 */
 	private Map<String, String> userInputs;
 	private Map<String, String> userInputs1;
 	//private Map<String, String> highestProbsMap;
@@ -1139,7 +1136,8 @@ public class ServerModel {
 		if(counter == 1){
 			newValuesMap.put(sihighestkey, sihighest);
 			newMap.put(sinodeName, newValuesMap);
-			highestProbsMap.put(nodeNameDirectMapping.get(sinodeName), sihighestkey); 
+			highestProbsMap.put(nodeNameDirectMapping.get(sinodeName), sihighestkey);
+			userInputs.put(sinodeName, sihighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
 			
 			/*if(userInputs.containsKey("Diseases")){
@@ -1158,6 +1156,7 @@ public class ServerModel {
 			spNewValuesMap.put(sphighestkey, sphighest);
 			newMap.put(spnodeName, spNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(spnodeName), sphighestkey); 
+			userInputs.put(spnodeName, sphighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
 			/*if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1175,6 +1174,7 @@ public class ServerModel {
 			clNewValuesMap.put(clhighestkey, clhighest);
 			newMap.put(clnodeName, clNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(clnodeName), clhighestkey); 
+			userInputs.put(clnodeName, clhighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
 			/*if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1192,6 +1192,7 @@ public class ServerModel {
 			msNewValuesMap.put(mshighestkey, mshighest);
 			newMap.put(msnodeName, msNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(msnodeName), mshighestkey); 
+			userInputs.put(msnodeName, mshighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
 			/*if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1199,7 +1200,7 @@ public class ServerModel {
 			//infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		if(highestProbsMap !=null && !highestProbsMap.isEmpty()){
-		infoMessages.add("Higest Probability Features are "+highestProbsMap);
+			infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		
 	}
