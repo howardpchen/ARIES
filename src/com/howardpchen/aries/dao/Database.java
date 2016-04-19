@@ -9,7 +9,7 @@ public class Database {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://107.170.166.121/ariesdb?useSSL=false",
-                  "ssarda", "$nCsioa@qF0&1");
+                  "ssarda", "xremdaGnbVAjJG4m");
             //Connection con = DriverManager.getConnection("jdbc:mysql://localhost/ariesdb?useSSL=false",
              //      "root", "$nCsioa@qF0&1");
             return con;

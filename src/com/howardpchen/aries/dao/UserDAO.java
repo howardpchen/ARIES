@@ -388,6 +388,32 @@ public class UserDAO {
              Database.close(con);
          }
      }
+     public static void SaveFeatureforOthers(UserCaseInput userCaseInput){
+    	 Connection con = null;
+    	 PreparedStatement ps = null;
+    	 Timestamp currentDate = new Timestamp(new Date().getTime());
+    	 String sql = "INSERT INTO usercaseinput1 (userid,caseid,sessionid,eventid,value,datetimeentered,interface,comments)" +
+    		        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    	 try{
+    		 con = Database.getConnection();
+    		 ps = con.prepareStatement(sql);
+    		 ps.setInt(1, userCaseInput.getUserid());
+    		 ps.setInt(2, userCaseInput.getCaseid());
+    		 ps.setString(3, userCaseInput.getSessionid());
+    		 ps.setInt(4, userCaseInput.getEventid());
+    		 ps.setString(5,userCaseInput.getValue());
+    		 ps.setTimestamp(6,currentDate);
+    		 ps.setString(7, userCaseInput.getPageInfo());
+    		 ps.setString(8, userCaseInput.getComments());
+    		 ps.executeUpdate();
+    		 //System.out.println(rs.toString());
+    		
+    	 }catch (Exception ex) {
+             System.out.println("Error in Save UserCaseInput(Feature) Records -->" + ex.getMessage());
+          } finally {
+             Database.close(con);
+         }
+     }
      public static int getCaseId(String network){
     	 Connection con = null;
     	 Statement stmt = null;
@@ -424,6 +450,25 @@ public class UserDAO {
              Database.close(con);
          }
 		return accession;
+    	
+     }
+     public static String getCorrectDx(int caseid){
+    	 Connection con = null;
+    	 Statement stmt = null;
+    	 String correctDx = "";
+    	 try{
+    		 con = Database.getConnection();
+    		 stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT correctdx FROM caselist where caseid = '"+caseid+"'");
+             while(rs.next()){
+            	 correctDx = rs.getString("correctdx");
+             }
+    	 } catch (Exception ex) {
+             System.out.println("Error in getCorrectDx -->" + ex.getMessage());
+         } finally {
+             Database.close(con);
+         }
+		return correctDx;
     	
      }
      public static List<String> getCaseIdforQC(String network, String uname){

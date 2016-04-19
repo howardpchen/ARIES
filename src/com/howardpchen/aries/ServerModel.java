@@ -42,18 +42,25 @@ public class ServerModel {
 	 * 
 	 */
 	// private static final long serialVersionUID = -9026586621419425189L;
-
+ 
 	private final String PATH = "/mnt/networks";
-	/*
-	 * private final String PATH = "/home/shalini/Desktop/ARIESNEW/networks/";
-	 */
+	
+	// private final String PATH = "/home/shalini/ws2/ARIES/networks";
+	
 	private Map<String, String> userInputs;
 	private Map<String, String> userInputs1;
+	private Map<String, String> userInputs2;
+	private Map<String, String> dbFeatures;
+	private Map<String, String> userInputsForQc;
+	private Map<String, String> userInputsForRs;
+	private Map<String, String> probInputs;
+
 	//private Map<String, String> highestProbsMap;
 	private NetworkWrapper dw;
 	private String pageLoad = "";
 	private int educationCaseNo ;
 	private String networkName = "";
+	private String networkNamers = "";
 	private int topDdx = 10;
 	private List<String> networkFileList = new ArrayList<String>();
 	private String[] nodes = new String[0];
@@ -61,7 +68,7 @@ public class ServerModel {
 	private String currentDisease = "";
 	private String event="";
 	private String featureFlag = "false"; 
-	private String qcFlag = "false"; 
+	
 	private String neticaLoad = "false";
 	private String[] titlesNew = new String[0]; 
 	Map<String, Map<String, Double>> valuesNew = new HashMap<String, Map<String, Double>>();
@@ -83,7 +90,8 @@ public class ServerModel {
     Map<String, Map<String, Double>> newMap = new HashMap<String, Map<String, Double>>();
     Map<String, Double> newValuesMap = new HashMap<String,Double>();
     private String fromGraph ="false";
-    
+    List<String> caseListforNw = new ArrayList<String>();
+   
     public String getCaseNoforQCSetter() {
 		return caseNoforQCSetter;
 	}
@@ -222,7 +230,10 @@ public class ServerModel {
     
     //For Research Page
     private String nwNameforResearch;
-    //For Education Page
+    private String comments;
+
+
+	//For Education Page
     private String nwNameforEducation;
     //For QC
     private String nwNameforQC;
@@ -248,10 +259,17 @@ public class ServerModel {
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
 		userInputs1 = new HashMap<String, String>();
+		userInputs2 = new HashMap<String, String>();
+		dbFeatures = new HashMap<String, String>();
+		userInputsForQc = new HashMap<String, String>();
+		userInputsForRs = new HashMap<String, String>();
+		probInputs = new HashMap<String, String>();
 		// changes starts for CR101
 		populateNetworkList();
 		// changes ends for CR101
 		registerSession();
+        networkNamers = "";
+
 
 		File folder = new File(PATH);
 		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
@@ -395,7 +413,80 @@ public class ServerModel {
 	public String getNetworkInput() {
 		return networkName;
 	}
-    public void setFeatureValue(String s){
+    
+	 public void setFeatureValueQC(String s){
+	    	boolean clearflag = false;
+	    	String[] inputs = s.split(":");
+			//if(inputs.length == 1)return;
+			if(userInputsForQc.containsKey(nodeNameReverseMapping.get(inputs[0])))
+				{
+				if(inputs.length == 2){
+				if((userInputsForQc.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+				return;
+				}
+				if(inputs.length == 1){
+					if((userInputsForQc.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
+						return;
+					clearflag = true;
+				}
+				}
+		
+			if(this.getEvent().equalsIgnoreCase("FEATURE ENTERED") && ((inputs.length == 2) || clearflag == true )){
+				User user;
+				UserCaseInput caseInput = new UserCaseInput();
+				caseList = new CaseList();
+				HttpSession session = Util.getSession();
+				String username = null;
+				String password = null;
+				if(session.getAttribute("username") != null)
+				username = session.getAttribute("username").toString();
+				if(session.getAttribute("password") != null)
+				password = session.getAttribute("password").toString();
+				int userid = UserDAO.getUserID(username, password);
+				
+				caseInput.setUserid(userid);
+				
+				caseInput.setSessionid(session.getId());
+				
+				caseList.setAccession(this.getAccession());
+				caseList.setOrganization(this.getOrganization());
+				caseList.setPatientid(this.getPatientId());
+				String networkcode = UserDAO.getCode(this.getNwName());
+				caseList.setNetwork(networkcode);
+				int caseid = UserDAO.getCaseId(caseList);
+				caseInput.setCaseid(caseid);
+				caseInput.setEventid(1001);
+				//String code = UserDAO.getCode(this.getNwName());
+				
+				
+				//s="";
+				if (inputs.length == 2){
+					caseInput.setValue("["+networkcode+"]"+" "+inputs[0]+"="+inputs[1]);
+					userInputsForQc.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+			}
+				else if(clearflag == true){
+					caseInput.setValue("["+networkcode+"]"+" "+inputs[0]+"="+"[Clear]");
+					userInputsForQc.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+				}
+				UserDAO.SaveFeature(caseInput);
+	    }
+	    }
+	    public String getFeatureValueQC() {
+			// old before CR101
+			/*
+			 * if (!currentFeature.equals("")) return currentFeature + ":" +
+			 * userInputs.get(currentFeature);
+			 */
+			// one line change for CR101
+			if (!currentFeature.equals(""))
+				return currentFeature + ":" + userInputsForQc.get(nodeNameReverseMapping.get(currentFeature));
+			else
+				return "";
+		}
+	
+	
+	
+	public void setFeatureValue(String s){
     	boolean clearflag = false;
     	String[] inputs = s.split(":");
 		//if(inputs.length == 1)return;
@@ -489,25 +580,36 @@ public class ServerModel {
 		 */
 		// one line change for CR101
 		if (!currentFeature.equals(""))
-			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
+			return currentFeature + ":" + userInputsForRs.get(nodeNameReverseMapping.get(currentFeature));
 		else
 			return "";
 	}
 	public void setEducationNodeInput(String s) {
 		String[] inputs = s.split(":");
+		//boolean clearflag = false;
 		// old before CR101
 		/*
 		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
 		 * (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
 		 */
-
+		
+	/*	if(!userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		{
+		if(inputs.length == 2){
+			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);		}
+		if(inputs.length == 1){
+			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+			//clearflag = true;
+		}
+		}*/
+/*
 		// changes starts for CR101
-		/*if (inputs.length == 2)
+		if (inputs.length == 2)
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 		else if (inputs.length == 1)
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");*/
+			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 		// changes ends for CR101
-		
+*/		
 	}
 
 	public String getEducationNodeInput() {
@@ -529,14 +631,20 @@ public class ServerModel {
 		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
 		 * (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
 		 */
-
+	
 		// changes starts for CR101
-		
+		/*if(!userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		{*/
 		if (inputs.length == 2)
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 		else if (inputs.length == 1)
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
-	
+		
+	    if(!probInputs.isEmpty()){
+	    	userInputs.putAll(probInputs);
+	    }
+		
+		
 	
 		// changes ends for CR101
 		
@@ -584,6 +692,10 @@ public class ServerModel {
 		infoMessages = new ArrayList<String>();
 		return ("index"); // return to index or refresh index
 	}
+	public String resetDisease() {
+		this.setDisease("");
+		return (""); // return to index or refresh index
+	}
 
 	@SuppressWarnings("rawtypes")
 	public String[] getDiseaseTitles() {
@@ -618,6 +730,7 @@ public class ServerModel {
 		StringBuffer sb = new StringBuffer("");
 			    
 	    //List<String> newList = new ArrayList<String>();
+		if(nodes != null){
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i].equals("Diseases"))
 				continue;
@@ -634,7 +747,7 @@ public class ServerModel {
 			}
 			sb.append("</table>");
 		}
-		
+		}
 		
 		return sb.toString();
 	}
@@ -689,6 +802,47 @@ public class ServerModel {
 			return "";
 
 	}
+	public String featureClassQC(String nodeName) {
+
+		if (userInputsForQc.containsKey(nodeNameReverseMapping.get(nodeName))
+				&& !userInputsForQc.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
+			return "hasChoice";
+		}
+		
+		else
+			return "";
+
+	}
+	public String featureClass1(String nodeName) {
+		
+		if(userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
+			return "green";
+		}
+		else if(userInputs2.containsKey(nodeNameReverseMapping.get(nodeName))){
+	    	return "red";
+	    }
+		else if((userInputs.containsKey(nodeNameReverseMapping.get(nodeName)))){
+			return "hasChoice";
+		}
+		else if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
+			return "hasChoice";
+	    }
+		else
+			return "";
+
+	}
+    public String featureClassRs(String nodeName) {
+		
+    	if (userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName))
+				&& !userInputsForRs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
+			return "hasChoice";
+		}
+		
+		else
+			return "";
+
+
+	}
 
 	public List<String> selectMenuInputs(String nodeName) {
 		List<String> returnString = new ArrayList<String>();
@@ -728,6 +882,28 @@ public class ServerModel {
 		}
 		return returnString;
 	}
+	
+	
+	public List<String> selectMenuInputsFromQC(String nodeName) {
+		List<String> returnString = new ArrayList<String>();
+		// old before CR101
+		/* Map<String, Double> values = dw.getNodeProbs(nodeName); */
+		// one line change for CR101
+		//if(this.getFeatureFlag().equalsIgnoreCase("true")){
+		 
+			Map<String, Double> values = this.valuesNew.get(nodeName);//dw.getNodeProbs(nodeNameReverseMapping.get(nodeName));
+			Set<String> s = values.keySet();
+			Iterator<String> it = s.iterator(); 
+			returnString.add(nodeName);
+			while (it.hasNext()) {
+				String key = it.next();
+				returnString.add(nodeName + ":" + key);
+			}
+			// returnString.add(nodeName + ":[Clear]");
+		//}
+		return returnString;
+	}
+	
 	public List<String> selectMenuInputsForResearch(String nodeName) {
 		List<String> returnString = new ArrayList<String>();
 		// old before CR101
@@ -848,12 +1024,15 @@ public class ServerModel {
     	 updateRadioDiagnosisNode();
     			Set<String> s = userInputs.keySet();
     			Iterator<String> it = s.iterator();
-
+    			Map<String, Double> values = null;
     			// Then produce the node output
 
     			StringBuffer sb = new StringBuffer("");
     			sb.append("<table id='radiodiagnosistable'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
-    			Map<String, Double> values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
+    			if(dw!= null){
+    			values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
+    			}
+    			if(values != null){
     			s = values.keySet();
     			int noOfKeys = s.size();
     			//double diagpercent = 100/noOfKeys;
@@ -868,7 +1047,7 @@ public class ServerModel {
     				sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
     				}
     				
-    			}
+    			}}
     			sb.append("</table>");
     			return sb.toString();
     }
@@ -878,12 +1057,15 @@ public class ServerModel {
 		updateDiagnosisNode();
 		Set<String> s = userInputs.keySet();
 		Iterator<String> it = s.iterator();
-
+		
+		Map<String, Double> values = null;
 		// Then produce the node output
 
 		StringBuffer sb = new StringBuffer("");
 		sb.append("<table id='diagnosistable1'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
-		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
+		if(dw != null){
+		values = sortByValue(dw.getDiagnosisProbs(), -1);
+		}
 	
 		if(values != null){
 		s = values.keySet();
@@ -905,14 +1087,16 @@ public class ServerModel {
 		updateDiagnosisNode();
 		Set<String> s = userInputs.keySet();
 		Iterator<String> it = s.iterator();
-
+		Map<String, Double> values = null;
 		// Then produce the node output
 
 		StringBuffer sb = new StringBuffer("");
 		sb.append(
 				"<table id='paretotable'><tr><td>Top Diagnoses</td><td>Probability (%)<td>Cumulative Probability (%)</td></tr>");
-		Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
-		
+		if(dw != null){
+	    values = sortByValue(dw.getDiagnosisProbs(), -1);
+		}
+		if(values != null){
 		s = values.keySet();
 		it = s.iterator();
 		int count = 0;
@@ -923,6 +1107,7 @@ public class ServerModel {
 			sb.append("<tr><td>" + count).append("<td>").append(convertToPercentage(values.get(key))).append("<td>")
 					.append(convertToPercentage(cumulative)).append("</tr>");
 		}
+		}
 		sb.append("</table>");
 		
 		return sb.toString();
@@ -932,6 +1117,31 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 	public void getQCPrePageLoad(ValueChangeEvent event){
+		
+		clear();
+		String newValue= event.getNewValue().toString();
+		String oldValue = "";
+		if(event.getOldValue()!= null){
+			oldValue = event.getOldValue().toString();
+		}
+		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+
+			caseListforNw.clear(); 
+	    	String code = null;  
+	    	String username = null;
+	    	HttpSession session = Util.getSession();
+	    	if(session.getAttribute("username") != null)
+				username = session.getAttribute("username").toString();
+				//if(session.getAttribute("password") != null) 
+				//password = session.getAttribute("password").toString();
+				//int userid = UserDAO.getUserID(username, password);
+				
+			code= UserDAO.getCode(newValue);
+	    	caseListforNw.addAll(UserDAO.getCaseIdforQC(code,username));
+	    }
+		
+		
+		/*
 		System.out.println("DNET Wrapper session started");
 		this.setEvent("FEATURE ENTERED");
 		this.setFeatureFlag("false");
@@ -981,7 +1191,61 @@ public class ServerModel {
 		}
 		}
 		//return this.pageLoad;
-	}public void setPrePageLoad1(String pl) {
+	*/
+		
+	
+	
+	}
+	
+	
+	public void getDWInfo(){
+		String newValue = this.getNwNameforQC();
+		
+		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") ){
+			try {
+				String networkName ="";
+				Map<String, Double> values = new HashMap<String, Double>();
+				Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
+				if(dw != null){
+					dw.endSession();
+				}
+				if(!networkName.equals("")){
+				networkName = UserDAO.getFileName(newValue);
+				dw = new DNETWrapper(PATH + "/" + networkName);
+				nodes = dw.getNodeNames();
+				for (int i = 0; i < nodes.length; i++) {
+					if (nodes[i].equals("Diseases")) {
+						this.titlesNew = dw.getStates(nodes[i]);
+					}
+				}
+				
+				processNodePrefixes(); 
+				
+				for(String prefix :this.getNetworkPrefixList()) {
+					
+					List<String> features  = getSelectMenuFeatures(prefix);
+					for(String menu : features){	
+						values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+						valuesNode.put(menu, values);
+					}
+				}
+				this.valuesNew = valuesNode; 
+				
+				Arrays.sort(nodes);
+			
+				}	
+				}  
+			 catch (NetworkLoadingException e) {
+				System.out.println("Error loading the network.");
+
+			} catch (Exception e) {
+				System.out.println("Error converting filename.");
+			}
+			}
+	}
+	
+	
+	public void setPrePageLoad1(String pl) {
 		this.pageLoad = pl;
 	}
 	
@@ -994,9 +1258,17 @@ public class ServerModel {
 		if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}
+		String networkName = "";
 		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
 		try {
-			
+			if(dw!= null){
+				dw.endSession();
+				//this.setNetworkInput("");
+				this.setNwNameforResearch("");
+				this.setNwNameforEducation("");
+				this.setNwNameforQC("");
+				this.setNwName("");
+			}
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 			
@@ -1035,8 +1307,65 @@ public class ServerModel {
 		}
 		//return this.pageLoad;
 	}
-	
+
 	public String getFeatureProb() {
+
+		if (this.getDisease() != null
+				&& !this.getDisease().equalsIgnoreCase("--select--")) {
+
+			try {
+				/*if(dw!= null){
+					dw.endSession();
+				}*/
+				dw = new DNETWrapper(PATH + "/" + networkName);
+			} catch (NetworkLoadingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			nodes = dw.getNodeNames();
+			fromGraph = "false";
+			updateDiagnosisNode();
+
+			// List<String> newList = new ArrayList<String>();
+			if(nodes != null){
+			for (int i = 0; i < nodes.length; i++) {
+				if (nodes[i].equals("Diseases"))
+					continue;
+
+				Map<String, Double> values = dw.getNodeProbs(nodes[i]);
+				double highestVal = 0.000;
+				String highestkey = "";
+				List<Double> keylist = new ArrayList<Double>();
+				for (Entry<String, Double> entry : values.entrySet()) {
+					String key = entry.getKey();
+					double value = entry.getValue();
+					if (value >= highestVal) {
+						highestVal = value;
+						highestkey = key;
+						// newValuesMap.put(highestkey, highestVal);
+						keylist.add(highestVal);
+
+					}
+				}
+				int counter = 0;
+				for (Double siValue : keylist) {
+					if (siValue.equals(highestVal)) {
+						counter++;
+					}
+				}
+				if (counter == 1) {
+					probInputs.put(nodes[i], highestkey);
+				}
+
+			}
+			}
+		}
+		return "";
+
+	}
+		
+
+	/*public String getFeatureProb() {
 				
 	if(this.getDisease()!= null && !this.getDisease().equalsIgnoreCase("--select--")){
 		
@@ -1140,11 +1469,13 @@ public class ServerModel {
 			newValuesMap.put(sihighestkey, sihighest);
 			newMap.put(sinodeName, newValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(sinodeName), sihighestkey); 
+			probInputs.put(sinodeName, sihighestkey);
+
 			//setNodeInput(nodeName+":"+highestkey);
 			
-			/*if(userInputs.containsKey("Diseases")){
+			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
-			}*/
+			}
 			//infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		//For Sp
@@ -1158,10 +1489,12 @@ public class ServerModel {
 			spNewValuesMap.put(sphighestkey, sphighest);
 			newMap.put(spnodeName, spNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(spnodeName), sphighestkey); 
+			probInputs.put(spnodeName, sphighestkey);
+
 			//setNodeInput(nodeName+":"+highestkey);
-			/*if(userInputs.containsKey("Diseases")){
+			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
-			}*/
+			}
 			//infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		//For CL
@@ -1175,10 +1508,11 @@ public class ServerModel {
 			clNewValuesMap.put(clhighestkey, clhighest);
 			newMap.put(clnodeName, clNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(clnodeName), clhighestkey); 
+			probInputs.put(clnodeName, clhighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
-			/*if(userInputs.containsKey("Diseases")){
+			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
-			}*/
+			}
 			//infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		//For MS
@@ -1192,12 +1526,14 @@ public class ServerModel {
 			msNewValuesMap.put(mshighestkey, mshighest);
 			newMap.put(msnodeName, msNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(msnodeName), mshighestkey); 
+			probInputs.put(msnodeName, mshighestkey);
 			//setNodeInput(nodeName+":"+highestkey);
-			/*if(userInputs.containsKey("Diseases")){
+			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
-			}*/
+			}
 			//infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
+		//userInputs.putAll(highestProbsMap);
 		if(highestProbsMap !=null && !highestProbsMap.isEmpty()){
 		infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
@@ -1207,7 +1543,7 @@ public class ServerModel {
 	return "";
 		
 	}
-	
+	*/
 	
 	
 	public boolean FeaturesValidate(String inputs){
@@ -1251,24 +1587,108 @@ public class ServerModel {
 		}else 
 			return false;
 	}
-
+	public String checkFeatures(){
+		
+		 String[] input = new String[0];
+			// List<String> values = new ArrayList<String>();
+			 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+			 list = UserDAO.getUserCaseInput(this.getEducationCaseNo());
+			 for(UserCaseInput userCaseInput:list){
+				 input = userCaseInput.getValue().split("] ");
+				// values.add(input[1]);
+				 if(input.length == 2){
+				 String[] val = input[1].split("=");
+				 dbFeatures.put(nodeNameReverseMapping.get(val[0]),val[1]);
+				 }
+			 }
+			 if(!(userInputs.isEmpty())){
+			 for(Map.Entry<String, String> userInputs : userInputs.entrySet()){
+				 if(!(dbFeatures.isEmpty())){
+				 for(Map.Entry<String, String> dbInputs : dbFeatures.entrySet()){
+					 if((userInputs.getKey().equals(dbInputs.getKey())) && (userInputs.getValue().equals(dbInputs.getValue()))){
+						 userInputs1.put(userInputs.getKey(),userInputs.getValue());
+					 }
+					 else{
+						 userInputs2.put(userInputs.getKey(), userInputs.getValue());
+					 }
+				 }
+			 }else{
+					 userInputs2.put(userInputs.getKey(), userInputs.getValue());
+				 }
+				 
+			 }
+			 }
+			 educationErrorMessages = new ArrayList<String>();
+			 userInputs.putAll(dbFeatures);
+			 
+		return "";
+	}
 	public void saveFeaturesforEducation(ValueChangeEvent event){
 		//educationErrorMessages = new ArrayList<String>();
 		String newValue=null;
 		String[] inputs = null ;
-		
 		if(event.getNewValue() !=null){
 			
 			newValue = event.getNewValue().toString();
 		    inputs = newValue.split(":");
 		   
 		}
-		/* if(FeaturesValidate(newValue) == true){
+		boolean clearflag = false;
+		
+		/*if(event.getOldValue()!= null){
+			oldValue = event.getOldValue().toString();
+		}*/
+		if(userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		{
+		if(inputs.length == 2){
+		if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+		return;
+		}
+		if(inputs.length == 1){
+			if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
 				return;
-			}*/
-		//String oldValue = "";
+			clearflag = true;
+		}
+		}
+
+	if((inputs.length == 2) || clearflag == true ){
+		User user;
+		UserCaseInput caseInput = new UserCaseInput();
+		HttpSession session = Util.getSession();
+		String username = null;
+		String password = null;
+		if(session.getAttribute("username") != null)
+		username = session.getAttribute("username").toString();
+		if(session.getAttribute("password") != null)
+		password = session.getAttribute("password").toString();
+		int userid = UserDAO.getUserID(username, password);
+		
+		caseInput.setUserid(userid);
+		
+		caseInput.setSessionid(session.getId());
+		String networkcode = UserDAO.getCode(this.getNwNameforEducation());
+		caseInput.setCaseid(this.getEducationCaseNo());
+		caseInput.setEventid(1001);
+		caseInput.setPageInfo("Education");
+		String code = UserDAO.getCode(this.getNwNameforEducation());
+		
+		
+		//s="";
+		if (inputs.length == 2){
+			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+inputs[1]);
+			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+	}
+		else if(clearflag == true){
+			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+"[Clear]");
+			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+		}
+		UserDAO.SaveFeatureforOthers(caseInput);
+	}
+	  /*  if(inputs.length == 2){
+	    	userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+	    }*/
 	    
-		String saveflag ="";
+		/*String saveflag ="";
 		if(newValue.contains(":")){
 		String newValue1 =newValue.replace(":", "=");
 		String code = UserDAO.getCode(this.getNwNameforEducation());
@@ -1281,12 +1701,12 @@ public class ServerModel {
 		}else{
 			saveflag = "true";
 		}
-		}
-		boolean clearflag = false;
-		
-		/*if(event.getOldValue()!= null){
-			oldValue = event.getOldValue().toString();
 		}*/
+	/*	boolean clearflag = false;
+		
+		if(event.getOldValue()!= null){
+			oldValue = event.getOldValue().toString();
+		}
 		
 		if(userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
 		{
@@ -1320,24 +1740,23 @@ public class ServerModel {
 		caseInput.setCaseid(this.getCaseNo());
 		caseInput.setEventid(1001);
 		String code = UserDAO.getCode(this.getNwNameforResearch());
-		
+		*/
 		
 		//s="";
-		if (inputs.length == 2 && saveflag.equalsIgnoreCase("true")){
+	/*	if (inputs.length == 2 && saveflag.equalsIgnoreCase("true")){
 			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+inputs[1]);
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 	}
 		else if(clearflag == true){
 			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+"[Clear]");
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
-		}
-		if(saveflag.equalsIgnoreCase("true")){
-		UserDAO.SaveFeature(caseInput);
-		}
-}
+		}*/
+		//if(saveflag.equalsIgnoreCase("true")){
+		//UserDAO.SaveFeature(caseInput);
+		//}
+//}
 			}
-	
-	public void saveFeatures(ValueChangeEvent event){
+	public void saveFeaturesForQC(ValueChangeEvent event){
 		String newValue=null;
 		String[] inputs = null ;
 		if(event.getNewValue() !=null){
@@ -1396,10 +1815,73 @@ public class ServerModel {
 		UserDAO.SaveFeature(caseInput);
 }
 	}
+	public void saveFeatures(ValueChangeEvent event){
+		String newValue=null;
+		String[] inputs = null ;
+		if(event.getNewValue() !=null){
+			newValue = event.getNewValue().toString();
+		    inputs = newValue.split(":");
+		}
+		//String oldValue = "";
+		boolean clearflag = false;
+		
+		/*if(event.getOldValue()!= null){
+			oldValue = event.getOldValue().toString();
+		}*/
+		if(inputs != null){
+		if(userInputsForRs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		{
+		if(inputs.length == 2){
+		if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+		return;
+		}
+		if(inputs.length == 1){
+			if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
+				return;
+			clearflag = true;
+		}
+		}
+	}
+
+	if((inputs != null) && ((inputs.length == 2) || clearflag == true )){
+		User user;
+		UserCaseInput caseInput = new UserCaseInput();
+		HttpSession session = Util.getSession();
+		String username = null;
+		String password = null;
+		if(session.getAttribute("username") != null)
+		username = session.getAttribute("username").toString();
+		if(session.getAttribute("password") != null)
+		password = session.getAttribute("password").toString();
+		int userid = UserDAO.getUserID(username, password);
+		
+		caseInput.setUserid(userid);
+		
+		caseInput.setSessionid(session.getId());
+		String networkcode = UserDAO.getCode(this.getNwNameforResearch());
+		caseInput.setCaseid(this.getCaseNo());
+		caseInput.setEventid(1001);
+		caseInput.setPageInfo("Research");
+		String code = UserDAO.getCode(this.getNwNameforResearch());
+		
+		
+		//s="";
+		if (inputs.length == 2){
+			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+inputs[1]);
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+	}
+		else if(clearflag == true){
+			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+"[Clear]");
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+		}
+		UserDAO.SaveFeatureforOthers(caseInput);
+}
+	}
 	public void researchPageLoad(ValueChangeEvent event) {
 		System.out.println("DNET Wrapper session started");
 		//this.setEvent("FEATURE ENTERED");
 		//this.setFeatureFlag("false");
+		networkNamers ="";
 		String newValue= event.getNewValue().toString();
 		String oldValue = "";
 		if(event.getOldValue()!= null){
@@ -1411,9 +1893,13 @@ public class ServerModel {
 			
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
-			
-			networkName = UserDAO.getFileName(newValue);
-			dw = new DNETWrapper(PATH + "/" + networkName);
+			if(dw!= null){
+				dw.endSession();
+				//this.setNetworkInput("");
+			}
+			networkNamers = UserDAO.getFileName(newValue);
+			if(!networkNamers.equals("")){
+			dw = new DNETWrapper(PATH + "/" + networkNamers);
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
@@ -1434,7 +1920,7 @@ public class ServerModel {
 			this.valuesNew = valuesNode; 
 			
 			Arrays.sort(nodes);
-			
+			}
 			
 				
 			}  
@@ -1451,18 +1937,21 @@ public class ServerModel {
 		System.out.println("DNET Wrapper session started");
 		//this.setEvent("FEATURE ENTERED");
 		//this.setFeatureFlag("false");
+		userInputs.clear();
 		String newValue= event.getNewValue().toString();
 		String oldValue = "";
 		if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}
+		Map<String, Double> values = new HashMap<String, Double>();
+		Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
 		try {
-			this.setEducationCaseNo(CaseNo(newValue));
-			Map<String, Double> values = new HashMap<String, Double>();
-			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
-			
+			if(dw != null){
+				dw.endSession();
+			}
 			networkName = UserDAO.getFileName(newValue);
+			if(!networkName.equals("")){
 			dw = new DNETWrapper(PATH + "/" + networkName);
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
@@ -1485,7 +1974,19 @@ public class ServerModel {
 			
 			Arrays.sort(nodes);
 			
+			this.setEducationCaseNo(CaseNo(newValue));
+			}
 			
+		/*	 String[] input = new String[0];
+				// List<String> values = new ArrayList<String>();
+				 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+				 list = UserDAO.getUserCaseInput(this.getEducationCaseNo());
+				 for(UserCaseInput userCaseInput:list){
+					 input = userCaseInput.getValue().split("] ");
+					// values.add(input[1]);
+					 String[] val = input[1].split("=");
+					 userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+				 }*/
 				
 			}  
 		 catch (NetworkLoadingException e) {
@@ -1505,6 +2006,15 @@ public class ServerModel {
 		System.out.println("DNET Wrapper session started");
 		this.setEvent("");
 		try {
+	        networkNamers = "";
+	        this.setNwNameforResearch("");
+	        this.setNwName("");
+	        this.setNwNameforQC("");
+	        this.setNwNameforEducation("");
+		/*	if(dw!= null){
+				dw.endSession();
+			}*/
+	        if(!"".equals(networkName)){
 			dw = new DNETWrapper(PATH + "/" + networkName);
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
@@ -1524,6 +2034,7 @@ public class ServerModel {
 			// changes ends for CR102,CR103
 			 
 			Arrays.sort(nodes);
+	        }
 		} catch (NetworkLoadingException e) {
 			System.out.println("Error loading the network.");
 
@@ -1542,8 +2053,10 @@ public class ServerModel {
 	}
 
 	public String getPostPageLoad() {
+		if(dw!= null){
 		dw.endSession();
 		System.out.println("DNET Wrapper session ended");
+		}
 		return this.pageLoad;
 	}
 	public void setPostResearchPageLoad(String pl) {
@@ -1719,9 +2232,9 @@ public class ServerModel {
 		else if(this.getModality().equals("")){
 			errorMessages.add("Please select Modality");
 		}
-		else if(this.getDescription().equals("")){
+		/*else if(this.getDescription().equals("")){
 			errorMessages.add("Please select Supporting Data Details");
-		}
+		}*/
 		else if(this.getCorrectDx().equals("")){
 			errorMessages.add("Please select Correct Diagnosis");
 		}
@@ -1782,7 +2295,7 @@ public class ServerModel {
 		if(educationErrorMessages!=null && educationErrorMessages.size()>0)
 			educationErrorMessages.clear();
 		educationErrorMessages = new ArrayList<String>();
-		String[] values = new String[0];
+/*		String[] values = new String[0];
 		List<UserCaseInput> userCaseInputList = new ArrayList<UserCaseInput>();
 		userCaseInputList = UserDAO.getUserCaseInput(getEducationCaseNo());
 		List<String> DiagList = new ArrayList<String>();
@@ -1801,40 +2314,34 @@ public class ServerModel {
 			}
 			
 		}
-	/*	if(this.getNwNameforEducation().equals("") || "-select-".equalsIgnoreCase(this.getNwNameforEducation())){
-			educationErrorMessages.add("Please select Network");
-		}*/
-/*		else if(this.getCorrectDxList()!= null && this.getCorrectDxList().size()== 0){
-			researchErrorMessages.add("Please enter Correct Diagnosis");
-		}
-		else if(this.getFirstDx() == null || "".equals(this.getFirstDx())){
-			educationErrorMessages.add("Please select First Diagnosis");
-		}
-		else if(this.getSecondDx() == null || "".equals(this.getSecondDx())){
-			educationErrorMessages.add("Please select Second Diagnosis");
-		}
-		else if(this.getThirdDx() == null || "".equals(this.getThirdDx())){
-			educationErrorMessages.add("Please select Third Diagnosis");
-		}
-		else if(this.getFirstDx().equals(this.secondDx) || this.getFirstDx().equals(this.thirdDx)){
-			educationErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
-		}
-		else if(this.getSecondDx().equals(this.firstDx) || this.getSecondDx().equals(this.thirdDx)){
-			educationErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
-		}
-		else if(this.getThirdDx().equals(this.firstDx) || this.getThirdDx().equals(this.secondDx)){
-			educationErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
-		}*/
+
 		if(DiagList.size() == 3){
 		if(!DiagList.get(0).equals(this.firstDx)){
 			educationErrorMessages.add("Please enter "+DiagList.get(0)+" as a first diagnosis");
 		}
 		else if(!DiagList.get(1).equals(this.secondDx)){
-			educationErrorMessages.add("Please enter "+DiagList.get(0)+" as a second diagnosis");
+			educationErrorMessages.add("Please enter "+DiagList.get(1)+" as a second diagnosis");
 		}
 		else if(!DiagList.get(2).equals(this.thirdDx)){
-			educationErrorMessages.add("Please enter "+DiagList.get(0)+" as a Third diagnosis");
+			educationErrorMessages.add("Please enter "+DiagList.get(2)+" as a Third diagnosis");
 		}
+		}*/
+		String correctDx ="";
+		if(this.getFirstDx() != null && this.getSecondDx() != null && this.getThirdDx() != null && !"".equalsIgnoreCase(this.getFirstDx()) &&  !"".equalsIgnoreCase(this.getSecondDx())&&  !"".equalsIgnoreCase(this.getThirdDx()))
+				{
+		if(this.getEducationCaseNo() != 0){
+		correctDx = UserDAO.getCorrectDx(this.getEducationCaseNo());
+		}
+		if(!correctDx.equals("")){
+			if((correctDx.equals(this.getFirstDx())) ||( correctDx.equals(this.getSecondDx()) ) || (correctDx.equals(this.getThirdDx()) )){
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "You have selected the Correct Diagnosis : "+correctDx, ""));
+			}else{
+				educationErrorMessages.add("Correct Diagnosis is "+ correctDx +". None of the selected diagnosis is correct! ");
+			}
+		}
+		}else{
+			educationErrorMessages.add("Please Select all the Mandatory Fields before Check Diagnosis");
 		}
 		if(educationErrorMessages.size()>0){
 			return true;
@@ -1975,7 +2482,129 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 		}
-		if(this.getFromQcPage().equalsIgnoreCase("true")){
+		/*if(this.getFromQcPage().equalsIgnoreCase("true")){
+			try {
+				networkcode = UserDAO.getCode(this.getNwName());
+				//CaseList caseList = this.getCaseList();
+				CaseList caselist = new CaseList();
+				caselist.setCaseid(this.getCaseNoforQC());
+				caselist.setAccession(this.getAccession());
+				caselist.setOrganization(this.getOrganization());
+				caselist.setNetwork(networkcode);
+				caselist.setModality(this.getModality());
+				caselist.setDescription(this.getDescription());
+				if ("Other".equalsIgnoreCase(this.getCorrectDx())) {
+					caselist.setCorrectDx(this.getCorrectDxText());
+				} else {
+					caselist.setCorrectDx(this.getCorrectDx());
+				}
+				caselist.setPatientid(this.getPatientId());
+				caselist.setAge(this.getAge());
+				caselist.setGender(this.getGender());
+				caselist.setSubmittedDate(new Date());
+				
+				//caseList.setSubmittedBy(user.getUserid());
+				String withoutLastComma = null;
+				if(this.getSupportingDataList().size() > 0){
+				StringBuffer sb = new StringBuffer();
+				for (String supportData : this.getSupportingDataList()) {
+					sb.append(supportData).append(", ");
+				}
+				withoutLastComma = sb.substring(0, sb.length() - ", ".length());
+				}
+				caselist.setSupportingData(withoutLastComma);
+				HttpSession session = Util.getSession();
+				String username = null;
+				String password = null;
+				if(session.getAttribute("username") != null){
+				username = session.getAttribute("username").toString();
+				}
+				if(session.getAttribute("password") != null){
+				password = session.getAttribute("password").toString();
+				}
+				int userid = UserDAO.getUserID(username, password);
+				caselist.setSubmittedBy(userid);
+				caselist.setQcperson(this.getQcperson());
+				this.setCaseList(caselist);
+				if (this.getCaseid() != 0 && caseListValidation()) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Combination of Organization,MR Number,Network Already exists", ""));
+				} else {
+				String[] input = new String[0];
+				String[] val = new String[0];
+				List<String> newList = new ArrayList<String>();
+				boolean success = UserDAO.QCCaseList(caselist);
+				List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+				 list = UserDAO.getUserCaseInput(caseNoforQC);
+				 for(UserCaseInput userCaseInput:list){
+					 input = userCaseInput.getValue().split("] ");
+					 if(!input[1].contains("[Clear]")){
+					 newList.add(input[1]);
+					 }
+					// val = input[1];
+					// for(String s : input){
+						// newList.add(s);
+					// }
+					
+					// values.add(input[1]);
+					//val = input[1].split("=");
+					 
+					 //userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+				 }
+				infoMessages = new ArrayList<String>();
+				if(newList.size()>0){
+				infoMessages.add("selected features are "+newList.toString());
+				}
+				 
+				if(success){
+				   this.featureFlag = "true";
+				   //this.setReviewCase("false");
+				   this.setFromQcPage("false");
+				   FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
+				   }
+				   else{
+						
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Update is not Successful!", ""));
+					}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}*/
+		}
+		return "";
+	}
+	
+	public String selectionDone(){
+		this.setFeatureFlag("false");
+		userInputs.clear();
+		//clear();
+		if(errorMessages != null && errorMessages.size() >0)
+			errorMessages.clear();
+		this.setAccession("");
+		this.setOrganization("");
+		this.setDescription("");
+		this.setModality("");
+		this.setCorrectDx("");
+		this.setPatientId("");
+		//this.setNwName("");
+		//this.setNwNameforQC("");
+		this.setCorrectDx("");
+		this.setCorrectDxText("");
+		this.setAge("");
+		this.setGender("");
+		//this.setQcperson("");
+		this.setSupportingDataList(new ArrayList<String>());
+		//this.setQcFlag("false");
+		this.prefixNodeListMapping.clear(); 
+		//return "login?faces-redirect=true";
+		return "";
+	}
+	public String qcSelectionDone(){
+		String networkcode = null;
+		
 			try {
 				networkcode = UserDAO.getCode(this.getNwName());
 				//CaseList caseList = this.getCaseList();
@@ -2050,11 +2679,32 @@ public class ServerModel {
 				}
 				 
 				if(success){
-				   this.featureFlag = "true";
+				  // this.featureFlag = "true";
 				   //this.setReviewCase("false");
-				   this.setFromQcPage("false");
+				  // this.setFromQcPage("false");
 				   FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
+				   this.setFeatureFlag("false");
+					UserDAO.UpdateCaseList("Yes",this.getCaseNoforQC());
+					userInputsForQc.clear();
+					//this.setQcFlag("false");
+					if(errorMessages != null && errorMessages.size() >0)
+						errorMessages.clear();
+					this.setAccession("");
+					this.setOrganization("");
+					this.setDescription("");
+					this.setModality("");
+					this.setCorrectDx("");
+					this.setPatientId("");
+					this.setCorrectDxText("");
+					this.setAge("");
+					this.setGender("");
+					//this.setQcperson("");
+					this.setSupportingDataList(new ArrayList<String>());
+					//this.setQcFlag("false");
+					this.prefixNodeListMapping.clear(); 
+					//return "login?faces-redirect=true";
+					return "qualityControl";
 				   }
 				   else{
 						
@@ -2065,30 +2715,14 @@ public class ServerModel {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-		}
 		return "";
 	}
-	public String selectionDone(){
-		this.setFeatureFlag("false");
-		userInputs.clear();
-		clear();
-		//return "login?faces-redirect=true";
-		return "";
-	}
-	public String qcSelectionDone(){
-		this.setFeatureFlag("false");
-		UserDAO.UpdateCaseList("Yes",this.getCaseNoforQC());
-		userInputs.clear();
-		this.setQcFlag("false");
-		clear();
-		//return "login?faces-redirect=true";
-		return "";
-	}
+	
 	public String deleteCase(){
 		UserDAO.deleteCaseList(this.getCaseNoforQC());
 		this.setFeatureFlag("false");
 		userInputs.clear();
+		userInputsForQc.clear();
 		clear();
 		this.setQcperson("");
 		return "";
@@ -2096,8 +2730,11 @@ public class ServerModel {
     public String backtoLogin(){
 		 return "login?faces-redirect=true";
 	}
+    public String backtoQc(){
+		 return "qualityControl?faces-redirect=true";
+	}
 	public String educationCompleted(){
-		this.setResearchErrMsg("");
+		this.setEducationErrMsg("");
 		if(EducationCaseValidate() == true){
 			return null;
 		}
@@ -2128,15 +2765,19 @@ public class ServerModel {
 		userCaseInput.setUserid(userid);
 		
 		userCaseInput.setSessionid(session.getId());
-		UserDAO.SaveFeature(userCaseInput);
+		//UserDAO.SaveFeature(userCaseInput);
 		String nwcode = UserDAO.getCode(this.getNwNameforEducation());
-        UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
+        //UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		userInputs.clear();
+		/*userInputs.clear();
 		this.setNwNameforEducation("-select-");
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
 		this.setCorrectDxList(new ArrayList<String>());
+    	this.setEducationCaseNo(CaseNo(this.getNwNameforEducation()));*/
 	    //session.invalidate();
 		return "";
 		
@@ -2172,18 +2813,25 @@ public class ServerModel {
 		int userid = UserDAO.getUserID(username, password);
 		
 		userCaseInput.setUserid(userid);
-		
+		userCaseInput.setPageInfo("Research");
+		userCaseInput.setComments(this.getComments());
 		userCaseInput.setSessionid(session.getId());
-		UserDAO.SaveFeature(userCaseInput);
+		UserDAO.SaveFeatureforOthers(userCaseInput);
 		String nwcode = UserDAO.getCode(this.getNwNameforResearch());
         UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		userInputs.clear();
-		this.setNwNameforResearch("-select-");
+		userInputsForRs.clear();
+		//this.setNwNameforResearch("-select-");
+		this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
 		this.setCorrectDxList(new ArrayList<String>());
-	    session.invalidate();
+		this.setComments("");
+		researchErrorMessages = new ArrayList<String>();
+	   // session.invalidate();
+		this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
 		return "";
 		
 	}
@@ -2219,13 +2867,15 @@ public class ServerModel {
 		this.setCorrectDx("");
 		this.setPatientId("");
 		this.setNwName("");
+		this.setNwNameforQC("");
 		this.setCorrectDx("");
 		this.setCorrectDxText("");
 		this.setAge("");
 		this.setGender("");
 		//this.setQcperson("");
 		this.setSupportingDataList(new ArrayList<String>());
-		this.setQcFlag("false");
+		//this.setQcFlag("false");
+		this.prefixNodeListMapping.clear(); 
 		return "";
 	}
 	
@@ -2241,8 +2891,28 @@ public class ServerModel {
     }
 	
     public String clearInput(){
-    	this.setNwNameforResearch("");
+    	//this.setNwNameforResearch("");
     	//this.getRandomCaseNo();
+    	userInputsForRs.clear();
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	this.setComments("");
+		this.setCorrectDxList(new ArrayList<String>());
+		researchErrorMessages = new ArrayList<String>();
+    	this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
+    	return "";
+    }
+    public String nextCase(){
+    	//this.setNwNameforEducation("");
+    	//this.getRandomCaseNo();
+    	userInputs.clear();
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	educationErrorMessages = new ArrayList<String>();
+    	this.setCorrectDxList(new ArrayList<String>());
+    	this.setEducationCaseNo(CaseNo(this.getNwNameforEducation()));
     	return "";
     }
 	public String getRenderInputText() {
@@ -2298,6 +2968,76 @@ public class ServerModel {
 			}
 		return errMsg;
 	}
+	
+	
+	public void clearDefault(){
+		if(errorMessages != null && errorMessages.size() >0)
+			errorMessages.clear();
+		this.setAccession("");
+		this.setOrganization("");
+		this.setDescription("");
+		this.setModality("");
+		this.setCorrectDx("");
+		this.setPatientId("");
+		this.setNwName("");
+		this.setNwNameforQC("");
+		this.setCorrectDx("");
+		this.setCorrectDxText("");
+		this.setAge("");
+		this.setGender("");
+		//this.setQcperson("");
+		this.setSupportingDataList(new ArrayList<String>());
+		//this.setQcFlag("false");
+	}
+
+	
+	public String getNavRuleClinical() {
+		//userInputs.clear();
+		return "index";
+	}
+	public String getNavRuleCase() {
+		/*clearDefault();
+		this.setNwName("");;*/
+		clearDefault();
+		this.setFromQcPage("false");
+		return "caseInput_form";
+	}
+	public String getNavRuleQC() {
+		/*userInputsForQc.clear();
+		this.setNwNameforQC("");
+		clearDefault();*/
+		//this.setCaseNoforQCSetter("");
+		return "qualityControl";
+	}
+	public String getNavRuleResearch() {
+		/*userInputsForRs.clear();
+		this.setNwNameforResearch("");
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	this.setComments("");
+    	researchErrorMessages = new ArrayList<String>();
+		this.setCorrectDxList(new ArrayList<String>());*/
+		this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	this.setComments("");
+    	researchErrorMessages = new ArrayList<String>();
+		this.setCorrectDxList(new ArrayList<String>());
+		return "research";
+		}
+	public String getNavRuleEducation() {
+		/*userInputs.clear();
+		this.setNwNameforEducation("");*/
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	educationErrorMessages = new ArrayList<String>();
+    	this.setCorrectDxList(new ArrayList<String>());
+		return "education";
+	}
+	
+	
 	public String getInfoMsg() {
 		String infoMsg;
 		if(infoMessages == null || infoMessages.size() == 0){
@@ -2360,7 +3100,7 @@ public class ServerModel {
 		
 		if(nwNameforResearch != null && !nwNameforResearch.equalsIgnoreCase(this.getNwNameforResearch())){
 			this.setErrorMsg("");
-			userInputs.clear();
+			userInputsForRs.clear();
 			System.out.println("Clearing User Inputs");
 			}
 		this.nwNameforResearch = nwNameforResearch;
@@ -2377,6 +3117,8 @@ public class ServerModel {
 		}
 		if(!userInputs.isEmpty())
 			userInputs.clear();
+		if(!probInputs.isEmpty())
+			probInputs.clear();
 		
 		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
 			userInputs.put("Diseases", newValue);
@@ -2467,7 +3209,7 @@ public class ServerModel {
 		 
 	 }
 	 public List<String> getSelectCaseList(){
-	    	
+	    	/*
 	    	List<String> caseListforNw = new ArrayList<String>();
 	    	String code = null;
 	    	String username = null;
@@ -2481,16 +3223,25 @@ public class ServerModel {
 			if(this.getNwNameforQC() != null && !"-select-".equalsIgnoreCase(this.getNwNameforQC())){
 	    	code= UserDAO.getCode(this.getNwNameforQC());
 	    	caseListforNw.addAll(UserDAO.getCaseIdforQC(code,username));
-	    	}
-			return caseListforNw;
+	    	} */
+			return this.caseListforNw;
 	    	
 	    }
 	 
 	 public String doQC(){
+		 
+		 
+			 errorMessages = new ArrayList<String>();
+		
+		 if(("".equals(this.getNwNameforQC())) || ("-select-".equals(this.getNwNameforQC()))
+				 || ("".equals(this.getCaseNoforQCSetter())) || ("-select-".equals(this.getCaseNoforQCSetter()))){
+			 errorMessages.add("Please Select the Mandatory Fields.");
+			 return "";
+		 }
 		 //String nwcode = UserDAO.getCode(this.getNwNameforQC());
 	       // UserDAO.UpdateCaseList(this.getCaseNoforQC(),nwcode,"Yes");
 		 this.setFromQcPage("true");
-		 
+		 userInputsForQc.clear();
 		 CaseList caselist = new CaseList();
 		// this.setCase(caselist.getCaseid());
 		 
@@ -2498,6 +3249,7 @@ public class ServerModel {
 		 if(caselist != null){
 		 String nwname = UserDAO.getNwName(caselist.getNetwork());
 		 this.setNwName(nwname);
+		 getDWInfo();
 		 this.setOrganization(caselist.getOrganization());
 		 this.setModality(caselist.getModality());
 		 this.setAccession(caselist.getAccession());
@@ -2510,21 +3262,25 @@ public class ServerModel {
 		 this.setSupportingDataList(caselist.getSupportingDataList());
 		 this.setQcperson(caselist.getQcperson());
 		// UserCaseInput usercaseinput = new UserCaseInput();
-		 this.setQcFlag("true");
+		// this.setQcFlag("true");
+		// this.setFeatureFlag("false"); 
+		// QualityForm qForm = new QualityForm();
+		// qForm.setQcFlag("true"); 
+		 this.setEvent("FEATURE ENTERED");
 		 String[] input = new String[0];
 		// List<String> values = new ArrayList<String>();
-		/* List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
 		 list = UserDAO.getUserCaseInput(caseNoforQC);
 		 for(UserCaseInput userCaseInput:list){
 			 input = userCaseInput.getValue().split("] ");
 			// values.add(input[1]);
 			 String[] val = input[1].split("=");
-			 userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
-		 }*/
+			 userInputsForQc.put(nodeNameReverseMapping.get(val[0]),val[1]);
+		 }
 		 } 
-		 return "";
+		 return "qualityControl2";
 	 }
-
+	
 	public int getCaseNoforQC() {
 		return caseNoforQC;
 	}
@@ -2546,6 +3302,14 @@ public class ServerModel {
 	}
 
 	public void setNwNameforEducation(String nwNameforEducation) {
+		if(nwNameforEducation != null && !nwNameforEducation.equalsIgnoreCase(this.getNwNameforEducation())){
+			this.setEducationErrMsg("");
+			userInputs.clear();
+			userInputs1.clear();
+			userInputs2.clear();
+			dbFeatures.clear();
+			System.out.println("Clearing User Inputs");
+			}
 		this.nwNameforEducation = nwNameforEducation;
 	}
 
@@ -2575,13 +3339,14 @@ public class ServerModel {
 	public void setEducationCaseNo(int educationCaseNo) {
 		this.educationCaseNo = educationCaseNo;
 	}
-	public String getQcFlag() {
-		return qcFlag;
-	}
+	 public String getComments() {
+			return comments;
+		}
 
-	public void setQcFlag(String qcFlag) {
-		this.qcFlag = qcFlag;
-	}
+		public void setComments(String comments) {
+			this.comments = comments;
+		}
+	
 
 	class Feature {
 		private String featureName;

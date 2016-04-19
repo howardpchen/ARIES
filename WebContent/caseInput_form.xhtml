@@ -48,7 +48,7 @@ input[type=checkbox], input[type=radio] {
 				<div class='row' id="divStyle" style="color:white;">
 					<div class="col-md-3">
 						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-							7-30-2015</font>
+							4-10-2016</font>
 					</div>
 					<div class="col-md-6">
 
@@ -81,10 +81,24 @@ input[type=checkbox], input[type=radio] {
 
 <div class="col-md-11">
             <ul class="nav nav-tabs">
-  <li><a href="/ARIES/">Home</a></li>
-   <li><a href="/ARIES/index.jsf">Clinical</a></li>
-  <li class="active"><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
-  <li><a href="/ARIES/research.jsf">Research</a></li> 
+  <li ><a href="/ARIES/">Home</a></li>
+						<li ><h:commandLink action="#{serverModel.getNavRuleClinical}"
+								value="Clinical">
+							</h:commandLink></li>
+						<li class="active"><h:commandLink action="#{serverModel.getNavRuleCase}"
+								value="SubmitCase">
+							</h:commandLink></li>
+						<li ><h:commandLink
+								action="#{serverModel.getNavRuleResearch}" value="Research">
+							</h:commandLink></li>
+						<li><h:commandLink
+								action="#{serverModel.getNavRuleEducation}" value="Education">
+							</h:commandLink></li>
+						<li ><h:commandLink action="#{serverModel.getNavRuleQC}"
+								value="QC">
+							</h:commandLink></li>
+						<li><a href="">Analytics</a></li>
+  
   
 </ul>
 </div>
@@ -241,12 +255,12 @@ input[type=checkbox], input[type=radio] {
 
 										<h:selectManyCheckbox id="supportData"
 											value="#{serverModel.supportingDataList}">
-											<f:selectItem itemValue="pathology" itemLabel="pathology"></f:selectItem>
-											<f:selectItem itemValue="laboratory" itemLabel="laboratory"></f:selectItem>
-											<f:selectItem itemValue="clinical history"
-												itemLabel="clinical history"></f:selectItem>
-											<f:selectItem itemValue="imaging findings"
-												itemLabel="imaging findings"></f:selectItem>
+											<f:selectItem itemValue="Pathology" itemLabel="Pathology"></f:selectItem>
+											<f:selectItem itemValue="Laboratory" itemLabel="Laboratory"></f:selectItem>
+											<f:selectItem itemValue="Clinical history"
+												itemLabel="Clinical history"></f:selectItem>
+											<f:selectItem itemValue="Imaging findings"
+												itemLabel="Imaging findings"></f:selectItem>
 
 										</h:selectManyCheckbox>
 
@@ -255,7 +269,7 @@ input[type=checkbox], input[type=radio] {
 								
 								<div class="form-group" style="text-align: center;">
 									<div class="col-md-4">
-										<label for="description">Supporting data details : <font color="red">*</font></label>
+										<label for="description">Supporting data details : </label>
 									</div>
 									<div class="input-group">
 

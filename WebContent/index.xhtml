@@ -37,7 +37,7 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 				<div class='row' id="divStyle">
 					<div class="col-md-3">
 						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-							7-30-2015</font>
+							4-10-2016</font>
 					</div>
 					<div class="col-md-6"> 
 
@@ -78,10 +78,24 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 		<div class="9u">
 			<ul class="nav nav-tabs">
 
-				<li class="active"><a href="/ARIES/">Home</a></li>
-				<li><a href="/ARIES/index.jsf">Clinical</a></li>
-				<li><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
-				<li><a href="/ARIES/research.jsf">Research</a></li>
+				<li ><a href="/ARIES/">Home</a></li>
+						<li class="active"><h:commandLink action="#{serverModel.getNavRuleClinical}"
+								value="Clinical">
+							</h:commandLink></li>
+						<li><h:commandLink action="#{serverModel.getNavRuleCase}"
+								value="SubmitCase">
+							</h:commandLink></li>
+						<li ><h:commandLink
+								action="#{serverModel.getNavRuleResearch}" value="Research">
+							</h:commandLink></li>
+						<li><h:commandLink
+								action="#{serverModel.getNavRuleEducation}" value="Education">
+							</h:commandLink></li>
+						<li><h:commandLink action="#{serverModel.getNavRuleQC}"
+								value="QC">
+							</h:commandLink></li>
+						<li><a href="">Analytics</a></li>
+				
 
 			</ul>
 		</div>
@@ -93,7 +107,7 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 
 </div>
 		
-		<h2>Current Network:</h2>
+		<h2>Select Network:</h2>
 		<h:selectOneMenu value="#{serverModel.networkInput}"
 			onchange="this.form.submit()">
 			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
@@ -104,26 +118,31 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
         </h:selectBooleanCheckbox>
        
 	</h:form>
-
-	<h2>Your Inputs:</h2>
-
 	<h:form >
 		
 	<h:inputHidden value="#{serverModel.prePageLoad}" />
-	<h3>Diseases:</h3>
+	<div class="row">
+	<h2>Select Disease:</h2>
+	<div class="9u"></div>
 	 <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.getDiseaseAction}">
 											<f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
 											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
 										</h:selectOneMenu> 
+	<p>
+			<h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
+		</p>					
+		</div>				
 		<!-- changes starts for CR101 -->
+    <h2>Your Inputs:</h2>
+		
 		<div class="row">
 					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
 				
 			</div>
-									<div >
+								<!-- 	<div >
 											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
 												escape="false"></h:outputText>
-										</div>
+										</div> -->
 										<br></br>
 		<ui:repeat var="networkPrefix" id="networkPrefixID" 
 			value="#{serverModel.networkPrefixList}">

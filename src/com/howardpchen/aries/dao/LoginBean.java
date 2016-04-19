@@ -114,7 +114,7 @@ public class LoginBean implements Serializable {
             	return "research?faces-redirect=true";
             }
             else if("Education".equals(this.getOption())){
-            	//return "education?faces-redirect=true";
+            	return "education?faces-redirect=true";
             }
             else if("QC".equals(this.getOption())&& (uname.equalsIgnoreCase("manuel")|| uname.equalsIgnoreCase("manuel1") || uname.equalsIgnoreCase("manuel2") || uname.equalsIgnoreCase("manuel3")
             		|| uname.equalsIgnoreCase("manuel4") )){

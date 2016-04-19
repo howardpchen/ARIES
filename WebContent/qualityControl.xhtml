@@ -48,7 +48,7 @@ input[type=checkbox], input[type=radio] {
 			<div class='row' id="divStyle" style="color: white;">
 				<div class="col-md-3">
 					<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-						7-30-2015</font>
+						4-10-2016</font>
 				</div>
 				<div class="col-md-6">
 
@@ -81,12 +81,25 @@ input[type=checkbox], input[type=radio] {
 
 					<div class="col-md-11">
 						<ul class="nav nav-tabs">
-							<li><a href="/ARIES/">Home</a></li>
-							<li><a href="/ARIES/index.jsf">Clinical</a></li>
-							<li><a href="/ARIES/caseInput_form.jsf">Submit
-									Case</a></li>
-							<li><a href="/ARIES/research.jsf">Research</a></li>
-							<li class="active"><a href="/ARIES/qualityControl.jsf">QC</a></li>
+						<li ><a href="/ARIES/">Home</a></li>
+						<li ><h:commandLink action="#{serverModel.getNavRuleClinical}"
+								value="Clinical">
+							</h:commandLink></li>
+						<li><h:commandLink action="#{serverModel.getNavRuleCase}"
+								value="SubmitCase">
+							</h:commandLink></li>
+						<li ><h:commandLink
+								action="#{serverModel.getNavRuleResearch}" value="Research">
+							</h:commandLink></li>
+						<li><h:commandLink
+								action="#{serverModel.getNavRuleEducation}" value="Education">
+							</h:commandLink></li>
+						<li class="active"><h:commandLink action="#{serverModel.getNavRuleQC}"
+								value="QC">
+							</h:commandLink></li>
+						<li><a href="">Analytics</a></li>
+
+							
 
 						</ul>
 					</div>
@@ -135,19 +148,21 @@ input[type=checkbox], input[type=radio] {
 
 					</div>
 				</div>
-				<div class="row">
+				
 					<div class="form-group" style="text-align: center;">
 					<div class="col-md-2"></div>
 						<div class="col-md-2" style="color:white">
-							<label for="caseNoQC">Select Case for QC :</label>
+							<label for="caseNoQC">CaseNo for QC :<font color="red">*</font></label>
 						</div>
 
 						<div class="input-group" >
 							<h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}">
+							<f:selectItem itemLabel="-select-" ></f:selectItem>
 								<f:selectItems value="#{serverModel.selectCaseList}" />
 							</h:selectOneMenu>
 						</div>
 					</div>
+					<div class="row">
                     <div class="col-md-3"></div>
 					<div class="col-md-2">
 						<h:commandButton id="qcbutton" value="QC" class="btn btn-primary"
@@ -162,283 +177,18 @@ input[type=checkbox], input[type=radio] {
 					<br />
 				</p>
 				
-				<div class="row" id="maindiv">
-					<div class="col-md-1"></div>
-					<div class="col-md-10">
-						<div class="panel panel-primary" style="background-color: #00CCFF">
-							<div class="panel-heading" align="center">
-								<h4>Case Submission Form</h4>
-							</div>
-							<div class="panel-body">
-
-
-								<fieldset id="formDiv">
-									
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-
-											<label for="organization">Organization<font
-												color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-
-											<h:selectOneMenu value="#{serverModel.organization}">
-												<f:selectItem itemLabel="-select-"></f:selectItem>
-												<f:selectItem itemValue="CHOP" itemLabel="CHOP"></f:selectItem>
-												<f:selectItem itemValue="UPHS" itemLabel="UPHS"></f:selectItem>
-											</h:selectOneMenu>
-
-										</div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-
-											<label for="modality">Modality : <font color="red">*</font></label>
-										</div>
-										<div class="input-group">
- 
-
-											<h:selectOneMenu id="modality"
-												value="#{serverModel.modality}">
-												<f:selectItem itemLabel="-select-"></f:selectItem>
-												<f:selectItem itemValue="MR" itemLabel="MR"></f:selectItem>
-												<f:selectItem itemValue="XR" itemLabel="XR"></f:selectItem>
-												<f:selectItem itemValue="CT" itemLabel="CT"></f:selectItem>
-											</h:selectOneMenu>
-
-										</div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="accession">Accession :<font color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:inputText id="accession" value="#{serverModel.accession}"
-												onblur="return validate()" />
-
-										</div>
-										<div id="error" style="color: red"></div>
-									</div>
-
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="mrNum">MR Number(Last 5) : <font
-												color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:inputText id="mrNum" value="#{serverModel.patientId}"
-												maxlength="5"></h:inputText>
-
-										</div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="age">Patient Age :<font color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:inputText id="age" value="#{serverModel.age}"
-												maxlength="3" onblur="return checkNumber()" />
-
-										</div>
-										<div id="age_error" style="color: red"></div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-
-											<label for="gender">Gender : <font color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-
-											<h:selectOneRadio id="gender" value="#{serverModel.gender}">
-												<f:selectItem itemValue="Female" itemLabel="Female"></f:selectItem>
-												<f:selectItem itemValue="Male" itemLabel="Male"></f:selectItem>
-											</h:selectOneRadio>
-
-										</div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-
-											<label for="supportData">Supporting Data : <font
-												color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-
-											<h:selectManyCheckbox id="supportData"
-												value="#{serverModel.supportingDataList}">
-												<f:selectItem itemValue="pathology" itemLabel="pathology"></f:selectItem>
-												<f:selectItem itemValue="laboratory" itemLabel="laboratory"></f:selectItem>
-												<f:selectItem itemValue="clinical history"
-													itemLabel="clinical history"></f:selectItem>
-												<f:selectItem itemValue="imaging findings"
-													itemLabel="imaging findings"></f:selectItem>
-
-											</h:selectManyCheckbox>
-
-										</div>
-									</div>
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="description">Supporting data details : <font
-												color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:inputTextarea value="#{serverModel.description}"
-												style="height:80px;width:260px;"></h:inputTextarea>
-										</div>
-
-									</div>
-
-
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="diagnosis">Correct Diagnosis :<font
-												color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:selectOneMenu id="diagnosis"
-												value="#{serverModel.correctDx}" onchange='this.form.submit();showText()'>
-												<f:selectItem itemLabel="-select-"></f:selectItem>
-												<f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
-												<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-											</h:selectOneMenu>
-
-
-										</div>
-									</div><div class="form-group" style="text-align: center;"
-										id="inputTex">
-										<div class="col-md-4"></div>
-										<div class="input-group">
-											<h:inputText value="#{serverModel.correctDxText}" />
-										</div>
-									</div>
-									
-
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="qcperson">QC Person :<font color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:selectOneMenu id="qcperson"
-												value="#{serverModel.qcperson}">
-												<f:selectItems value="#{serverModel.usersList}"></f:selectItems>
-											</h:selectOneMenu>
-
-
-										</div>
-									</div>
-
-									<p>
-										<br />
-									</p>
-									<div class="form-group">
-										<div class="col-md-3"></div> 
-
-										<div class="col-md-2">
-											<h:commandButton id="submit_btn" class="btn btn-primary"
-												value="Case Submit" action="#{serverModel.save}"
-												reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
-										</div>
-										<div class="col-md-1">
-											<h:commandButton id="reset" value="Reset"
-												class="btn btn-primary" action="#{serverModel.clear}"
-												reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
-										</div>
- 
-
-
-									</div>
-								</fieldset>
-								<div id="feature_pg">
-									<div class="row">
-
-										<div class="col-md-2"></div>
-										<div class="col-md-8">
-											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
-												escape="false"></h:outputText>
-										</div>
-									</div>
-									<h3>Enter Inputs for Case No:#{serverModel.caseid}</h3>
-									<ui:repeat var="networkPrefix"
-										value="#{serverModel.networkPrefixList}">
-
-										<h:panelGrid id="pg_inputs" cellspacing="2"
-											rendered="#{serverModel.getFeaturesRendered(networkPrefix)}">
-											<h:outputText
-												value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
-
-											<ui:repeat var="feature"
-												value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
-												<h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-												<h:selectOneMenu id="sensitivity"
-													class="features ${serverModel.featureClass(feature)}"
-													value="#{serverModel.featureValue}"
-													onchange="this.form.submit()">
-													<f:selectItems
-														value="#{serverModel.selectMenuInputsFromCase(feature)}" />
-												</h:selectOneMenu>
-
-
-											</ui:repeat> 
-										</h:panelGrid> 
-
-									</ui:repeat>
-									<p>
-										<br />
-									</p>
-									<div class="form-group">
-										<div class="col-md-3"></div>
-										<div class="col-md-2">
-											<h:commandButton id="edit"
-												action="#{serverModel.getReviewQCCaseList}"
-												class="btn btn-primary" value="Review Case" />
-										</div>
-										<div class="col-md-2">
-											<h:commandButton id="done_btn" class="btn btn-success"
-												value="Done" action="#{serverModel.qcSelectionDone}" />
-										</div>
-										<div class="col-md-2">
-											<h:commandButton id="del_btn" class="btn btn-danger"
-												value="Delete" action="#{serverModel.deleteCase}" />
-										</div>
-										
-										
-
-									</div>
-								</div>
-
-							</div>
-						</div>
-					</div>
-				</div>
+				
 			</div>
 			<h:inputHidden value="#{serverModel.postPageLoad1}" />
-			<h:inputHidden id="dpFlag" value="#{serverModel.featureFlag}"></h:inputHidden>
-			<h:inputHidden id="qcFlag" value="#{serverModel.qcFlag}"></h:inputHidden>
+			
+			
 		</h:form>
 
 
 	</f:view>
 	<script type="text/javascript">
+	
+	//showOrhideDiv();
 		function validate() {
 
 			var flag = 0;
@@ -455,14 +205,13 @@ input[type=checkbox], input[type=radio] {
 				return false;
 
 		}
-        showOrhideDiv();
+      
         function showOrhideDiv(){ 
         	var e = document.getElementById("maindiv");
 			
-			var caseno = document.getElementById("caseInput:caseNoQC").value;
 			var flag = document.getElementById("caseInput:qcFlag").value;
-			
-			if ((flag == 'true')&amp;&amp;(caseno != '')) {
+			alert(flag);
+			if ((flag == 'true')) {
 				
 				e.style.display = 'block';
 			} 
@@ -472,23 +221,7 @@ input[type=checkbox], input[type=radio] {
 			
         }
         
-		showhide(); 
-
-		function showhide() {
-			var e = document.getElementById("feature_pg");
-			var er = document.getElementById("formDiv");
-
-			var flag = document.getElementById("caseInput:dpFlag").value;
-
-			if (flag == 'false') {
-				e.style.display = 'none';
-				er.style.display = 'block';
-			} else {
-				e.style.display = 'block';
-				er.style.display = 'none'
-				er.readOnly = true;
-			}
-		}
+		
 
 		showText();
 		function showText() {

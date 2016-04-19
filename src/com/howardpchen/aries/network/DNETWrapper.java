@@ -58,6 +58,7 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 	@Override
 	public Map<String, Double> getNodeProbs(String nodeName) {
 		Map<String, Double> returnMap = new HashMap<String, Double>();
+		
 		Node myNode = null;
 		try {
 			myNode = net.getNode(nodeName);
@@ -71,6 +72,7 @@ public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable 
 			System.err.println("Error getting node probabilities.");
 			//e.printStackTrace();
 		}
+		System.out.println(nodeName+" : "+returnMap);
 		
 		return returnMap;
 	}

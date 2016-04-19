@@ -9,6 +9,26 @@ public class UserCaseInput {
 	private int eventid;
 	private String sessionid;
 	private String value;
+	private String pageInfo;
+	private String comments;
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	/**
+	 * @return the pageInfo
+	 */
+	public String getPageInfo() {
+		return pageInfo;
+	}
+	/**
+	 * @param pageInfo the pageInfo to set
+	 */
+	public void setPageInfo(String pageInfo) {
+		this.pageInfo = pageInfo;
+	}
 	private Date datetimeentered;
 	
 	public int getUserid() {

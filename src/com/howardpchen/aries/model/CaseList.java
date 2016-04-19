@@ -21,7 +21,7 @@ public class CaseList {
 	private String completed;
 	private String qcperson;
 	private List<String> supportingDataList;
-
+	
 	public List<String> getSupportingDataList() {
 		return supportingDataList;
 	}

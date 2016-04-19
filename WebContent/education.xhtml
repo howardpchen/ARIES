@@ -40,7 +40,7 @@ input[type=checkbox], input[type=radio] {
 </h:head>
 <h:body id="bodyStyle">
 	<f:view>
-		<h:form role="form" id="research">
+		<h:form role="form" id="education">
 
 			
 
@@ -83,20 +83,19 @@ input[type=checkbox], input[type=radio] {
 						<li ><h:commandLink action="#{serverModel.getNavRuleClinical}"
 								value="Clinical">
 							</h:commandLink></li>
-						<li ><h:commandLink action="#{serverModel.getNavRuleCase}"
+						<li><h:commandLink action="#{serverModel.getNavRuleCase}"
 								value="SubmitCase">
 							</h:commandLink></li>
-						<li class="active"><h:commandLink
+						<li ><h:commandLink
 								action="#{serverModel.getNavRuleResearch}" value="Research">
 							</h:commandLink></li>
-						<li><h:commandLink
+						<li class="active"><h:commandLink
 								action="#{serverModel.getNavRuleEducation}" value="Education">
 							</h:commandLink></li>
-						<li ><h:commandLink action="#{serverModel.getNavRuleQC}"
+						<li><h:commandLink action="#{serverModel.getNavRuleQC}"
 								value="QC">
 							</h:commandLink></li>
 						<li><a href="">Analytics</a></li>
-  
   
 </ul>
 </div>
@@ -118,7 +117,7 @@ input[type=checkbox], input[type=radio] {
 
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
-				    <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
+				    <h:outputText value="#{serverModel.educationErrMsg}" escape="false" ></h:outputText>
 					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
 				</div>
 			</div>
@@ -130,7 +129,7 @@ input[type=checkbox], input[type=radio] {
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
 						<div class="panel panel-primary" style="background-color:#00CCFF">
-							<div class="panel-heading" align="center"><h4>Research</h4>
+							<div class="panel-heading" align="center"><h4>Education</h4>
 							</div>
 							<div class="panel-body">
  
@@ -143,8 +142,8 @@ input[type=checkbox], input[type=radio] {
 									<div class="input-group">
 									
 
-										<h:selectOneMenu id="network" value="#{serverModel.nwNameforResearch}" 
-										onchange="this.form.submit()" valueChangeListener="#{serverModel.researchPageLoad}" reRender="diagnosis" >
+										<h:selectOneMenu id="network" value="#{serverModel.nwNameforEducation}" 
+										onchange="this.form.submit()" valueChangeListener="#{serverModel.educationPageLoad}" reRender="diagnosis" >
 											<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
 											<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems> 
 										</h:selectOneMenu> 
@@ -152,10 +151,10 @@ input[type=checkbox], input[type=radio] {
 									</div> 
 								</div>
 
-                                  <h:panelGroup rendered="#{serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0}" >
+                                  <h:panelGroup rendered="#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}" >
                                   
                              <div>
-                                <h3>Enter Inputs for Accession: #{serverModel.rsrchAccessionNo}</h3>
+                                <h3>Enter Inputs for Accession: #{serverModel.accessionNo}</h3>
 								<ui:repeat var="networkPrefix"
 									value="#{serverModel.networkPrefixList}">
                                     
@@ -169,10 +168,10 @@ input[type=checkbox], input[type=radio] {
 
 											<h:outputText value="#{serverModel.currentFeature(feature)}" />
 
-											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClassRs(feature)}" 
-												value="#{serverModel.researchNodeInput}" onchange="this.form.submit()" valueChangeListener="#{serverModel.saveFeatures}" >
+											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClass1(feature)}" 
+												value="#{serverModel.educationNodeInput}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.saveFeaturesforEducation}">
 												<f:selectItems
-													value="#{serverModel.selectMenuInputsForResearch(feature)}" /> 
+													value="#{serverModel.selectMenuInputsForEducation(feature)}" /> 
 											</h:selectOneMenu>
 											
 
@@ -183,7 +182,7 @@ input[type=checkbox], input[type=radio] {
 								 <p><br/></p> 
 								</div>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0 }">
+								<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0 }">
 								<div class="form-group" style="text-align: center;">
 									<div class="col-md-4">
 									<label for="firstdiag">First Diagnosis :<font color="red">*</font></label>
@@ -220,30 +219,29 @@ input[type=checkbox], input[type=radio] {
 											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
 										</h:selectOneMenu>
 									</div>
-									<br/>
-									<div class="col-md-4">
-									<label for="comments">Comments : </label>
-									</div>
-									<div class="input-group">
-
-										<h:inputTextarea id="comments" value="#{serverModel.comments}"
-											style="height:80px;width:260px;"></h:inputTextarea>
-									</div>
 									
 								</div>
 								</h:panelGroup>
 								
 								 <p><br/></p>
+								 
 								 <div class="form-group">
-									<div class="col-md-4"></div>
+									<div class="col-md-2"></div>
                                     <div class="col-md-1"> 
-										<h:commandButton id="skip_btn" class="btn btn-primary" rendered="#{serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0}"
-											value="Skip" action="#{serverModel.clearInput}" />
+									
 									</div>
 									<div class="col-md-2"> 
-										<h:commandButton id="done_btn" class="btn btn-success" rendered="#{serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0}"
-											value="Done" action="#{serverModel.actionCompleted}" />
+										<h:commandButton id="check" class="btn btn-primary" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
+											value="Check Features" action="#{serverModel.checkFeatures}" />
 									</div> 
+									<div class="col-md-2"> 
+										<h:commandButton id="checkDiag" class="btn btn-primary" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
+											value="Check Diagnosis" action="#{serverModel.educationCompleted}" />
+									</div> 
+									<div class="col-md-2"> 
+										<h:commandButton id="done_btn" class="btn btn-success" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
+											value="Next" action="#{serverModel.nextCase}" />
+									</div>
 									
 								</div>
 		                        
@@ -257,7 +255,7 @@ input[type=checkbox], input[type=radio] {
 					</div>
 				</div>
 			
-			<h:inputHidden value="#{serverModel.postResearchPageLoad}" />
+			<h:inputHidden value="#{serverModel.postEducationPageLoad}" />
           </h:form>  
           
  
