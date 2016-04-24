@@ -44,12 +44,9 @@ public class ServerModel {
 	// private static final long serialVersionUID = -9026586621419425189L;
  
 	private final String PATH = "/mnt/networks";
-<<<<<<< HEAD
 	
 	// private final String PATH = "/home/shalini/ws2/ARIES/networks";
 	
-=======
->>>>>>> origin/master
 	private Map<String, String> userInputs;
 	private Map<String, String> userInputs1;
 	private Map<String, String> userInputs2;
@@ -738,7 +735,7 @@ public class ServerModel {
 			if (nodes[i].equals("Diseases"))
 				continue;
 			sb.append("<p class='node-title'>" + nodes[i] + "</p>");
-			sb.append("<table>");
+			sb.append("<table id=\"hood\">");
 			Map<String, Double> values = dw.getNodeProbs(nodes[i]);
 			
 			
@@ -746,7 +743,7 @@ public class ServerModel {
 			Iterator<String> it = s.iterator();
 			while (it.hasNext()) {
 				String key = it.next();
-				sb.append("<tr><td>" + key).append("<td>" + convertToPercentage(values.get(key))).append("%</tr>");
+				sb.append("<tr ><td >" + key).append("<td >" + convertToPercentage(values.get(key))).append("%</tr>");
 			}
 			sb.append("</table>");
 		}
@@ -1206,7 +1203,6 @@ public class ServerModel {
 		
 		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") ){
 			try {
-				String networkName ="";
 				Map<String, Double> values = new HashMap<String, Double>();
 				Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 				if(dw != null){
@@ -1471,14 +1467,9 @@ public class ServerModel {
 		if(counter == 1){
 			newValuesMap.put(sihighestkey, sihighest);
 			newMap.put(sinodeName, newValuesMap);
-<<<<<<< HEAD
 			highestProbsMap.put(nodeNameDirectMapping.get(sinodeName), sihighestkey); 
 			probInputs.put(sinodeName, sihighestkey);
 
-=======
-			highestProbsMap.put(nodeNameDirectMapping.get(sinodeName), sihighestkey);
-			userInputs.put(sinodeName, sihighestkey);
->>>>>>> origin/master
 			//setNodeInput(nodeName+":"+highestkey);
 			
 			if(userInputs.containsKey("Diseases")){
@@ -1497,12 +1488,8 @@ public class ServerModel {
 			spNewValuesMap.put(sphighestkey, sphighest);
 			newMap.put(spnodeName, spNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(spnodeName), sphighestkey); 
-<<<<<<< HEAD
 			probInputs.put(spnodeName, sphighestkey);
 
-=======
-			userInputs.put(spnodeName, sphighestkey);
->>>>>>> origin/master
 			//setNodeInput(nodeName+":"+highestkey);
 			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1520,11 +1507,7 @@ public class ServerModel {
 			clNewValuesMap.put(clhighestkey, clhighest);
 			newMap.put(clnodeName, clNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(clnodeName), clhighestkey); 
-<<<<<<< HEAD
 			probInputs.put(clnodeName, clhighestkey);
-=======
-			userInputs.put(clnodeName, clhighestkey);
->>>>>>> origin/master
 			//setNodeInput(nodeName+":"+highestkey);
 			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1542,11 +1525,7 @@ public class ServerModel {
 			msNewValuesMap.put(mshighestkey, mshighest);
 			newMap.put(msnodeName, msNewValuesMap);
 			highestProbsMap.put(nodeNameDirectMapping.get(msnodeName), mshighestkey); 
-<<<<<<< HEAD
 			probInputs.put(msnodeName, mshighestkey);
-=======
-			userInputs.put(msnodeName, mshighestkey);
->>>>>>> origin/master
 			//setNodeInput(nodeName+":"+highestkey);
 			if(userInputs.containsKey("Diseases")){
 				userInputs.remove("Diseases");
@@ -1555,7 +1534,7 @@ public class ServerModel {
 		}
 		//userInputs.putAll(highestProbsMap);
 		if(highestProbsMap !=null && !highestProbsMap.isEmpty()){
-			infoMessages.add("Higest Probability Features are "+highestProbsMap);
+		infoMessages.add("Higest Probability Features are "+highestProbsMap);
 		}
 		
 	}
@@ -3013,6 +2992,9 @@ public class ServerModel {
 	
 	public String getNavRuleClinical() {
 		//userInputs.clear();
+		if(dw!= null){
+			dw.endSession();
+		}
 		return "index";
 	}
 	public String getNavRuleCase() {

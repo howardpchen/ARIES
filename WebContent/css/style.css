@@ -254,9 +254,10 @@ tr:first-child {
 
 td {
 	margin-left: 0.5em;
-	padding: 0.5em;
+	padding: 0.2em;
 }
-
+#hood td{
+padding:0.5em;}
 th {
 	background-color: #afc4d6;
 	font-size: 110%;
