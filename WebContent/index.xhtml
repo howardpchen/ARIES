@@ -112,12 +112,12 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 			onchange="this.form.submit()">
 			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
 		</h:selectOneMenu>
-		
+		  
 		 <h2>Sensitivity:</h2>
-		 <div class="3u">
-		 <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()" > 
+		 
+		 <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()" style="margin-top:13px;"> 
         </h:selectBooleanCheckbox>
-        </div>
+        
        </div>
 	</h:form>
 	<h:form >
@@ -135,7 +135,7 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 		</p>					
 		</div>				
 		<!-- changes starts for CR101 -->
-    <h2>Select Features</h2>
+    <h2>Select Features :</h2>
 		
 		<div class="row">
 					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>

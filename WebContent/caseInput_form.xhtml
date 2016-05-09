@@ -289,7 +289,7 @@ input[type=checkbox], input[type=radio] {
 
 										<h:selectOneMenu id="diagnosis"
 											value="#{serverModel.correctDx}"
-											onchange='showText()'> 
+											onchange='showText()'  valueChangeListener="#{serverModel.getCorrectDxAction}"> 
 											<f:selectItem itemLabel="-select-"></f:selectItem>
 											<f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
 											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
@@ -343,47 +343,7 @@ input[type=checkbox], input[type=radio] {
 
 								</div> 
 								</fieldset> 
-                                <div id="feature_pg">
-                                <h3>Enter Inputs for Case No:#{serverModel.caseid}</h3>
-								<ui:repeat var="networkPrefix"
-									value="#{serverModel.networkPrefixList}"> 
-  
-									<h:panelGrid id="pg_inputs" cellspacing="2"  
-										rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
-										<h:outputText 
-											value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
-										<ui:repeat var="feature" 
-											value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
-											<h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClass(feature)}" 
-												value="#{serverModel.featureValue}" onchange="this.form.submit()" >
-												<f:selectItems
-													value="#{serverModel.selectMenuInputsFromCase(feature)}" /> 
-											</h:selectOneMenu>
-											
-
-										</ui:repeat>
-									</h:panelGrid>
-
-								</ui:repeat>
-								 <p><br/></p>
-								<div class="form-group">
-									<div class="col-md-4"></div>
-                                    <div class="col-md-2"> 
-										<h:commandButton id="edit" action="#{serverModel.getReviewCaseList}" class="btn btn-primary"
-											value="Review Case"  />
-									</div>
-									<div class="col-md-1"> 
-										<h:commandButton id="done_btn" class="btn btn-success"
-											value="Done" action="#{serverModel.selectionDone}" />
-									</div>  
-									
-								</div> 
-							  </div>
-		                        
 							</div> 
 						</div>   
 					</div>
@@ -414,7 +374,7 @@ input[type=checkbox], input[type=radio] {
 
 		}
 		
-		showhide();
+		//showhide();
 		
 		 function showhide() {
 			    var e = document.getElementById("feature_pg");
@@ -436,7 +396,6 @@ input[type=checkbox], input[type=radio] {
 		 {  
 			
 			 var correctDx = document.getElementById("caseInput:diagnosis").value;
-			
 		     if(correctDx == 'Other')
 		        document.getElementById('inputTex').style.display='block';
 		     else

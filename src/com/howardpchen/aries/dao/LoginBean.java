@@ -2,7 +2,7 @@ package com.howardpchen.aries.dao;
 
 import com.howardpchen.aries.Util;
 import com.howardpchen.aries.dao.UserDAO;
-import com.howardpchen.aries.model.User;
+import com.howardpchen.aries.model.UserInfo;
 
 import java.io.Serializable;
 import javax.faces.application.FacesMessage;
@@ -10,8 +10,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+
+
+
  
-@ManagedBean(name = "loginBean")
+@ManagedBean
 @SessionScoped
 /**
  *
@@ -22,10 +25,23 @@ public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String password;
     private String message, uname;
-    private String fullname;
 	private String option;
-    
-    public LoginBean(){
+	private String firstname;
+	private String lastname;
+	private String organization;
+	private String traininglevel;
+	private String email;
+	private String orgText;
+	
+
+	public String getOrgText() {
+		return orgText;
+	}
+
+	public void setOrgText(String orgText) {
+		this.orgText = orgText;
+	}
+	public LoginBean(){
     	this.setOption("Clinical");
     }
     public String getMessage() {
@@ -61,17 +77,30 @@ public class LoginBean implements Serializable {
                        "Please Try Again!"));
     		   return null;
     	}
-    	String success= UserDAO.addLoginDetails(this.getUname(),this.getPassword());
+    	UserInfo userinfo = new UserInfo();
+    	userinfo.setFirstname(this.getFirstname());
+    	userinfo.setLastname(this.getLastname());
+    	userinfo.setOrganization(this.getOrganization());
+    	userinfo.setTraininglevel(this.getTraininglevel());
+    	userinfo.setEmail(this.getEmail());
+    	userinfo.setUname(this.getUname());
+    	userinfo.setPassword(this.getPassword());
+    	String success= UserDAO.addLoginDetails(userinfo);
     	if(success.equalsIgnoreCase("true")){
     		FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Registration Successful",
                     "Please Try Again!"));
-    		this.setUname("");
+    	/*	this.setUname("");
     		this.setPassword("");
-    		this.setFullname("");
-    	}
+    		this.setFirstname("");
+    		this.setLastname("");
+    		this.setOrganization("");
+    		this.setTraininglevel("");
+    		this.setEmail("");*/
+    		//new LoginAction().sendHTMLEmail();   	
+    		}
     	else{
     		 FacesContext.getCurrentInstance().addMessage(
                      null,
@@ -81,6 +110,7 @@ public class LoginBean implements Serializable {
     	}
     	return "";
     }
+   
     public String loginProject() {
         boolean result = UserDAO.login(uname, password);
       
@@ -145,10 +175,46 @@ public class LoginBean implements Serializable {
 	public void setOption(String option) {
 		this.option = option;
 	}
-	public String getFullname() {
-		return fullname;
+
+	public String getFirstname() {
+		return firstname;
 	}
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
 	}
+	
+	public String getLastname() {
+		return lastname;
+	}
+	
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+	
+	public String getOrganization() {
+		return organization;
+	}
+	
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+	
+	public String getTraininglevel() {
+		return traininglevel;
+	}
+	
+	public void setTraininglevel(String traininglevel) {
+		this.traininglevel = traininglevel;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	
 }

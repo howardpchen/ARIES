@@ -6,6 +6,7 @@
 	xmlns:f="http://java.sun.com/jsf/core">
 
 
+
 <h:head>
 	<title>Adaptive Radiology Interpretation / Education System
 		(ARIES)</title>
@@ -81,30 +82,90 @@ a{
 			</p>
 			<div class="row">
 				<div class="col-md-2"></div>
-				<div class="col-md-4">
+				<div class="col-md-5">
 					<div class="panel panel-primary" style="background-color:#00CCFF">
 						<div class="panel-heading">
 			    		<h3 class="panel-title">Please sign up for ARIES <small>It's free!</small></h3>
 			 			</div>
 						<div class="panel-body">
                             <div class="form-group">
-								<label for="fullname">Fullname</label>
+								<label for="firstname">FirstName</label>
 								<div class="input-group">
 									<span class="input-group-addon"><span
 										class="glyphicon glyphicon-off"></span></span>
-									<h:inputText id="fullname" class="form-control"
-										title="Enter Your Name" value="#{loginBean.fullname}"/>
+									<h:inputText id="firstname" class="form-control"
+										title="Enter Your FirstName" value="#{loginBean.firstname}"/>
 
 								</div>
 								<div id="error1" style="color: red"></div>
 							</div> 
 							
 							<div class="form-group">
-								<label for="username">Desired Username</label>
+								<label for="lastname">LastName</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-off"></span></span>
+									<h:inputText id="lastname" class="form-control"
+										title="Enter Your LastName" value="#{loginBean.lastname}"/>
+
+								</div>
+								<div id="error5" style="color: red"></div>
+							</div>
+							
+							<div class="form-group">
+								<label for="org">Organization</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span></span></span>
+									<h:selectOneMenu id="org" value="#{loginBean.organization}" onchange='showText()'>
+											<f:selectItem itemValue="" itemLabel="-select-"></f:selectItem>
+											<f:selectItem itemValue="CHOP" itemLabel="CHOP"></f:selectItem>
+											<f:selectItem itemValue="UPHS" itemLabel="UPHS"></f:selectItem>
+											<f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+										</h:selectOneMenu>
+
+								</div>
+								<div id="error6" style="color: red"></div>
+								<div class="form-group" style="text-align: center;" id="inputTex" >
+									<div class="col-md-4"></div>
+									<div class="input-group" > 
+										<h:inputText value="#{loginBean.orgText}"/>
+									</div> 
+								</div>
+								
+								
+							</div> 
+							<div class="form-group">
+								<label for="training">Training Level</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span></span></span>
+									<h:selectOneMenu id="training" value="#{loginBean.traininglevel}" >
+											<f:selectItem itemValue="" itemLabel="-select-"></f:selectItem>
+											<f:selectItem itemValue="attending" itemLabel="attending"></f:selectItem>
+											<f:selectItem itemValue="fellow" itemLabel="fellow"></f:selectItem>
+											<f:selectItem itemValue="resident" itemLabel="resident"></f:selectItem>
+											<f:selectItem itemValue="technologist" itemLabel="technologist"></f:selectItem>
+										</h:selectOneMenu>
+
+								</div>
+								<div id="error7" style="color: red"></div>
+							</div> 
+							<div class="form-group">
+								<label for="email">Email Address</label>
+								<div class="input-group">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-off"></span></span>
+									<h:inputText id="email" class="form-control"
+										title="Enter Your Email Address" value="#{loginBean.email}"/>
+
+								</div>
+								<div id="error8" style="color: red"></div>
+							</div>
+							<div class="form-group">
+								<label for="username">UserName</label>
 								<div class="input-group">
 									<span class="input-group-addon"><span
 										class="glyphicon glyphicon-tag"></span></span>
-									<h:inputText id="username" class="form-control"
+									<h:inputText id="username" class="form-control" 
 										title="Enter UserName" value="#{loginBean.uname}" />
 
 								</div>
@@ -128,11 +189,11 @@ a{
 
 
 							<div class="row">
-								<div class="col-md-2"></div>
+								<div class="col-md-2"></div> 
 								<div class="col-md-4">
 									<h:commandButton id="register" icon="glyphicon glyphicon-lock"
-										class="btn btn-success" value="Register"
-										action="#{loginBean.register}" onclick="return validate()" />
+										class="btn btn-success" value="Register" onclick="return validate();"  
+										action="#{loginBean.register}" />
 								</div>
 								<div class="col-md-4">
 									<h:commandButton icon="glyphicon glyphicon-lock"
@@ -151,52 +212,118 @@ a{
 		</div> 
 	</h:form>
 
-	<script language="JavaScript">
+	<script type="text/javascript">
 	
+	showText();
+	 function showText()
+	 {  
+		
+		 var organization = document.getElementById("registrationForm:org").value;
+	     if(organization == 'Other')
+	        document.getElementById('inputTex').style.display='block';
+	     else
+	        document.getElementById('inputTex').style.display='none'; 
+	 }
 	
 	function validate(){
 		var flag = 0;
+ 
 		document.getElementById("error1").innerText="";
 		document.getElementById("error2").innerText="";
 		document.getElementById("error3").innerText="";
-		document.getElementById("error4").innerText="";
+		
 		document.getElementById("error1").textContent="";
 		document.getElementById("error2").textContent="";
 		document.getElementById("error3").textContent="";
-		document.getElementById("error4").textContent="";
-		var fullname = document.getElementById("registrationForm:fullname").value;
-		var userName = document.getElementById("registrationForm:username").value;
-		var PassWord = document.getElementById("registrationForm:Password").value;
-		var PassWordcfm = document.getElementById("registrationForm:Passwordcfm").value;
-		alert('yamuna');
-		if(fullname == ""){
-			document.getElementById("error1").innerText = "Please Enter a Fullname";
-			document.getElementById("error1").textContent = "Please Enter a Fullname";
+		
+		document.getElementById("error5").innerText="";
+		document.getElementById("error5").textContent="";
+		document.getElementById("error6").innerText="";
+		document.getElementById("error6").textContent="";
+		document.getElementById("error7").innerText="";
+		document.getElementById("error7").textContent="";
+		document.getElementById("error8").innerText="";
+		document.getElementById("error8").textContent="";
+		
+		firstname = document.getElementById("registrationForm:firstname").value;
+		lastname = document.getElementById("registrationForm:lastname").value;
+		organization = document.getElementById("registrationForm:org").value;
+		training = document.getElementById("registrationForm:training").value;
+		email = document.getElementById("registrationForm:email").value;
+		userName = document.getElementById("registrationForm:username").value;
+		passWord = document.getElementById("registrationForm:Password").value;
+		
+		
+		if(firstname == ""){
+			document.getElementById("error1").innerText = "Please Enter a FirstName";
+			document.getElementById("error1").textContent = "Please Enter a FirstName";
 			flag = 1;
 			
 		}
-	    else if(userName == ""){
+		if(lastname == ""){
+			document.getElementById("error5").innerText = "Please Enter a LastName";
+			document.getElementById("error5").textContent = "Please Enter a LastName";
+			flag = 1;
+			
+		}
+		
+		if(organization.length == 0){
+			document.getElementById("error6").innerText = "Please Select Organization";
+			document.getElementById("error6").textContent = "Please Enter Organization";
+			flag = 1;
+			
+		}
+		
+		if(training.length == 0){
+			document.getElementById("error7").innerText = "Please Select Training Level";
+			document.getElementById("error7").textContent = "Please Select Training Level";
+			flag = 1;
+			
+		}
+		if(email == ""){
+			document.getElementById("error8").innerText = "Please Enter Email Address";
+			document.getElementById("error8").textContent = "Please Select Email Address";
+			flag = 1;
+			
+		}else{
+			flag = validateEmail();
+		}
+	   if(userName == ""){
 			document.getElementById("error2").innerText = "Please Enter a UserName";
 			document.getElementById("error2").textContent = "Please Enter a UserName";
 			flag = 1;
 			
 		}
-	    else if(PassWord == ""){
-			document.getElementById("error3").innerText = "Please Enter a Password";
-			document.getElementById("error3").textContent = "Please Enter a Password";
+	   if(passWord == ""){
+			document.getElementById("error3").innerText = "Please Enter Password";
+			document.getElementById("error3").textContent = "Please Enter Password";
 			flag = 1;
 		}
-		else if(PassWordcfm == ""){
-				document.getElementById("error4").innerText = "Please Enter a Confirm Password";
-				document.getElementById("error4").textContent = "Please Enter a Confirm Password";
-				flag = 1;
-		}
-			
-		
 		if(flag==1) return false;
 		return true;
 	}
 	
+	 function validateEmail() {
+
+		var flag = 0;
+		document.getElementById("error8").innerText =  "";
+		 document.getElementById("error8").textContent= "";
+		var email = document.getElementById("registrationForm:email").value;
+
+		 var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+	        if (!reg.test(email)) 
+	        {
+	            document.getElementById("error8").innerText =  "Invalid Email Address";
+	            document.getElementById("error8").textContent= "Invalid Email Address";
+	            flag=1;
+	        }
+
+	        return flag;
+
+	} 
 	</script>
-</h:body>
-</html>
+	</h:body>
+	</html>
+	
+	

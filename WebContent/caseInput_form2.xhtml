@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+<h:head>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Bootstrap -->
+	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="./resources/js/bootstrap.min.js"></script>
+	<style>
+a {
+	text-decoration: underline;
+}
+
+input[type=checkbox], input[type=radio] {
+	margin-right: 1px;
+	margin-left: 1px;
+}
+
+.nav-tabs {
+    border-bottom: 0px solid #ddd;
+}
+</style>
+
+</h:head>
+<h:body id="bodyStyle">
+	<f:view>
+		<h:form role="form" id="caseInput">
+ 
+	
+
+				<div class='row' id="divStyle" style="color:white;">
+					<div class="col-md-3">
+						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
+							4-10-2016</font>
+					</div>
+					<div class="col-md-6">
+
+						<br></br> <br></br>
+						<h3>
+							Adaptive Radiology Interpretation
+							&amps;
+							Education System (ARIES)
+						</h3>
+
+					</div>
+					<div class="col-md-3">
+						<br></br> <br></br> <font size="-1">Hospital of University
+							of Pennsylvania <br /> Department of Radiology Based on <br />the
+							Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br />
+							<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public
+								License</a>
+						</font>
+					</div>
+					
+				</div>
+			<div style="background-color:  #37373B;">
+
+	<div style="color:white;">
+	
+	 <label >Welcome, #{loginBean.uname}</label>
+	 </div>
+	 
+<div class="row">
+
+<div class="col-md-11">
+            <ul class="nav nav-tabs">
+  <li ><a href="/ARIES/">Home</a></li>
+						<li ><h:commandLink action="#{serverModel.getNavRuleClinical}"
+								value="Clinical">
+							</h:commandLink></li>
+						<li class="active"><h:commandLink action="#{serverModel.getNavRuleCase}"
+								value="SubmitCase">
+							</h:commandLink></li>
+						<li ><h:commandLink
+								action="#{serverModel.getNavRuleResearch}" value="Research">
+							</h:commandLink></li>
+						<li><h:commandLink
+								action="#{serverModel.getNavRuleEducation}" value="Education">
+							</h:commandLink></li>
+						<li ><h:commandLink action="#{serverModel.getNavRuleQC}"
+								value="QC">
+							</h:commandLink></li>
+						<li><a href="">Analytics</a></li>
+  
+  
+</ul>
+</div>
+<div class="col-md-1">
+	 <h:commandButton icon="glyphicon glyphicon-lock" 
+										class="btn btn-primary" value="Logout"
+										action="#{loginBean.logout}"/>
+										</div>
+</div>
+</div>
+			<!-- <div>
+
+				<a href="/ARIES/">Back To Home</a>
+
+			</div> -->
+			
+			<div class="row">
+
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+				    <h:outputText id="errorMsg" value="#{serverModel.errorMsg}" escape="false"></h:outputText>
+					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+				</div>
+			</div>
+			
+			<div>
+				<p>
+					<br />
+				</p>
+			
+				<div class="row">
+					
+					<div >
+						<div class="panel panel-primary" style="background-color:#00CCFF">
+							<div class="panel-heading" align="center">
+								<h4>Case Submission Form</h4>
+							</div>
+							<div class="panel-body">
+ 
+                                <div id="feature_pg">
+                                <div></div>
+                                <h3>Enter Inputs for Case No:#{serverModel.caseid}</h3>
+									
+									<ui:repeat var="networkPrefix"
+									value="#{serverModel.networkPrefixList}"> 
+  
+									<h:panelGrid id="pg_inputs" cellspacing="2"  
+										rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
+										<h:outputText 
+											value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+
+										<ui:repeat var="feature" 
+											value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+
+											<h:outputText value="#{serverModel.currentFeature(feature)}" />
+
+											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClassCase(feature)}" 
+												value="#{serverModel.featureValue}" onchange="this.form.submit()">
+												<f:selectItems
+													value="#{serverModel.selectMenuInputsFromCase(feature)}" /> 
+											</h:selectOneMenu>
+											
+
+										</ui:repeat>
+									</h:panelGrid>
+
+								</ui:repeat>
+								 <p><br/></p>
+								<div class="form-group">
+									<div class="col-md-4"></div>
+									
+                                    <div class="col-md-2"> 
+										<h:commandButton id="edit" action="#{serverModel.getReviewCaseList}" class="btn btn-primary"
+											value="Review Case"  />
+									</div>
+									<div class="col-md-1"> 
+										<h:commandButton id="done_btn" class="btn btn-success"
+											value="Done" action="#{serverModel.selectionDone}" />
+									</div>  
+									
+								</div> 
+							  </div>
+		                        
+							</div> 
+						</div>   
+					</div>
+				</div>
+			</div>
+			<h:inputHidden value="#{serverModel.postPageLoad1}" />
+			<h:inputHidden id="dpFlag" value="#{serverModel.featureFlag}"></h:inputHidden>
+          </h:form>  
+          
+ 
+	</f:view>
+	<script type="text/javascript">
+
+		
+		/* showhide();
+		
+		 function showhide() {
+			    var e = document.getElementById("feature_pg");
+			    var er = document.getElementById("formDiv");
+			   
+			    var flag = document.getElementById("caseInput:dpFlag").value;
+			    
+			    if(flag == 'false')	{		    	
+			    e.style.display = 'none';
+			    er.style.display =	'block';}
+			    else{
+			    	 e.style.display =	'block';
+			    	 er.style.display = 'none'
+			    er.readOnly = true;}
+			 } */
+		 
+
+		    
+	</script>
+
+</h:body>
+
+</html>

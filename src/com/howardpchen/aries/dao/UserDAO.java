@@ -10,6 +10,7 @@ import com.howardpchen.aries.model.CaseList;
 import com.howardpchen.aries.model.Network;
 import com.howardpchen.aries.model.User;
 import com.howardpchen.aries.model.UserCaseInput;
+import com.howardpchen.aries.model.UserInfo;
 
 public class UserDAO {      
      public static boolean login(String username, String password) {
@@ -89,6 +90,28 @@ public class UserDAO {
              Database.close(con);
          }
 		return userid;
+     }
+     public static String getQcPerson(String nwName){
+    	 String qcperson = null;
+    	 Connection con = null;
+         PreparedStatement ps = null;
+         try {
+             con = Database.getConnection();
+             ps = con.prepareStatement(
+                     "select username from loginuser where network= ? ");
+             ps.setString(1,nwName);
+             ResultSet rs = ps.executeQuery();
+             if (rs.next()) // found
+             {
+            	 qcperson = rs.getString("username");
+             }
+             
+         } catch (Exception ex) {
+             System.out.println("Error in getQcPerson -->" + ex.getMessage());
+         } finally {
+             Database.close(con);
+         }
+		return qcperson;
      }
      public static String getFileName(String nwName){
     	 Connection con = null;
@@ -452,6 +475,26 @@ public class UserDAO {
 		return accession;
     	
      }
+     //For Research CaseNo
+     public static String getAccessionNo(int caseid,int userid){
+    	 Connection con = null;
+    	 Statement stmt = null;
+    	 String accession = null;
+    	 try{
+    		 con = Database.getConnection();
+    		 stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT accession FROM caselist where submittedby != '"+userid+"' and caseid = '"+caseid+"'");
+             while(rs.next()){
+            	 accession = rs.getString("accession");
+             }
+    	 } catch (Exception ex) {
+             System.out.println("Error in getRandomCaseId() -->" + ex.getMessage());
+         } finally {
+             Database.close(con);
+         }
+		return accession;
+    	
+     }
      public static String getCorrectDx(int caseid){
     	 Connection con = null;
     	 Statement stmt = null;
@@ -688,20 +731,25 @@ public class UserDAO {
          }
 		return caseid;
      }
-     public static String addLoginDetails(String uname,String password){
+     public static String addLoginDetails(UserInfo userinfo){
     	    int i = 0;  
     	    String success ="false";
-            if (uname != null) {  
+            if (userinfo != null) {  
                 PreparedStatement ps = null;  
                 Connection con = null;  
                 try {  
                      
                         con = Database.getConnection();  
                         if (con != null) {  
-                            String sql = "INSERT INTO loginuser(username, passhash) VALUES(?,?)";  
+                            String sql = "INSERT INTO loginuser(username, passhash, firstname, lastname, organization, traininglevel, email) VALUES(?,?,?,?,?,?,?)";  
                             ps = con.prepareStatement(sql);  
-                            ps.setString(1, uname);  
-                            ps.setString(2, password);   
+                            ps.setString(1, userinfo.getUname());  
+                            ps.setString(2, userinfo.getPassword());
+                            ps.setString(3, userinfo.getFirstname());
+                            ps.setString(4, userinfo.getLastname());
+                            ps.setString(5, userinfo.getOrganization());
+                            ps.setString(6, userinfo.getTraininglevel());
+                            ps.setString(7, userinfo.getEmail());
                             i = ps.executeUpdate();  
                             System.out.println("Data Added Successfully");  
                         }  

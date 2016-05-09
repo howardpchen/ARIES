@@ -35,6 +35,7 @@ import com.howardpchen.aries.network.DNETWrapper;
 import com.howardpchen.aries.network.NetworkLoadingException;
 import com.howardpchen.aries.network.NetworkWrapper;
 
+
 @ManagedBean
 @SessionScoped
 public class ServerModel {
@@ -54,6 +55,10 @@ public class ServerModel {
 	private Map<String, String> userInputsForQc;
 	private Map<String, String> userInputsForRs;
 	private Map<String, String> probInputs;
+	private Map<String, String> userInputsCase;
+	private Map<String, String> probInputs1;
+	
+	
 
 	//private Map<String, String> highestProbsMap;
 	private NetworkWrapper dw;
@@ -264,6 +269,8 @@ public class ServerModel {
 		userInputsForQc = new HashMap<String, String>();
 		userInputsForRs = new HashMap<String, String>();
 		probInputs = new HashMap<String, String>();
+		probInputs1 = new HashMap<String, String>();
+		userInputsCase = new HashMap<String, String>();
 		// changes starts for CR101
 		populateNetworkList();
 		// changes ends for CR101
@@ -490,14 +497,14 @@ public class ServerModel {
     	boolean clearflag = false;
     	String[] inputs = s.split(":");
 		//if(inputs.length == 1)return;
-		if(userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		if(userInputsCase.containsKey(nodeNameReverseMapping.get(inputs[0])))
 			{
 			if(inputs.length == 2){
-			if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+			if((userInputsCase.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
 			return;
 			}
 			if(inputs.length == 1){
-				if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
+				if((userInputsCase.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
 					return;
 				clearflag = true;
 			}
@@ -534,11 +541,11 @@ public class ServerModel {
 			//s="";
 			if (inputs.length == 2){
 				caseInput.setValue("["+networkcode+"]"+" "+inputs[0]+"="+inputs[1]);
-				userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+				userInputsCase.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 		}
 			else if(clearflag == true){
 				caseInput.setValue("["+networkcode+"]"+" "+inputs[0]+"="+"[Clear]");
-				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+				userInputsCase.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 			}
 			UserDAO.SaveFeature(caseInput);
     }
@@ -551,7 +558,7 @@ public class ServerModel {
 		 */
 		// one line change for CR101
 		if (!currentFeature.equals(""))
-			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
+			return currentFeature + ":" + userInputsCase.get(nodeNameReverseMapping.get(currentFeature));
 		else
 			return "";
 	}
@@ -802,6 +809,16 @@ public class ServerModel {
 			return "";
 
 	}
+	public String featureClassCase(String nodeName) {
+
+		if (userInputsCase.containsKey(nodeNameReverseMapping.get(nodeName))
+				&& !userInputsCase.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
+			return "hasChoice";
+		} else
+			return "";
+
+	}
+
 	public String featureClassQC(String nodeName) {
 
 		if (userInputsForQc.containsKey(nodeNameReverseMapping.get(nodeName))
@@ -814,8 +831,10 @@ public class ServerModel {
 
 	}
 	public String featureClass1(String nodeName) {
-		
-		if(userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
+		if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
+			return "red";
+	    }
+		else if(userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
 			return "green";
 		}
 		else if(userInputs2.containsKey(nodeNameReverseMapping.get(nodeName))){
@@ -824,9 +843,7 @@ public class ServerModel {
 		else if((userInputs.containsKey(nodeNameReverseMapping.get(nodeName)))){
 			return "hasChoice";
 		}
-		else if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
-			return "hasChoice";
-	    }
+		
 		else
 			return "";
 
@@ -868,7 +885,7 @@ public class ServerModel {
 		// old before CR101
 		/* Map<String, Double> values = dw.getNodeProbs(nodeName); */
 		// one line change for CR101
-		if(this.getFeatureFlag().equalsIgnoreCase("true")){
+		//if(this.getFeatureFlag().equalsIgnoreCase("true")){
 		 
 			Map<String, Double> values = this.valuesNew.get(nodeName);//dw.getNodeProbs(nodeNameReverseMapping.get(nodeName));
 			Set<String> s = values.keySet();
@@ -879,7 +896,7 @@ public class ServerModel {
 				returnString.add(nodeName + ":" + key);
 			}
 			// returnString.add(nodeName + ":[Clear]");
-		}
+		//}
 		return returnString;
 	}
 	
@@ -1362,6 +1379,69 @@ public class ServerModel {
 		return "";
 
 	}
+	//For CaseSubmitForm highlighting part
+	public String getFeatureProbCase() {
+
+		if (this.getCorrectDx() != null
+				&& !this.getCorrectDx().equalsIgnoreCase("--select--")) {
+			String filename = UserDAO.getFileName(this.getNwName());
+			if(filename != null){
+			try {
+				if(dw!= null){
+					dw.endSession();
+				}
+				
+				dw = new DNETWrapper(PATH + "/" + filename);
+			} catch (NetworkLoadingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			nodes = dw.getNodeNames();
+			fromGraph = "false";
+			updateDiagnosisNode();
+
+			// List<String> newList = new ArrayList<String>();
+			if(nodes != null){
+			for (int i = 0; i < nodes.length; i++) {
+				if (nodes[i].equals("Diseases"))
+					continue;
+
+				Map<String, Double> values = dw.getNodeProbs(nodes[i]);
+				double highestVal = 0.000;
+				String highestkey = "";
+				List<Double> keylist = new ArrayList<Double>();
+				for (Entry<String, Double> entry : values.entrySet()) {
+					String key = entry.getKey();
+					double value = entry.getValue();
+					if (value >= highestVal) {
+						highestVal = value;
+						highestkey = key;
+						// newValuesMap.put(highestkey, highestVal);
+						keylist.add(highestVal);
+
+					}
+				}
+				int counter = 0;
+				for (Double siValue : keylist) {
+					if (siValue.equals(highestVal)) {
+						counter++;
+					}
+				}
+				if (counter == 1) {
+					probInputs1.put(nodes[i], highestkey);
+				}
+
+			}
+			}
+		}
+			}
+		if(dw!=null){
+		dw.endSession();
+		}
+		return "";
+
+	}
+
 		
 
 	/*public String getFeatureProb() {
@@ -2198,7 +2278,7 @@ public class ServerModel {
 
 	public void setNwName(String nwName) {
 		if(!nwName.equals(this.getNwName())){
-		userInputs.clear();
+		userInputsCase.clear();
 		System.out.println("Clearing User Inputs");
 		}
 		this.nwName = nwName;
@@ -2210,6 +2290,9 @@ public class ServerModel {
 
 	public void setCorrectDx(String correctDx) {
 		this.correctDx = correctDx;
+		if(this.getFromQcPage().equalsIgnoreCase("false")){
+        getFeatureProbCase();
+		}
 	}
 	public boolean basicCaseValidate(){
 		this.setErrorMsg("");
@@ -2402,9 +2485,25 @@ public class ServerModel {
 			} else {
 				boolean success = UserDAO.SaveCaseList(caseList);
 				if(success){
-				this.featureFlag = "true";
+				//this.featureFlag = "true";
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "Save Successful!", ""));
+				  if(!probInputs1.isEmpty()){
+				    	userInputsCase.putAll(probInputs1);
+				    	for (Map.Entry<String, String> entry : userInputsCase.entrySet()) {
+				    	if(!entry.getKey().contains("Diseases")){
+				    	UserCaseInput caseinput = new UserCaseInput();
+				    	caseinput.setUserid(userid);
+				    	caseinput.setCaseid(getCaseid());
+				    	caseinput.setSessionid(session.getId());
+				    	caseinput.setEventid(1001);
+				        caseinput.setValue("["+networkcode+"]"+" "+nodeNameDirectMapping.get(entry.getKey())+"="+entry.getValue());
+				        UserDAO.SaveFeature(caseinput);
+				    		}
+					}
+
+				}
+				  return "caseInput_form2?faces-redirect=true";
 				}
 				else{
 					
@@ -2466,10 +2565,11 @@ public class ServerModel {
 				} else {*/
 				boolean success = UserDAO.UpdateCaseList(caseList);
 				if(success){
-				   this.featureFlag = "true";
+				  // this.featureFlag = "true";
 				   this.setReviewCase("false");
 				   FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
+				   return "caseInput_form2?faces-redirect=true";
 				   }
 				   else{
 						
@@ -2577,8 +2677,8 @@ public class ServerModel {
 	}
 	
 	public String selectionDone(){
-		this.setFeatureFlag("false");
-		userInputs.clear();
+		//this.setFeatureFlag("false");
+		userInputsCase.clear();
 		//clear();
 		if(errorMessages != null && errorMessages.size() >0)
 			errorMessages.clear();
@@ -2599,7 +2699,7 @@ public class ServerModel {
 		//this.setQcFlag("false");
 		this.prefixNodeListMapping.clear(); 
 		//return "login?faces-redirect=true";
-		return "";
+		return "caseInput_form?faces-redirect=true";
 	}
 	public String qcSelectionDone(){
 		String networkcode = null;
@@ -2685,6 +2785,8 @@ public class ServerModel {
 							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
 				   this.setFeatureFlag("false");
 					UserDAO.UpdateCaseList("Yes",this.getCaseNoforQC());
+					caseListforNw.remove(this.getCaseNoforQCSetter());
+					this.setCaseNoforQCSetter("");
 					userInputsForQc.clear();
 					//this.setQcFlag("false");
 					if(errorMessages != null && errorMessages.size() >0)
@@ -2703,7 +2805,7 @@ public class ServerModel {
 					//this.setQcFlag("false");
 					this.prefixNodeListMapping.clear(); 
 					//return "login?faces-redirect=true";
-					return "qualityControl";
+					return "qualityControl?faces-redirect=true";
 				   }
 				   else{
 						
@@ -2719,12 +2821,12 @@ public class ServerModel {
 	
 	public String deleteCase(){
 		UserDAO.deleteCaseList(this.getCaseNoforQC());
-		this.setFeatureFlag("false");
+		//this.setFeatureFlag("false");
 		userInputs.clear();
 		userInputsForQc.clear();
 		clear();
 		this.setQcperson("");
-		return "";
+		return "qualityControl?faces-redirect=true";
 	}
     public String backtoLogin(){
 		 return "login?faces-redirect=true";
@@ -2879,12 +2981,12 @@ public class ServerModel {
 	}
 	
 	public String getReviewCaseList(){
-    	this.setFeatureFlag("false");
+    	//this.setFeatureFlag("false");
     	this.setReviewCase("true");
       	return "caseInput_form?faces-redirect=true";
     }
 	public String getReviewQCCaseList(){
-    	this.setFeatureFlag("false");
+    	//this.setFeatureFlag("false");
     	this.setReviewCase("true");
       	return "qualityControl?faces-redirect=true";
     }
@@ -2906,6 +3008,9 @@ public class ServerModel {
     	//this.setNwNameforEducation("");
     	//this.getRandomCaseNo();
     	userInputs.clear();
+    	userInputs1.clear();
+    	userInputs2.clear();
+    	dbFeatures.clear();
     	this.setFirstDx("");
     	this.setSecondDx("");
     	this.setThirdDx("");
@@ -2995,21 +3100,22 @@ public class ServerModel {
 		if(dw!= null){
 			dw.endSession();
 		}
-		return "index";
+		return "index?faces-redirect=true";
 	}
 	public String getNavRuleCase() {
 		/*clearDefault();
 		this.setNwName("");;*/
 		clearDefault();
 		this.setFromQcPage("false");
-		return "caseInput_form";
+		return "caseInput_form?faces-redirect=true";
 	}
 	public String getNavRuleQC() {
 		/*userInputsForQc.clear();
 		this.setNwNameforQC("");
 		clearDefault();*/
 		//this.setCaseNoforQCSetter("");
-		return "qualityControl";
+		this.setFromQcPage("true");
+		return "qualityControl?faces-redirect=true";
 	}
 	public String getNavRuleResearch() {
 		/*userInputsForRs.clear();
@@ -3026,7 +3132,7 @@ public class ServerModel {
     	this.setComments("");
     	researchErrorMessages = new ArrayList<String>();
 		this.setCorrectDxList(new ArrayList<String>());
-		return "research";
+		return "research?faces-redirect=true";
 		}
 	public String getNavRuleEducation() {
 		/*userInputs.clear();
@@ -3036,7 +3142,7 @@ public class ServerModel {
     	this.setThirdDx("");
     	educationErrorMessages = new ArrayList<String>();
     	this.setCorrectDxList(new ArrayList<String>());
-		return "education";
+		return "education?faces-redirect=true";
 	}
 	
 	
@@ -3128,6 +3234,26 @@ public class ServerModel {
 		//updateDiagnosisNode1();
 		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 	}
+	public void getCorrectDxAction(ValueChangeEvent event){
+		String newValue = "";
+		if(event.getNewValue() != null)
+		newValue= event.getNewValue().toString();
+		String oldValue = "";
+		if(event.getOldValue()!= null){
+			oldValue = event.getOldValue().toString();
+		}
+		if(!userInputsCase.isEmpty())
+			userInputsCase.clear();
+		if(!probInputs1.isEmpty())
+			probInputs1.clear();
+		
+		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+			userInputsCase.put("Diseases", newValue);
+		}
+		//updateDiagnosisNode1();
+		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
+	}
+
 	public void setDisease(String disease) {
 		boolean flag = false;
 		if (!disease.equals(currentDisease)) {
@@ -3174,24 +3300,112 @@ public class ServerModel {
 		}
 		return randomCaseNo;
 	}
-	public String getAccessionNo(){
-		String accessionNo ="";
-	    int caseid = this.getEducationCaseNo();
+	public String getAccessionNo() {
+		String accessionNo = "";
+		int caseid = this.getEducationCaseNo();
 		accessionNo = UserDAO.getAccessionNo(caseid);
+		HttpSession session = Util.getSession();
+		String username = null;
+		String password = null;
+		if (session.getAttribute("username") != null) {
+			username = session.getAttribute("username").toString();
+		}
+		if (session.getAttribute("password") != null) {
+			password = session.getAttribute("password").toString();
+		}
+		int userid = UserDAO.getUserID(username, password);
+		String[] input = new String[0];
+		List<String> clearedkeylist = new ArrayList<String>();
+		List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		list = UserDAO.getUserCaseInput(caseid);
+		String networkcode = UserDAO.getCode(this.getNwNameforEducation());
+		for (UserCaseInput userCaseInput : list) {
+			input = userCaseInput.getValue().split("] ");
+			// values.add(input[1]);
+			if(input.length> 1 ){
+			String[] val = input[1].split("=");
+			if (val.length > 0 && nodeNameReverseMapping.get(val[0]).startsWith("CL_")){
+				
+				userInputs.put(nodeNameReverseMapping.get(val[0]), val[1]);
+				
+				UserCaseInput caseinput = new UserCaseInput();
+				caseinput.setUserid(userid);
+				caseinput.setCaseid(caseid);
+				caseinput.setSessionid(session.getId());
+				caseinput.setEventid(1001);
+				caseinput.setPageInfo("Education");
+				caseinput.setValue("[" + networkcode + "]" + " " + val[0]+ "=" + val[1]);
+				UserDAO.SaveFeatureforOthers(caseinput);
+			}
+			}
+			
+		}
+		if(!userInputs.isEmpty() && !userInputs.keySet().isEmpty()){
+		for (Map.Entry<String, String> entry : userInputs.entrySet()){
+			if(entry.getValue().contains("[Clear]"))
+			{
+				clearedkeylist.add(entry.getKey());
+			}
+		}
+		}
+		if(clearedkeylist != null && !clearedkeylist.isEmpty()){
+		for (String key : clearedkeylist){
+		userInputs.remove(key);
+		}
+		}
 		return accessionNo;
 	}
 	public String getRsrchAccessionNo(){
 		String accessionNo ="";
+		userInputsForRs.clear();
 	    int caseid = this.getRandomCaseNo();
-		accessionNo = UserDAO.getAccessionNo(caseid);
+	    HttpSession session = Util.getSession();
+		String username = null;
+		String password = null;
+		if(session.getAttribute("username") != null){
+		username = session.getAttribute("username").toString();
+		}
+		if(session.getAttribute("password") != null){
+		password = session.getAttribute("password").toString();
+		}
+		int userid = UserDAO.getUserID(username, password);
+		accessionNo = UserDAO.getAccessionNo(caseid,userid);
+		 String[] input = new String[0];
+		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		 list = UserDAO.getUserCaseInput(caseid);
+		 for(UserCaseInput userCaseInput:list){
+			 input = userCaseInput.getValue().split("] ");
+			// values.add(input[1]);
+			 if(input.length > 1){
+			 String[] val = input[1].split("=");
+			 if(val.length > 0 && nodeNameReverseMapping.get(val[0]).startsWith("CL_")){
+		     String networkcode = UserDAO.getCode(this.getNwNameforResearch());
+			 userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+			 UserCaseInput caseinput = new UserCaseInput();
+			 caseinput.setUserid(userid);
+			 caseinput.setCaseid(caseid);
+			 caseinput.setSessionid(session.getId());
+			 caseinput.setEventid(1001);
+			 caseinput.setPageInfo("Research");
+			 caseinput.setValue("["+networkcode+"]"+" "+val[0]+"="+val[1]);
+			 UserDAO.SaveFeatureforOthers(caseinput);
+			 }
+			 }
+		 }
+		 
 		return accessionNo;
 	}
+
+
 	 public List<String> getUsersList(){
 		 List<String> users = new ArrayList<String>();
 		 
 		 //users = UserDAO.getUserName();
-		 if(this.getNwName() != null){
-		 if(this.getNwName().equalsIgnoreCase("Neuro - Basal Ganglia")){
+		 if(this.getNwName() != null && !"".equalsIgnoreCase(this.getNwName())){
+			 String qcperson = UserDAO.getQcPerson(this.getNwName());
+			 users.add(qcperson);
+		 }
+		 /*if(this.getNwName().equalsIgnoreCase("Neuro - Basal Ganglia")){
 			 users.add("manuel");
 		 }
 		 else if(this.getNwName().equalsIgnoreCase("Chest - Lung Disease")){
@@ -3206,7 +3420,7 @@ public class ServerModel {
 		 else if(this.getNwName().equalsIgnoreCase("Neuro - Validation Trial")){
 			 users.add("manuel4");
 		 }
-		 }
+		 }*/
 		return users;
 		 
 	 }
