@@ -4,81 +4,85 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
 	>
-
+	
 
 <h:head>
-	<title>Adaptive Radiology Interpretation / Education System
-		(ARIES)</title>
-	<link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
-	<link href="./css/style.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript"
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-	<script type="text/javascript" src="./js/collapseTable.js"></script>
-	<script type="text/javascript" src="./js/skel.min.js"></script>
-	<script type="text/javascript" src="./js/skel-panels.min.js"></script>
-	<script type="text/javascript" src="./js/highcharts.js"></script>
-	<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
-	<script type="text/javascript" src="./js/modules/data.js"></script>
-	
-	
-	
-	
-	<style>
-	ul { list-style-type:none; margin:0; padding:0; }
-li { display:inline; float:left; padding:0 10px; margin:0; }
-	</style>
+
+<title>Adaptive Radiology Interpretation / Education System	(ARIES)</title>
+
+<!-- Bootstrap and Jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+
+<!--Highcharts-->
+<script type="text/javascript" src="./js/collapseTable.js"></script>
+<script type="text/javascript" src="./js/highcharts.js"></script>
+<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+<script type="text/javascript" src="./js/modules/data.js"></script>
+<script src="./js/bootstrap-switch.js"></script>
+
+<!-- <link href="./css/style.css" rel="stylesheet" type="text/css" /> -->
+<link href="./css/bootfacesStyles.css" rel="stylesheet" type="text/css" />
 
 </h:head>
-<h:body>
-    
-				<div class="navbar navbar-default">
-
-				<div class='row' id="divStyle">
-					<div class="col-md-3">
-						<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-							4-10-2016</font>
-					</div>
-					<div class="col-md-6"> 
-
-						<br></br> <br></br>
-						<h3 style="font-size:24px;">
-							Adaptive Radiology Interpretation
-							&amps;
-							Education System (ARIES) 
-						</h3>
- 
-					</div>
-					<div class="col-md-3">
-						<br></br> <br></br> <font size="-1">Hospital of University
-							of Pennsylvania <br /> Department of Radiology Based on <br />the
-							Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br />
-							<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public
-								License</a>
-						</font>
-					</div>
-
-				</div> 
-			</div>
-			<p><br/></p>
-
-
-	<div>
+<h:body style="background-color:#000; color:#FFF">
+  <b:container  fluid="true">
+	<b:row>
 	
+		<b:column span="3" >
+			<a href="/ARIES/"> 
+				<img alt="ARIES" src="aries.png" />
+		
+			</a>
+			<br/>
+			 <font size="-2">Build 3-31-2016</font>
+		</b:column>
+		<b:column span = "6">
+		<br></br> <br></br>
+			<font size ="5em">
+				Adaptive Radiology Interpretation
+				&amp; 	 	
+				Education System (ARIES)
+			</font>
+			
+		</b:column>
+		<b:column span="2" >
+			<br /> <font size="-1">Hospital of University of Pennsylvania<br />
+				Department of Radiology <br /> Based on the Work of Emmanuel
+				Botzolakis <br /> Designed by Howard Chen <br /> <a
+				href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+			</font>
+			</b:column>
+		</b:row>
+
+	</b:container>
+		    <br></br>
 	
-	</div>
+	<b:container fluid="true" styleClass="body" style="width:100%">
+	
+	<!-- <b:navBar brand="Welcome, #{loginBean.uname} &nbsp;&nbsp;" inverse="true" brandHref="#">
+      			<b:navbarLinks style="color:#FFF">
+      				<b:navLink styleClass="active" value="Clinical"  href="#"></b:navLink>
+      				<b:navLink value="Submit Case"  href="/ARIES/caseInput_form.jsf"></b:navLink>
+      				<b:navLink value="Research"  href="/ARIES/research.jsf"></b:navLink>
+      				<b:navLink value="Education"  href="/ARIES/education.jsf"></b:navLink>
+      				<b:navLink value="QC"  href="/ARIES/qualityControl..jsf"></b:navLink>
+      				<b:navLink value="Analytics" ></b:navLink>
+      			</b:navbarLinks>
+      			
+      		</b:navBar> -->
 
 	<h:form id ="network">
-	   
-						<div>
-			<div >
-			<label>Welcome, #{loginBean.uname}</label></div>
-			<p><br/></p>
-	<div class="row">
-		<div class="9u">
-			<ul class="nav nav-tabs">
-
-				<li ><a href="/ARIES/">Home</a></li>
+	<b:row style="background-color:  #37373B;">  
+	<b:row style="color:white;">
+	 <label style="margin-left: 25px;">Welcome, #{loginBean.uname}</label>
+    </b:row>  
+    <b:column col-md="11">     
+	 <ul class="nav nav-tabs" style="border-bottom: 0px solid #ddd;">
+  <li ><a href="/ARIES/">Home</a></li>
 						<li class="active"><h:commandLink action="#{serverModel.getNavRuleClinical}"
 								value="Clinical">
 							</h:commandLink></li>
@@ -88,125 +92,141 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 						<li ><h:commandLink
 								action="#{serverModel.getNavRuleResearch}" value="Research">
 							</h:commandLink></li>
-						<li><h:commandLink
+						<li ><h:commandLink
 								action="#{serverModel.getNavRuleEducation}" value="Education">
 							</h:commandLink></li>
 						<li><h:commandLink action="#{serverModel.getNavRuleQC}"
 								value="QC">
 							</h:commandLink></li>
 						<li><a href="">Analytics</a></li>
+  
+</ul>
+</b:column>
+<b:column col-md="1">
+ <h:commandButton icon="glyphicon glyphicon-lock"
+										class="btn btn-primary" value="Logout"
+										action="#{loginBean.logout}"/>
+	</b:column>									
+  
+</b:row>
+<br></br>
+	
+	    <b:row >
+				<b:column span="2">
+					<font size="5">Select Network:</font>
+				</b:column>
+				<b:column span="2">
+					<b:selectOneMenu  value="#{serverModel.networkInput}" styleClass="network" onchange="this.form.submit()">
+						<f:selectItems value="#{serverModel.selectNetworkInputs}" />
+					</b:selectOneMenu>
+				</b:column>
+				<b:column style="float: center;"  span="1">
+					Sensitivity 
+					<h:selectBooleanCheckbox value="#{serverModel.sensityvityOn}" id="box" onchange="this.form.submit()" update="@form"></h:selectBooleanCheckbox>
+			</b:column>
+			
+<!-- 			<b:column span="2"> -->
+<!-- 					<font size="5">Diseases</font> -->
+<!-- 			</b:column> -->
+<!-- 			<b:column span="4"> -->
+<!-- 				<h:selectOneMenu styleClass="network" id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" >  -->
+<!--                                             <f:selectItem itemlabel="-select-" itemValue="-select-"></f:selectItem> -->
+<!--                                             <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems> -->
+<!--                 </h:selectOneMenu> -->
+<!-- 			</b:column> -->
+		</b:row>
+		<b:row>
+			<b:column span="12">
 				
+			</b:column>
+		</b:row>
+	
 
-			</ul>
-		</div>
-		<div class="3u">
-			<h:commandButton 
-				 value="Logout" action="#{loginBean.logout}" />
-		</div>
-	</div>
-
-</div>
-		<div class="row">
-		<h2>Select Network:</h2>
-		<h:selectOneMenu value="#{serverModel.networkInput}"
-			onchange="this.form.submit()">
-			<f:selectItems value="#{serverModel.selectNetworkInputs}" />
-		</h:selectOneMenu>
-		  
-		 <h2>Sensitivity:</h2>
-		 
-		 <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()" style="margin-top:13px;"> 
-        </h:selectBooleanCheckbox>
-        
-       </div>
-	</h:form>
-	<h:form >
-		
+	
 	<h:inputHidden value="#{serverModel.prePageLoad}" />
-	<div class="row">
-	<h2>Select Disease:</h2>
-	<div class="9u"></div>
-	 <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.getDiseaseAction}">
-											<f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
-											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-										</h:selectOneMenu> 
-	<p>
-			<h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
-		</p>					
-		</div>				
-		<!-- changes starts for CR101 -->
-    <h2>Select Features :</h2>
+	<b:row>
+	<b:column span="2" style="padding:none">
+				<font size="5">Select Disease:	</font>
+			</b:column>
+			
+			<b:column span="3" >
+				<h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" styleClass="network" onchange="this.form.submit()"  valueChangeListener="#{serverModel.getDiseaseAction}">
+					<f:selectItem itemValue="--select--"></f:selectItem>
+					<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+				</h:selectOneMenu>
+			</b:column>
+			<b:column span="2">
+  		  <p>
+            <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
+        </p>        
+			</b:column>
+	<b:column  >
+				<font size="5">Select Features:	</font>
+			</b:column>
+</b:row>
 		
-		<div class="row">
-					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-				
-			</div>
-								<!-- 	<div >
-											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
-												escape="false"></h:outputText>
-										</div> -->
-										
-		<ui:repeat var="networkPrefix" id="networkPrefixID" 
+
+		<!-- changes starts for CR101 -->
+										<br></br>
+		<ui:repeat var="networkPrefix"
 			value="#{serverModel.networkPrefixList}">
-
-			<h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-				<h:outputText style="font-size: 28px; padding:0.2em;"
-					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
-
-				<ui:repeat var="feature" id="networkFeatureID" 
-					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
+			
+			<b:panelGrid colSpans="12" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
+				<b:row styleClass="box1" >
+				<b>&nbsp;&nbsp;&nbsp;<h:outputText style="font-size: 28px;" value="#{serverModel.getNetworkPrefixName(networkPrefix)}" /></b>
+				</b:row> 
+				<b:row styleClass="box1">
+				<ui:repeat var="feature" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+									<b:column span="2">
+				
 					<h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-					<h:selectOneMenu id="sensitivity" 
-						class="features ${serverModel.featureClass(feature)}" 
-						value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
+					
+					<h:selectOneMenu  id="sensitivity" class="features ${serverModel.featureClass(feature)}" value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
 						<f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
-					</h:selectOneMenu>
-
+				</h:selectOneMenu>
+								</b:column>
+				
 				</ui:repeat>
-			</h:panelGrid>
+				</b:row>
+			</b:panelGrid>
 
 		</ui:repeat>
 
 		<!-- changes ends for CR101 -->
-
+		<br></br>
 		<p>
-			<h:commandButton value="Reset" action="#{serverModel.resetHandler}" />
+			<b:commandButton look="primary" value="Reset" action="#{serverModel.resetHandler}"></b:commandButton>
 		</p>
 
-		<!-- 
-<p>
-<h:outputText value="#{serverModel.nodeInputString}" escape="false" />
-</p>
- -->
-		<div class='row'>
-			<div class='6u'>
-				<div id="diagGraph1"
-					style="min-width: 350px; max-width: 800px; height: 400px;"></div>
-			</div>
-			<div class='6u'>
+		<b:row>
+		<br></br>
+			<b:column span='6'>
+				<div id="diagGraph"
+					style="min-width: 350px; max-width: 1000px; height: 500px;"></div>
+			</b:column>
+					<b:column span='6'>
 						<div id="diagGraphRadio"
-							style="min-width: 350px; max-width: 800px; height: 400px;"></div>
-					</div>
-			
-		</div>  
-				<div class='row'>
-			<div class='12u'> 
-				<div class="graphheader">
-					<input type="button" id="lnkHood" value="[+]" class="togglebutton"
-						onclick="toggle_visibility('tblHood','lnkHood')" /> <input
-						type="button" class="togglebutton title"
+							style="min-width: 350px; max-width: 1000px; height: 500px;"></div>
+					</b:column>
+		</b:row>	
+				<b:row>			
+					<b:column span="12">
+						<div class="graphheader">
+							<input type="button" id="lnkHood" value="[+]" class="togglebutton"
+						onclick="toggle_visibility('tblHood','lnkHood')" /> 
+						<input type="button" class="togglebutton title"
 						value="Pop the Hood on Bayesian Network Values"
 						onclick="toggle_visibility('tblHood','lnkHood')" />
-				</div>
+						</div>
+					</b:column>
+				</b:row>
 				<div id="tblHood" style="display: none">
 					<br />
 					
 					
-					<div class='3u'> 
+					<div class='3u'>
 						<div id="paretoGraph"
-							style="min-width: 400px; max-width: 1000px; height: 400px;"></div>
+							style="min-width: 700px; max-width: 1000px; height: 400px;"></div>
 					</div>
 					
 
@@ -214,8 +234,7 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 						<h:outputText value="#{serverModel.diagnosisNode}" escape="false" />
 					
 						<h:outputText id="hideTab" value="#{serverModel.radiographicDiag}" escape="false" />
-					</p> 
- 
+					</p>
 					<p>
 						<h:outputText value="#{serverModel.paretoTable}" escape="false" />
 					</p>
@@ -223,81 +242,23 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 					<p>
 						<h:outputText value="#{serverModel.testNodes}" escape="false" />
 					</p>
-				</div>  
-				
-				
+				</div>
+
 				<h:inputHidden value="#{serverModel.postPageLoad}" />
-				
-			</div>
-		</div>
-		<script>
+		
+	</h:form>
+	
+	<script>
 			$(function() {
-
-				$('#diagGraph1')
-						.highcharts(
-								{
-									data : {
-										table : 'diagnosistable1'
-									},
-									colors : [ '#7777FF', '#50B432', '#ED561B' ],
-									chart : {
-										type : 'bar',
-										style : {
-											fontSize : '18',
-											fontFamily : 'Arial, Helvetica, sans-serif'
-										},
-										backgroundColor : {
-											linearGradient : {
-												x1 : 0,
-												y1 : 0,
-												x2 : 1,
-												y2 : 1
-											},
-											stops : [
-													[ 0, 'rgb(FFF, 255, 255)' ],
-													[ 1, 'rgb(FFF, 240, 255)' ] ]
-										},
-										plotBackgroundColor : 'rgba(FFF, 255, 255, .9)',
-										plotShadow : true,
-									},
-									title : {
-										text : 'Clinical Differential Diagnoses',
-
-									},
-									yAxis : {
-										allowDecimals : false,
-										max : 100,
-										labels : {
-											style : {
-												fontSize : '18',
-												fontFamily : 'Arial, Helvetica, sans-serif'
-											}
-										}
-									},
-									xAxis : {
-										labels : {
-											style : {
-												fontSize : '18',
-												fontFamily : 'Arial, Helvetica, sans-serif'
-											}
-										}
-									},
-									tooltip : {
-										formatter : function() {
-											return this.point.y
-													+ '% probability of '
-													+ this.point.name;
-										}
-									}
-								});
-				$('#diagGraphRadio')
-				.highcharts(
-						{
+				
+				var chart1 = new Highcharts.Chart({
+					
 							data : {
 								table : 'radiodiagnosistable'
 							},
 							colors : [ '#7777FF', '#50B432', '#ED561B' ],
 							chart : {
+								renderTo:'diagGraphRadio',
 								type : 'bar',
 								style : {
 									fontSize : '18',
@@ -348,14 +309,69 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 							}
 						});
 				
-				$('#paretoGraph')
-						.highcharts(
-								{
+				var chart2 = new Highcharts.Chart({
+					data : {
+						table : 'diagnosistable1'
+					},
+					colors : [ '#7777FF', '#50B432', '#ED561B' ],
+					chart : {
+						renderTo: 'diagGraph',
+						type : 'bar',
+						style : {
+							fontSize : '18',
+							fontFamily : 'Arial, Helvetica, sans-serif'
+						},
+						backgroundColor : {
+							linearGradient : {
+								x1 : 0,
+								y1 : 0,
+								x2 : 1,
+								y2 : 1
+							},
+							stops : [
+									[ 0, '#000' ],
+									[ 1, '#000' ] ]
+						},
+						plotBackgroundColor : '#000',
+						plotShadow : true,
+					},
+					title : {
+						text : 'Top 10 Differential Diagnoses',
+
+					},
+					yAxis : {
+						allowDecimals : false,
+						max : 100,
+						labels : {
+							style : {
+								fontSize : '18',
+								fontFamily : 'Arial, Helvetica, sans-serif'
+							}
+						}
+					},
+					xAxis : {
+						labels : {
+							style : {
+								fontSize : '18',
+								fontFamily : 'Arial, Helvetica, sans-serif'
+							}
+						}
+					},
+					tooltip : {
+						formatter : function() {
+							return this.point.y
+									+ '% probability of '
+									+ this.point.name;
+						}
+					}
+	                });
+								var chart3 =  new Highcharts.Chart({
 									data : {
 										table : 'paretotable'
 									},
 									colors : [ '#7777FF', '#50B432', '#ED561B' ],
 									chart : {
+										renderTo: 'paretoGraph',
 										type : 'spline',
 										style : {
 											fontSize : '18',
@@ -369,10 +385,10 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 												y2 : 1
 											},
 											stops : [
-													[ 0, 'rgb(FFF, 255, 255)' ],
-													[ 1, 'rgb(FFF, 240, 255)' ] ]
+													[ 0, '#000' ],
+													[ 1, '#000' ] ]
 										},
-										plotBackgroundColor : 'rgba(FFF, 255, 255, .9)',
+										plotBackgroundColor : '#000',
 										plotShadow : true,
 									},
 									title : {
@@ -422,11 +438,9 @@ li { display:inline; float:left; padding:0 10px; margin:0; }
 									}
 								});
 			});
-	
-			
 		</script>
-	</h:form>
-
+	
+</b:container>
 </h:body>
 
 </html>

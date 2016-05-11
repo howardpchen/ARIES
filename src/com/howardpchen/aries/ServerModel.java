@@ -696,6 +696,7 @@ public class ServerModel {
 
 	public String resetHandler() {
 		userInputs.clear();
+		this.setDisease("");
 		infoMessages = new ArrayList<String>();
 		return ("index"); // return to index or refresh index
 	}
@@ -3357,7 +3358,7 @@ public class ServerModel {
 	}
 	public String getRsrchAccessionNo(){
 		String accessionNo ="";
-		userInputsForRs.clear();
+		//userInputsForRs.clear();
 	    int caseid = this.getRandomCaseNo();
 	    HttpSession session = Util.getSession();
 		String username = null;

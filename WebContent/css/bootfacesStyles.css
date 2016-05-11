@@ -1,0 +1,322 @@
+
+select.network{
+	background-color:#000;
+	color:#FFF;
+	border:2px solid #FFF;
+}
+/* #thispage{ */
+/* 	background-color: #808080; */
+/* } */
+navLink.active{
+	background-color: #808080;
+}
+.navbar-inverse .navbar-brand {
+	color:#FFF !important;
+}
+.navbar-inverse .navbar-nav > li > a{
+	color:#FFF !important;
+}
+/* a.topnav:link, a.topnav:visited { */
+/* 	color: #cccccc; */
+/* 	text-decoration: underline; */
+/* } */
+
+/* a.topnav:hover, a.topnav:active { */
+/* 	color: #999999; */
+/* 	text-decoration: underline; */
+/* } */
+
+/* a:link { */
+/* 	text-decoration: underline; */
+/* } */
+
+/* a:visited { */
+/* 	text-decoration: underline; */
+/* } */
+
+/* a:hover { */
+/* 	text-decoration: underline; */
+/* } */
+
+/* a:active { */
+/* 	text-decoration: underline; */
+/* } */
+
+select {
+	-moz-appearance: none;
+	text-indent: 0.01px;
+	text-overflow: '';
+	margin: 10px 10px 10px 10px;
+		overflow:hidden;
+		
+	
+}
+.box1{
+/* 	/*Gradient*/ */
+/* 	background: rgba(221,97,75,1); */
+/* 	background: -moz-linear-gradient(left, rgba(221,97,75,1) 0%, rgba(215,65,45,1) 4%, rgba(211,73,54,1) 23%, rgba(220,126,111,1) 50%, rgba(216,104,87,1) 71%, rgba(211,73,54,1) 100%); */
+/* 	background: -webkit-gradient(left top, right top, color-stop(0%, rgba(221,97,75,1)), color-stop(4%, rgba(215,65,45,1)), color-stop(23%, rgba(211,73,54,1)), color-stop(50%, rgba(220,126,111,1)), color-stop(71%, rgba(216,104,87,1)), color-stop(100%, rgba(211,73,54,1))); */
+/* 	background: -webkit-linear-gradient(left, rgba(221,97,75,1) 0%, rgba(215,65,45,1) 4%, rgba(211,73,54,1) 23%, rgba(220,126,111,1) 50%, rgba(216,104,87,1) 71%, rgba(211,73,54,1) 100%); */
+/* 	background: -o-linear-gradient(left, rgba(221,97,75,1) 0%, rgba(215,65,45,1) 4%, rgba(211,73,54,1) 23%, rgba(220,126,111,1) 50%, rgba(216,104,87,1) 71%, rgba(211,73,54,1) 100%); */
+/* 	background: -ms-linear-gradient(left, rgba(221,97,75,1) 0%, rgba(215,65,45,1) 4%, rgba(211,73,54,1) 23%, rgba(220,126,111,1) 50%, rgba(216,104,87,1) 71%, rgba(211,73,54,1) 100%); */
+/* 	background: linear-gradient(to right, rgba(221,97,75,1) 0%, rgba(215,65,45,1) 4%, rgba(211,73,54,1) 23%, rgba(220,126,111,1) 50%, rgba(216,104,87,1) 71%, rgba(211,73,54,1) 100%); */
+/* 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dd614b', endColorstr='#d34936', GradientType=1 ); */
+	
+	background: rgba(34,25,64,1);
+background: -moz-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(34,25,64,1)), color-stop(31%, rgba(49,23,120,1)), color-stop(51%, rgba(8,20,120,1)), color-stop(76%, rgba(49,23,120,1)), color-stop(100%, rgba(34,25,64,1)));
+background: -webkit-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%);
+background: -o-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%);
+background: -ms-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%);
+background: linear-gradient(to right, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#221940', endColorstr='#221940', GradientType=1 );
+	
+	
+/* 	background-color:#221940; */
+/* 	background: rgba(34, 25, 64, 1); */
+	
+}
+select.features {
+	position: relative;
+	display: inline-block;	
+
+background: -moz-linear-gradient(top, rgba(80,80,166,1) 0%, rgba(179,220,237,1) 0%, rgba(80,80,166,1) 0%, rgba(106,106,242,1) 50%, rgba(80,80,166,1) 100%);
+background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(80,80,166,1)), color-stop(0%, rgba(179,220,237,1)), color-stop(0%, rgba(80,80,166,1)), color-stop(50%, rgba(106,106,242,1)), color-stop(100%, rgba(80,80,166,1)));
+background: -webkit-linear-gradient(top, rgba(80,80,166,1) 0%, rgba(179,220,237,1) 0%, rgba(80,80,166,1) 0%, rgba(106,106,242,1) 50%, rgba(80,80,166,1) 100%);
+background: -o-linear-gradient(top, rgba(80,80,166,1) 0%, rgba(179,220,237,1) 0%, rgba(80,80,166,1) 0%, rgba(106,106,242,1) 50%, rgba(80,80,166,1) 100%);
+background: -ms-linear-gradient(top, rgba(80,80,166,1) 0%, rgba(179,220,237,1) 0%, rgba(80,80,166,1) 0%, rgba(106,106,242,1) 50%, rgba(80,80,166,1) 100%);
+background: linear-gradient(to bottom, rgba(80,80,166,1) 0%, rgba(179,220,237,1) 0%, rgba(80,80,166,1) 0%, rgba(106,106,242,1) 50%, rgba(80,80,166,1) 100%);
+background-color: #301774;
+
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5050a6', endColorstr='#5050a6', GradientType=0 );
+	border-radius: 8px;
+	box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 1);
+	color: #FFF !important;
+	text-decoration: none;
+	font-size: 18px; change for CR102
+	letter-spacing: 0.075em;
+	padding: 1em 1em 1em 1em;
+	outline: 0;
+	white-space: nowrap;
+	width: 100%;
+	border: 0px;
+		margin: 10px 10px 10px 10px;
+			overflow:hidden;
+		
+	
+}
+
+select.hasChoice {
+/* 	background:#10002C; */
+	background: #939;
+	background-image: -moz-linear-gradient(top, #939, #F7F);
+	background-image: -webkit-linear-gradient(top, #939, #F7F);
+	background-image: -o-linear-gradient(top, #939, #F7F);
+	background-image: -ms-linear-gradient(top, #939, #F7F);
+	background-image: linear-gradient(top, #939, #F7F);
+	box-shadow: inset 0px 0px 0px 1px , inset 0px 2px 1px 0px #939;
+		margin: 10px 10px 10px 10px;
+			overflow:hidden;
+		
+	
+}
+
+select.sensitive {
+	border: 5px solid #FF0;
+	border-radius: 15pt;
+		margin: 10px 10px 0px 10px;
+			overflow:hidden;
+		
+	
+}
+
+a {
+	color: #99f;
+}
+
+a.button, .radiobuttons label, select, input[type=text], input[type=password]
+	{
+	text-align: center;
+	display: inline-block;
+/* 	background-color: #FFF; */
+	border: 3px;
+	color: #000;
+	font-size: 11pt;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 15pt;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #77F #77F;
+	margin:0px;
+	padding: 0px;
+		overflow:hidden;
+	
+}
+
+select:disabled, input:disabled {
+	color: #222;
+	background-color: #222;
+}
+
+input[type=submit] {
+	padding: 5px 15px;
+	background: #77F;
+	border: none;
+/* 	font-color: #FFF; */
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 15px 15px;
+	margin: 0.5em;
+	overflow:hidden;
+}
+
+
+table {
+	width: 700px;
+	margin: 1em;
+}
+
+/* .formTable { */
+/* 	display: table; */
+/* } */
+/* /* If prompt and input are in two cells of one row, the prompt will be R-aligned. */ */
+/* .formTable td:first-child { */
+/* 	text-align: right; */
+/* } */
+/* /* Third table cell shows the error message, so make it bold and red. Used in validation examples that have h:message. */ */
+/* .formTable td:nth-child(3) { */
+/* 	color: red; */
+/* 	font-weight: bold; */
+/* } */
+
+p.node-title {
+	width: 500px;
+	background-color: #77F;
+	border-width: 3px;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 0.5em;
+}
+
+tr:nth-child(even) {
+	background: #669
+}
+
+tr:nth-child(odd) {
+	background: #667
+}
+
+tr:first-child {
+	font-weight: 900;
+}
+
+td {
+	margin-left: 0.5em;
+	padding: 0.5em;
+}
+
+th {
+	background-color: #afc4d6;
+	font-size: 110%;
+	font-family: Arial, Helvetica, sans-serif; /*change for CR102 */
+}
+td {
+	margin-left: 0.5em !important;
+	padding: 0.5em !important;
+}
+
+legend {
+	font-weight: bold;
+	color: black;
+	background-color: #afc4d6;
+	border: 1px solid #1a55bf;
+	padding: 3px 5px;
+	border-radius: 3px;
+}
+align="center"] li {
+	list-style-position: inside;
+}
+p.node-title {
+	width: 500px;
+	background-color: #77F;
+	border-width: 3px;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 0.5em;
+}
+
+
+fieldset {
+	border-radius: 6px;
+	display: block;
+}
+
+/* input, textarea { */
+/* 	background-color: #ecedf2; */
+/* 	text-align: left; */
+/* } */
+
+/* input[type="checkbox"] { */
+/* 	background-color: transparent; */
+/* 	/* For IE 7-9 -- doesn't matter in FF, Chrome, or IE 10+ */ */
+/* } */
+
+/* input[type="text"]:focus, input[type="password"]:focus, textarea:focus { */
+/* 	background-color: #9fd1ff; */
+/* } */
+
+.error {
+	color: red;
+	font-weight: bold;
+}
+
+.graphheader {
+	border: solid;
+	border-top-width: 3px;
+	border-bottom-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-color: #CCF;
+	background: #77F;
+	width: 100%;
+	color: #000;
+	font-weight: 800;
+	line-height: 2em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.togglebutton {
+	border: none;
+	background-color: transparent;
+	border-style: none;
+	border-radius: 0px;
+	border-width: 0px;
+	background: transparent;
+	font-family: Arial, Helvetica, sans-serif;change for CR102
+	font-weight: 700;
+	color: #FFF;
+	margin: 0;
+}
+
+.togglebutton.title {
+	font-family: Arial, Helvetica, sans-serif;change for CR102
+	font-size: 10pt;
+	color: #FFF;
+	width: initial;
+}
+
+/* So that in Chrome and IE, the bullets are next to the text in centered lists. Already OK in Firefox. */
+[align="center"] li {
+	list-style-position: inside;
+}
+
+panelgridheader {
+	font-family: Arial, Helvetica, sans-serif;change for CR102
+	font-weight: 700;
+	color: #FFF;
+}
