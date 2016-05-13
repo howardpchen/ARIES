@@ -92,6 +92,7 @@ public class LoginBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Registration Successful",
                     "Please Try Again!"));
+    		return "login?faces-redirect=true";
     	/*	this.setUname("");
     		this.setPassword("");
     		this.setFirstname("");
@@ -126,7 +127,7 @@ public class LoginBean implements Serializable {
            // this.setFullname("");
             System.out.println("this.getOption() .."+this.getOption());
             if("QC".equals(this.getOption())&& (!uname.equalsIgnoreCase("manuel")|| !uname.equalsIgnoreCase("manuel1") || !uname.equalsIgnoreCase("manuel2") || uname.equalsIgnoreCase("manuel3")
-            		|| !uname.equalsIgnoreCase("manuel4") || !uname.equalsIgnoreCase("siva")|| !uname.equalsIgnoreCase("yamuna"))){
+            		|| !uname.equalsIgnoreCase("manuel4"))){
             	 FacesContext.getCurrentInstance().addMessage(
                          null,
                          new FacesMessage(FacesMessage.SEVERITY_ERROR,

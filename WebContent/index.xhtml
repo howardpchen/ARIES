@@ -45,7 +45,7 @@
 			<font size ="5em">
 				Adaptive Radiology Interpretation
 				&amp; 	 	
-				Education System (ARIES)
+				Education System 
 			</font>
 			
 		</b:column>
@@ -78,7 +78,7 @@
 	<h:form id ="network">
 	<b:row style="background-color:  #37373B;">  
 	<b:row style="color:white;">
-	 <label style="margin-left: 25px;">Welcome, #{loginBean.uname}</label>
+	 <label style="margin-left: 25px;">Welcome, #{serverModel.fullName}</label>
     </b:row>  
     <b:column col-md="11">     
 	 <ul class="nav nav-tabs" style="border-bottom: 0px solid #ddd;">
@@ -115,25 +115,11 @@
 				<b:column span="2">
 					<font size="5">Select Network:</font>
 				</b:column>
-				<b:column span="2">
-					<b:selectOneMenu  value="#{serverModel.networkInput}" styleClass="network" onchange="this.form.submit()">
+				<b:column span="3">
+					<h:selectOneMenu  value="#{serverModel.networkInput}" styleClass="network" onchange="this.form.submit()">
 						<f:selectItems value="#{serverModel.selectNetworkInputs}" />
-					</b:selectOneMenu>
+					</h:selectOneMenu>
 				</b:column>
-				<b:column style="float: center;"  span="1">
-					Sensitivity 
-					<h:selectBooleanCheckbox value="#{serverModel.sensityvityOn}" id="box" onchange="this.form.submit()" update="@form"></h:selectBooleanCheckbox>
-			</b:column>
-			
-<!-- 			<b:column span="2"> -->
-<!-- 					<font size="5">Diseases</font> -->
-<!-- 			</b:column> -->
-<!-- 			<b:column span="4"> -->
-<!-- 				<h:selectOneMenu styleClass="network" id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" >  -->
-<!--                                             <f:selectItem itemlabel="-select-" itemValue="-select-"></f:selectItem> -->
-<!--                                             <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems> -->
-<!--                 </h:selectOneMenu> -->
-<!-- 			</b:column> -->
 		</b:row>
 		<b:row>
 			<b:column span="12">
@@ -141,7 +127,7 @@
 			</b:column>
 		</b:row>
 	
-
+<br></br>
 	
 	<h:inputHidden value="#{serverModel.prePageLoad}" />
 	<b:row>
@@ -160,8 +146,15 @@
             <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
         </p>        
 			</b:column>
-	<b:column  >
+	
+	</b:row>
+	<b:row>
+	<b:column span="2" >
 				<font size="5">Select Features:	</font>
+			</b:column>
+				<b:column style="float: center;"  span="3">
+					Display Most Discriminating Features: 
+					<h:selectBooleanCheckbox value="#{serverModel.sensityvityOn}" id="box" onchange="this.form.submit()" update="@form"></h:selectBooleanCheckbox>
 			</b:column>
 </b:row>
 		

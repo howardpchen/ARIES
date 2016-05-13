@@ -36,6 +36,9 @@ input[type=checkbox], input[type=radio] {
 .nav-tabs {
 	border-bottom: 0px solid #ddd;
 }
+label {
+ color:white;
+}
 </style>
 
 </h:head>
@@ -137,7 +140,7 @@ input[type=checkbox], input[type=radio] {
 				<div class="row" id="maindiv">
 					
 					<div> 
-						<div class="panel panel-primary" style="background-color: #00CCFF">
+						<div class="panel panel-primary" style="background:-moz-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%)">>
 							<div class="panel-heading" align="center">
 								<h4>Case Submission Form</h4>
 							</div>
@@ -301,20 +304,7 @@ input[type=checkbox], input[type=radio] {
 									</div>
 									
 
-									<div class="form-group" style="text-align: center;">
-										<div class="col-md-4">
-											<label for="qcperson">QC Person :<font color="red">*</font></label>
-										</div>
-										<div class="input-group">
-
-											<h:selectOneMenu id="qcperson"
-												value="#{serverModel.qcperson}">
-												<f:selectItems value="#{serverModel.usersList}"></f:selectItems>
-											</h:selectOneMenu>
-
-
-										</div>
-									</div>
+								
 
 									<p>
 										<br />
@@ -322,21 +312,14 @@ input[type=checkbox], input[type=radio] {
 									
 								</fieldset>
 								<div id="feature_pg">
-									<div class="row">
-
-										<div class="col-md-2"></div>
-										<div class="col-md-8">
-											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
-												escape="false"></h:outputText>
-										</div>
-									</div>
-									<h3>Enter Inputs for Case No:#{serverModel.caseNoforQC}</h3>
+									
+									<h3 style="color:white">Enter Inputs for Case No:#{serverModel.caseNoforQC}</h3>
 									<ui:repeat var="networkPrefix"
 										value="#{serverModel.networkPrefixList}"> 
 
 										<h:panelGrid id="pg_inputs" cellspacing="2"
 											rendered="#{serverModel.getFeaturesRendered(networkPrefix)}">
-											<h:outputText
+											<h:outputText style="color:white;font-weight:bold;font-size:large;"
 												value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
 											<ui:repeat var="feature"

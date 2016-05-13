@@ -35,6 +35,9 @@ input[type=checkbox], input[type=radio] {
 .nav-tabs {
     border-bottom: 0px solid #ddd;
 }
+label {
+ color:white;
+}
 </style>
 
 </h:head>
@@ -129,7 +132,7 @@ input[type=checkbox], input[type=radio] {
 				<div class="row">
 					
 					<div >
-						<div class="panel panel-primary" style="background-color:#00CCFF">
+						<div class="panel panel-primary" style="background:-moz-linear-gradient(left, rgba(34,25,64,1) 0%, rgba(49,23,120,1) 31%, rgba(8,20,120,1) 51%, rgba(49,23,120,1) 76%, rgba(34,25,64,1) 100%)">
 							<div class="panel-heading" align="center"><h4>Research</h4>
 							</div>
 							<div class="panel-body">
@@ -138,7 +141,7 @@ input[type=checkbox], input[type=radio] {
  								
 								<div class="form-group" style="text-align: center;">
 									<div class="col-md-4">
-										<label for="network">Network :<font color="red">*</font> </label>
+										<label style="color:#FFFFFF" for="network">Network :<font color="red">*</font> </label>
 									</div>
 									<div class="input-group">
 									
@@ -155,13 +158,13 @@ input[type=checkbox], input[type=radio] {
                                   <h:panelGroup rendered="#{serverModel.nwNameforResearch != '-select-' and not empty serverModel.nwNameforResearch and serverModel.randomCaseNo != 0}" >
                                   
                              <div>
-                                <h3>Enter Inputs for Accession: #{serverModel.rsrchAccessionNo}</h3>
+                                <h3 style="color:white">Enter Inputs for Accession: #{serverModel.rsrchAccessionNo}</h3>
 								<ui:repeat var="networkPrefix"
 									value="#{serverModel.networkPrefixList}">
                                     
 									<h:panelGrid id="pg_inputs" cellspacing="2"  
 										rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
-										<h:outputText 
+										<h:outputText style="color:white;font-weight:bold;font-size:large"
 											value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
 										<ui:repeat var="feature" 

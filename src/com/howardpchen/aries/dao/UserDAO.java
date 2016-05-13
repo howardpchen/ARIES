@@ -444,7 +444,7 @@ public class UserDAO {
     	 try{
     		 con = Database.getConnection();
     		 stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT caseid FROM caselist where network = '"+network+"'"+" and qualitycontrol = 'Yes' order by rand() limit 1");
+             ResultSet rs = stmt.executeQuery("SELECT caseid FROM caselist where network = '"+network+"'"+" and qualitycontrol = 'Yes' and isnull(deleted)  <> 'Yes' order by rand() limit 1");
              while(rs.next()){
             	 randomCaseNo = rs.getInt("caseid");
              }
@@ -631,11 +631,12 @@ public class UserDAO {
      public static void deleteCaseList(int caseid){
     	 Connection con = null;
     	 PreparedStatement ps = null;
-    	 String sql = "delete from caselist WHERE caseid= ?";
+    	 //String sql = "delete from caselist WHERE caseid= ?";
     	 try{
     		 con = Database.getConnection();
-    		 ps = con.prepareStatement(sql);
-    		 ps.setInt(1, caseid);
+    		 ps = con.prepareStatement("UPDATE caselist set deleted = ?"+ " WHERE caseid= ?");
+    		 ps.setString(1,"Yes");
+    		 ps.setInt(2, caseid);
     		 ps.executeUpdate();
     		System.out.println("Case is Deleted");
     		
@@ -771,5 +772,26 @@ public class UserDAO {
             	success ="false";
             return success;
      }
-}
 
+public static String getFullName(String username,String password){
+	 Connection con = null;
+	 Statement stmt = null;
+	 String FullName = null;
+	 try{
+		 con = Database.getConnection();
+		 stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from loginuser where username ='"+username+"'"+" and passhash = '"+password+"'");
+        while(rs.next()){
+        	if(rs.getString("firstname") != null && rs.getString("lastname") != null){
+        	FullName = rs.getString("firstname")+" "+rs.getString("lastname");
+        	}
+        }
+	 } catch (Exception ex) {
+        System.out.println("Error in getFullName -->" + ex.getMessage());
+    } finally {
+        Database.close(con);
+    }
+	return FullName;
+	
+}
+}

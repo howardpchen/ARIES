@@ -965,11 +965,11 @@ public class ServerModel {
 	
 	public void updateDiagnosisNode1() {
 		Set<String> toRemove = new TreeSet<String>();
-		Set<String> s = userInputs1.keySet();
+		Set<String> s = userInputsCase.keySet();
 		Iterator<String> it = s.iterator();
 		while (it.hasNext()) {
 			String key = it.next();
-			String response = userInputs1.get(key);
+			String response = userInputsCase.get(key);
 			
 			if (response.equals("[Clear]")) {
 				toRemove.add(key);
@@ -981,7 +981,7 @@ public class ServerModel {
 
 		it = toRemove.iterator();
 		while (it.hasNext()) {
-			userInputs1.remove(it.next());
+			userInputsCase.remove(it.next());
 		}
 	}
 	public void updateDiagnosisNode() {
@@ -1060,7 +1060,7 @@ public class ServerModel {
     				String key = it.next();
     				String diag = key.replaceAll("_", " ");
     				if(userInputs.keySet().size() == 0){
-        				sb.append("<tr><td>" + diag).append("<td>").append((100/noOfKeys)).append("</tr>");
+        				sb.append("<tr><td>" + diag).append("<td>").append((float)100/noOfKeys).append("</tr>");
     				}else{
     				sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
     				}
@@ -1398,8 +1398,8 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 			nodes = dw.getNodeNames();
-			fromGraph = "false";
-			updateDiagnosisNode();
+			//fromGraph = "false";
+			updateDiagnosisNode1();
 
 			// List<String> newList = new ArrayList<String>();
 			if(nodes != null){
@@ -1718,6 +1718,7 @@ public class ServerModel {
 		/*if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}*/
+		if(inputs[0] != null && inputs.length >0){
 		if(userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
 		{
 		if(inputs.length == 2){
@@ -1728,6 +1729,7 @@ public class ServerModel {
 			if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
 				return;
 			clearflag = true;
+		}
 		}
 		}
 
@@ -2259,9 +2261,9 @@ public class ServerModel {
 		return networkList;
 	}
 
-	public List<String> getNetworkNameList() {
+	public Set<String> getNetworkNameList() {
 		List<Network> networkList;
-		List<String> nwNameList = new ArrayList<String>();
+		Set<String> nwNameList = new TreeSet<String>();
 		try {
 			networkList = UserDAO.getNetworkList();
 			for (Network network1 : networkList()) {
@@ -2478,7 +2480,8 @@ public class ServerModel {
 			}
 			int userid = UserDAO.getUserID(username, password);
 			caseList.setSubmittedBy(userid);
-			caseList.setQcperson(this.getQcperson());
+			String qcPerson = getQcPerson();
+			caseList.setQcperson(qcPerson);
 			this.setCaseList(caseList);
 			if (caseListValidation()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -3379,7 +3382,7 @@ public class ServerModel {
 			// values.add(input[1]);
 			 if(input.length > 1){
 			 String[] val = input[1].split("=");
-			 if(val.length > 0 && nodeNameReverseMapping.get(val[0]).startsWith("CL_")){
+			 if(val.length > 0 && !nodeNameReverseMapping.isEmpty()&& nodeNameReverseMapping.get(val[0]).startsWith("CL_")){
 		     String networkcode = UserDAO.getCode(this.getNwNameforResearch());
 			 userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
 			 UserCaseInput caseinput = new UserCaseInput();
@@ -3398,33 +3401,17 @@ public class ServerModel {
 	}
 
 
-	 public List<String> getUsersList(){
-		 List<String> users = new ArrayList<String>();
+	 public String getQcPerson(){
+		 String qcperson = null;
 		 
 		 //users = UserDAO.getUserName();
 		 if(this.getNwName() != null && !"".equalsIgnoreCase(this.getNwName())){
-			 String qcperson = UserDAO.getQcPerson(this.getNwName());
-			 users.add(qcperson);
+			qcperson = UserDAO.getQcPerson(this.getNwName());
 		 }
-		 /*if(this.getNwName().equalsIgnoreCase("Neuro - Basal Ganglia")){
-			 users.add("manuel");
-		 }
-		 else if(this.getNwName().equalsIgnoreCase("Chest - Lung Disease")){
-			 users.add("manuel1");
-		 }
-		 else if(this.getNwName().equalsIgnoreCase("Body - Kidney")){
-			 users.add("manuel2");
-		 }
-		 else if(this.getNwName().equalsIgnoreCase("MSK - Bone Lesions")){
-			 users.add("manuel3");
-		 }
-		 else if(this.getNwName().equalsIgnoreCase("Neuro - Validation Trial")){
-			 users.add("manuel4");
-		 }
-		 }*/
-		return users;
+		return qcperson;
 		 
 	 }
+	 
 	 public List<String> getSelectCaseList(){
 	    	/*
 	    	List<String> caseListforNw = new ArrayList<String>();
@@ -3563,7 +3550,26 @@ public class ServerModel {
 		public void setComments(String comments) {
 			this.comments = comments;
 		}
-	
+	public String getFullName(){
+		HttpSession session = Util.getSession();
+		String fullname = null;
+		String username = null;
+		String password = null;
+		if(session.getAttribute("username") != null)
+		username = session.getAttribute("username").toString();
+		if(session.getAttribute("password") != null)
+		password = session.getAttribute("password").toString();
+		if(username != null && password != null){
+		fullname = UserDAO.getFullName(username,password);
+		}
+		if (fullname!=null){
+			return fullname ;
+		}else{
+			return username;
+		}
+		
+		
+	}
 
 	class Feature {
 		private String featureName;
