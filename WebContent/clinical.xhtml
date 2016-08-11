@@ -15,6 +15,9 @@
 	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
 	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
 	
+	<!-- <link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+	<link href="./css/style.css" rel="stylesheet" type="text/css" /> -->
+	
 	<script type="text/javascript"
 		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/collapseTable.js"></script>
@@ -35,22 +38,34 @@
        	  document.body.style.cursor='wait';	
 	    }
 	</script>
-
+	
+	<script type="text/javascript">
+	  $(function(){
+        var includes = $('.include');
+        jQuery.each(includes, function(){
+          var file = $(this).data('include')+'.xhtml';
+		  $(this).load(file);
+		});
+	   });
+	</script>
+	
 </h:head>
+
+
 <h:body onload="onLoadCursor();">
 
-<ui:include src="header.xhtml" />   
+<ui:include src="header.xhtml" /> 
 
-<div class="container-fluid">
-<h:form id="networktest">
+<h:form id="network">
 
 <div class="row">
-  <div class="col-md-8 selectdiv">
+  <div class="col-md-8">
   <table class="mainmenu">
-  	<tr><td><div class="mainmenu"><h2>Select Network:</h2></div></td>
-  	   <td><div class="mainmenu">
-  	      <h:selectOneMenu value="#{serverModel.activeNetwork}" onchange="this.form.submit()" >
-	      <f:selectItems value="#{serverModel.availableNetworks}" />
+  	<tr>
+  	  <td><div class="mainmenu"><h2>Select Network:</h2></div></td>
+  	  <td><div class="mainmenu">
+  	      <h:selectOneMenu value="#{serverModel.networkInput}" onchange="this.form.submit()">
+	      <f:selectItems value="#{serverModel.selectNetworkInputs}" />
           </h:selectOneMenu>
   	  </div></td>
   	</tr>
@@ -79,44 +94,32 @@
 </div>
 
 </h:form>
-</div>
 
-<div class="container-fluid">
-<h:form >
-		
-<!--  Load in the selected network -->		
-<h:inputHidden value="#{serverModel.prePageLoad}" />
-
-<div class="row">
-  <h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-</div>
-
-<div><br /></div>
-
+<h:form>
+ 
+		<div class="row">
+					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+				
+			</div>
 								<!-- 	<div >
 											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
 												escape="false"></h:outputText>
 										</div> -->
-			
-<!-- Begin Rows of features/nodes to set -->										
-<div class="row row2"><div class="col-md-12"><div class="selectdiv">
+										
 		<ui:repeat var="networkPrefix" id="networkPrefixID" 
 			value="#{serverModel.networkPrefixList}">
 
-			<!--  <h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-				<h:outputText style="font-size: 16px; padding:0.2em;"
-					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" /> -->
-					
-			<h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-				<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
-					
+			<h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
+				<h:outputText style="font-size: 22px; padding:0.2em; margin-top:5px; color: #66B9BF;"
+					value="#{serverModel.getNetworkPrefixName(networkPrefix)}"  />
+
 				<ui:repeat var="feature" id="networkFeatureID" 
 					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
 
 					<h:outputText value="#{serverModel.currentFeature(feature)}" />
 
 					<h:selectOneMenu id="sensitivity" 
-						class="features ${serverModel.featureClass(feature)}" 
+						class="features ${serverModel.featureClass(feature)}" onclick="onWaitCursor();"
 						value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
 						<f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
 					</h:selectOneMenu>
@@ -125,25 +128,19 @@
 			</h:panelGrid>
 
 		</ui:repeat>
-</div></div></div>
 
 		<!-- changes ends for CR101 -->
-<div></div>
-<div class="row"><div class="col-md-12">
-		
-			<h:commandButton value="Reset/Clear Features" action="#{serverModel.resetHandler}" />
-	
-</div></div>
-<div></div>
+
+		<p>
+			<h:commandButton value="Reset" action="#{serverModel.resetHandler}" />
+		</p>
 
 		<!-- 
 <p>
 <h:outputText value="#{serverModel.nodeInputString}" escape="false" />
 </p>
  -->
-
- 
-		<div class="row">
+		<div class='row'>
 			<div class='6u'>
 				<div id="diagGraph1"
 					style="min-width: 350px; max-width: 800px; height: 400px;"></div>
@@ -202,7 +199,7 @@
 									data : {
 										table : 'diagnosistable1'
 									},
-									colors : [ '#66B9BF', '#50B432', '#ED561B' ],
+									colors : [ '#07889B', '#50B432', '#ED561B' ],
 									chart : {
 										type : 'bar',
 										style : {
@@ -259,7 +256,7 @@
 							data : {
 								table : 'radiodiagnosistable'
 							},
-							colors : [ '#66B9BF', '#50B432', '#ED561B' ],
+							colors : [ '#07889B', '#50B432', '#ED561B' ],
 							chart : {
 								type : 'bar',
 								style : {
@@ -317,7 +314,7 @@
 									data : {
 										table : 'paretotable'
 									},
-									colors : [ '#66B9BF', '#E37722', '#ED561B' ],
+									colors : [ '#07889B', '#E37222', '#ED561B' ],
 									chart : {
 										type : 'spline',
 										style : {
@@ -389,7 +386,6 @@
 			
 		</script>
 	</h:form>
-	</div>
 
 </h:body>
 

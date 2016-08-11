@@ -17,7 +17,7 @@
 	<!-- Bootstrap -->
 	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -40,76 +40,11 @@ input[type=checkbox], input[type=radio] {
 
 </h:head>
 <h:body id="bodyStyle">
+    <ui:include src="header.xhtml" />  
+
 	<f:view>
 		<h:form role="form" id="caseInput">
 
-
-
-			<div class='row' id="divStyle" style="color: white;">
-				<div class="col-md-3">
-					<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-						4-10-2016</font>
-				</div>
-				<div class="col-md-6">
-
-					<br></br> <br></br>
-					<h3>
-						Adaptive Radiology Interpretation
-						&amps;
-						Education System (ARIES)
-					</h3>
-
-				</div>
-				<div class="col-md-3">
-					<br></br> <br></br> <font size="-1">Hospital of University
-						of Pennsylvania <br /> Department of Radiology Based on <br />the
-						Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br />
-						<a href="https://www.gnu.org/copyleft/gpl.html">GNU Public
-							License</a>
-					</font>
-				</div>
-
-			</div>
-			<div style="background-color: #37373B;">
-
-				<div style="color: white;">
-
-					<label>Welcome, #{loginBean.uname}</label>
-				</div>
-
-				<div class="row">
-
-					<div class="col-md-11">
-						<ul class="nav nav-tabs">
-						<li ><a href="/ARIES/">Home</a></li>
-						<li ><h:commandLink action="#{serverModel.getNavRuleClinical}"
-								value="Clinical">
-							</h:commandLink></li>
-						<li><h:commandLink action="#{serverModel.getNavRuleCase}"
-								value="SubmitCase">
-							</h:commandLink></li>
-						<li ><h:commandLink
-								action="#{serverModel.getNavRuleResearch}" value="Research">
-							</h:commandLink></li>
-						<li><h:commandLink
-								action="#{serverModel.getNavRuleEducation}" value="Education">
-							</h:commandLink></li>
-						<li class="active"><h:commandLink action="#{serverModel.getNavRuleQC}"
-								value="QC">
-							</h:commandLink></li>
-						<li><a href="">Analytics</a></li>
-
-							
-
-						</ul>
-					</div>
-					<div class="col-md-1">
-						<h:commandButton icon="glyphicon glyphicon-lock"
-							class="btn btn-primary" value="Logout"
-							action="#{loginBean.logout}" />
-					</div>
-				</div>
-			</div>
 			<!-- <div>
 
 				<a href="/ARIES/">Back To Home</a>

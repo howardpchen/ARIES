@@ -1,0 +1,326 @@
+/*
+tangerine: #E37722
+tan:       #EEAA7B
+teal:      #07889B
+powder:    #66B9BF
+dark gray: #333333
+med gray:  #777777
+lgt gray:  #EEEEEE
+*/
+
+
+body, p, h1, h2, h3, h4, ul, ol, textarea, input {
+	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
+	color: #EEE;
+}
+body, p, ul, ol, textarea, input {
+    background: #333;
+}
+
+
+body { 
+	margin: 5px 20px;
+}
+
+
+a {
+	color: #66B9BF;
+}
+
+p {
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+	text-align: left;
+}
+
+.container {
+	padding: 0px;
+	margin: 0px;
+}
+
+
+ul.nav {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+.col-md-1 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-2 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-3 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-4 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-5 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-6 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-7 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-8 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-9 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-10 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-11 {
+	padding: 0px;
+	margin: 0px;
+}
+.col-md-12 {
+	padding: 0px;
+	margin-top: 10px;
+	padding-top: 0px;
+}
+.col-centered {
+	float; none;
+	margin: 0 auto;
+	align: center;
+}
+
+.sidebar {
+	float: right;
+	font-size: 9pt;
+	margin: 40px 0px 0px 0px;
+}
+
+.nav-pills {
+	color: #66B9BF;
+	background-color: #333;
+	border: medium none;
+}
+
+.nav-pills > li > a {
+	border: medium none;
+	color: #66B9BF;
+	font-weight: bold;
+	font-size: 12pt;
+}
+
+ul.nav-pills {
+	margin-bottom: 15px;
+}
+
+.nav-pills > li.active > a {
+	color: #EEE;
+	background-color: #E37722;
+	border-radius: 10px 10px 0px 0px;
+	border: medium none;
+}
+
+.nav-pills > li.active > a:hover {
+	color: #EEE;
+	border-radius: 10px 10px 0px 0px;
+	border: medium none;
+	cursor: pointer;
+}
+
+.nav-pills > li > a:hover {
+	background-color: #000 !important;
+	border: medium none;
+	border-radius: 10px 10px 0px 0px;
+}
+
+input[type=checkbox] {
+	margin-top: 15px;
+	margin-left: 10px;
+	margin-right: 10px;
+	align: right;
+}
+
+
+
+div.checkgroup {
+  float:right;
+}
+
+table.mainmenu > td {
+	text-align: right;
+}
+
+/* Buttons for "Edit Features", "Logout", "Reset" */
+input[type=submit] {
+	padding: 5px 15px;
+	background: #07889B;
+	border: 0 none;
+	font-color: #000;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 15px 15px;
+	margin: 5px 0px;
+}
+input[type=submit].btn-login {
+    background: #E37722;
+    align: center;
+}
+
+h2 {
+	font-size: 16pt;
+	margin: 10px 0px 0px 0px;
+	padding: 0px;
+}
+
+
+ul { 
+	list-style-type:none;
+}
+
+li { 
+	display:inline; 
+	float:left; 
+	padding:0 10px; 
+	margin:0; 
+	}
+	
+.mainmenu > h2 {
+	text-align: right;
+	display: inline;
+}
+
+.mainmenu > select
+	{
+	align: right;
+	width: 300px;
+	text-align: center;
+	display: inline-block;
+	background-color: #07889B;
+	color: #EEE;
+	font-size: 11pt;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 10pt;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #07889B;
+	line-height: 20pt;
+	margin: 6pt;
+}
+
+
+/* Select Network, Disease */
+a.button, .radiobuttons label, select, input[type=text], input[type=password]
+	{
+	text-align: left;
+	display: inline-block;
+	background: #222;
+	color: #fff;
+	font-size: 11pt;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 10pt;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #07889B;
+	line-height: 20pt;
+	margin: 6px 6px;
+	padding: 2px 2px;
+}
+
+select.features {
+	position: relative;
+	display: inline-block;
+	background: #777777;
+	color: #EEEEEE;
+	text-decoration: none;
+	font-size: 14px; /*change for CR102 */
+	outline: 0;
+	white-space: nowrap;
+	border: 5px;
+	border-radius: 5px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #777777;
+	padding-left: 0.25em;
+ 
+}
+
+.selectdiv select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+select.hasChoice {
+	color: #222;
+	background: #66B9BF;
+	border-color: #66B9BF;
+}
+
+select.sensitive {
+	border: 5px
+	border-radius: 8px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #E37222;
+}
+
+p.node-title {
+	width: 500px;
+	color: #FFF;
+	background-color: #07889B;
+	border-width: 3px;
+	font-color: #FFF;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 5px 10px 5px 10px;
+	margin: 0.5em 0em;
+}
+
+.summarytable tr:nth-child(even) {
+	background-color: #555555;
+}
+
+.summarytable tr:nth-child(odd) {
+	background-color: #333333;
+}
+
+.summarytable td {
+	padding-right: 100px;
+}
+
+table#diagnosistable1 td {
+	padding-right: 100px;
+}
+table#paretotable td {
+	padding-right: 100px;
+}
+table#radiodiagnosistable td {
+	padding-right: 100px;
+}
+
+.panel-primary {
+	background-color:  #333333;
+	border: none;
+}
+.panel > .panel-heading {
+	text-align: center;
+	background-color: #07889B;
+	background-image: none;
+}
+
+
+

@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 import norsys.netica.*;
 
-public class DNETWrapper<Vector> extends NetworkWrapper implements Serializable {
+public class DNETWrapper extends NetworkWrapper implements Serializable {
 	/**
 	 * 
 	 */

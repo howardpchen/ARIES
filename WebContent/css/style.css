@@ -1,7 +1,21 @@
+/*
+tangerine: #E37722
+tan:       #EEAA7B
+teal:      #07889B
+powder:    #66B9BF
+dark gray: #333333
+med gray:  #777777
+lgt gray:  #EEEEEE
+*/
+
+
 body, p, h1, h2, h3, h4, ul, ol, textarea, input {
-	background: #000000;
+	background: #333;
 	font-family: Arial, Helvetica, sans-serif;/*change for CR102 */
-	color: #F0F4F6;
+	/*color: #F0F4F6;*/
+	color: #EEE;
+	margin-left: 20px;
+	margin-right: 20px;
 }
 
 a.topnav:link, a.topnav:visited {
@@ -30,72 +44,87 @@ a:active {
 	text-decoration: underline;
 }
 
+/* Select Network, Disease */
 select {
 	-moz-appearance: none;
 	text-indent: 0.01px;
 	text-overflow: '';
+	outline: 0;
 }
 
 select.features {
 	position: relative;
 	display: inline-block;
-	background: #77F;
-	background-image: -moz-linear-gradient(top, #77F, #337);
+	background: #777777;
+	/*background-image: -moz-linear-gradient(top, #77F, #337);
 	background-image: -webkit-linear-gradient(top, #77F, #337);
 	background-image: -o-linear-gradient(top, #77F, #337);
 	background-image: -ms-linear-gradient(top, #77F, #337);
-	background-image: linear-gradient(top, #77F, #337);
-	border-radius: 8px;
-	box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;
-	text-shadow: -1px -1px 0 rgba(0, 0, 0, 1);
-	color: #fff !important;
+	background-image: linear-gradient(top, #77F, #337); */
+	/*box-shadow: inset 0px 0px 0px 1px #005173, inset 0px 2px 1px 0px #76c0e0;*/
+	/* text-shadow: -1px -1px 0 rgba(0, 0, 0, 1); */
+	/*color: #fff !important;*/
+	color: #EEEEEE;
 	text-decoration: none;
-	font-size: 18px; /*change for CR102 */
-	letter-spacing: 0.075em;
-	padding: 1em 1em 1em 1em;
+	font-size: 16px; /*change for CR102 */
+	font-weight: bold;
+	/*letter-spacing: 0.075em;*/
+	/*padding: 1em 1em 1em 1em;*/
+	/*padding-top: 0.15em;
+	padding-bottom: 0.15em;*/
 	outline: 0;
 	white-space: nowrap;
 	width: 300px;
-	border: 0px;
+	border: 5px;
+	border-radius: 8px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #777777;
 }
 
 select.hasChoice {
-	background: #939;
+	/*background: #BBB;*/
+	color: #222;
+	background: #66B9BF;
+	border-color: #66B9BF;
+	/* background: #939;
 	background-image: -moz-linear-gradient(top, #939, #F7F);
 	background-image: -webkit-linear-gradient(top, #939, #F7F);
 	background-image: -o-linear-gradient(top, #939, #F7F);
 	background-image: -ms-linear-gradient(top, #939, #F7F);
 	background-image: linear-gradient(top, #939, #F7F);
-	box-shadow: inset 0px 0px 0px 1px #F7F, inset 0px 2px 1px 0px #939;
+	box-shadow: inset 0px 0px 0px 1px #F7F, inset 0px 2px 1px 0px #939; */
 }
 
 /*added for CR102 */
 select.sensitive {
-	border: 10px
-	border-radius: 15pt;
+	border: 5px
+	border-radius: 8px;
 	border-style: solid;
-	border-width: 5px;
-	border-color: #FF0 #FF0;
+	border-width: 3px;
+	border-color: #E37222;
 }
 
+/* Menu bar links */
 a {
-	color: #99f;
+	color: #66B9BF;
+	font-weight: bold;
 }
 
+/* Select Network, Disease */
 a.button, .radiobuttons label, select, input[type=text], input[type=password]
 	{
 	text-align: center;
 	display: inline-block;
-	background-color: #000;
-	border: 3px;
+	background-color: #222;
 	color: #fff;
 	font-size: 11pt;
 	cursor: pointer;
 	text-decoration: none;
-	border-radius: 15pt;
+	border-radius: 10pt;
 	border-style: solid;
 	border-width: 3px;
-	border-color: #77F #77F;
+	border-color: #07889B;
 	line-height: 20pt;
 	margin: 6pt;
 }
@@ -105,15 +134,20 @@ select:disabled, input:disabled {
 	background-color: #222;
 }
 
+/* Buttons for "Edit Features", "Logout", "Reset" */
 input[type=submit] {
 	padding: 5px 15px;
-	background: #77F;
+	background: #07889B;
 	border: 0 none;
 	font-color: #000;
 	font-weight: bold;
 	cursor: pointer;
 	border-radius: 15px 15px;
-	margin: 0.5em;
+	/* margin: 0.5em; */
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 a.btnConfirm, a.btnNext, a.btnPrev, a.btnSubmit {
@@ -183,7 +217,7 @@ textarea {
 }
 
 h1 {
-	font-size: 28px;
+	font-size: 20px;
 	margin-top: 0px;
 	font-weight: normal
 }
@@ -213,8 +247,13 @@ h6 {
 }
 
 table {
-	width: 700px;
-	margin: 1em;
+    width: 700px; 
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	margin-right: 1em;
+	/*outline: 1px dotted black;*/
+	
 }
 
 .formTable {
@@ -232,29 +271,35 @@ table {
 
 p.node-title {
 	width: 500px;
-	background-color: #77F;
+	color: #FFF;
+	background-color: #07889B;
 	border-width: 3px;
+	font-color: #FFF;
 	font-size: 16px;
 	font-weight: bold;
 	padding: 5px 10px 5px 10px;
 	margin: 0.5em;
 }
-
+/*
 tr:nth-child(even) {
-	background: #669
+	background: #CCCCCC;
 }
 
 tr:nth-child(odd) {
-	background: #667
+	background: #CCCCCC;
+}
+*/
+tr {
+	background: #333;
 }
 
 tr:first-child {
-	font-weight: 900;
+	/* font-weight: 900; */
 }
 
 td {
-	margin-left: 0.5em;
-	padding: 0.5em;
+	/*margin-left: 0.5em;*/
+	/*padding: 0.1em;*/
 }
 
 th {
@@ -300,13 +345,14 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .graphheader {
-	border: solid;
+	/*border: solid;
 	border-top-width: 3px;
 	border-bottom-width: 0;
 	border-left-width: 0;
 	border-right-width: 0;
 	border-color: #CCF;
-	background: #77F;
+	*/
+	background: #07889B;
 	min-width: 500px;
 	max-width: 1000px;
 	color: #333;

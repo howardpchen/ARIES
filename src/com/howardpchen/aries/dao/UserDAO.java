@@ -11,6 +11,7 @@ import com.howardpchen.aries.model.Network;
 import com.howardpchen.aries.model.User;
 import com.howardpchen.aries.model.UserCaseInput;
 import com.howardpchen.aries.model.UserInfo;
+import java.io.File;
 
 public class UserDAO {      
      public static boolean login(String username, String password) {
@@ -152,6 +153,61 @@ public class UserDAO {
 		return code;
     	 
      }
+     public static String getNetworkFileDescription(String filename){
+    	 Connection con = null;
+    	 Statement stmnt = null;
+    	 String nwName = null;
+    	 try {
+    		 con = Database.getConnection();
+    		 stmnt = con.createStatement();
+    		 ResultSet rs = stmnt.executeQuery("select description from networks where filename ='"+filename+"'");
+    		 while(rs.next()) {
+    			 nwName = rs.getString("description");
+    		 }
+    	 } catch (Exception ex) {
+             System.out.println("Error in getNetworkFileDescription() -->" + ex.getMessage());
+    	 } finally {
+               Database.close(con);
+         }
+    	 
+    	if (nwName==null) {
+    		nwName=filename;
+    	}
+    	
+		return nwName;
+    	 
+     }
+     
+     public static List<String> getNetworkFileDescription(File[] filenames){
+    	 
+    	 List<String> descList = new ArrayList<String>();
+    	 
+    	 Connection con = null;
+    	 Statement stmnt = null;
+
+    	 try {
+    		 con = Database.getConnection();
+    		 for (int i=0; i<filenames.length; i++ ) {
+    			 stmnt = con.createStatement();
+    			 ResultSet rs = stmnt.executeQuery("select description from networks where filename ='"+filenames[i].getName()+"'");
+    			 String desc = rs.getString("description");
+    			 if ( desc==null ) {
+    				 descList.add( filenames[i].getName() );
+    			 }
+    			 else {
+    				 descList.add(rs.getString("description"));
+    			 }
+    		 }
+    	 } catch (Exception ex) {
+             System.out.println("Error in getNetworkFileDescription() -->" + ex.getMessage());
+    	 } finally {
+               Database.close(con);
+         }
+
+    	 return descList;
+    	 
+     }
+     
      public static String getNwName(String code){
     	 Connection con = null;
     	 Statement stmnt = null;
@@ -563,7 +619,7 @@ public class UserDAO {
             	 String supportData = rs.getString("supportingData");
             	 String[] supportDataArray = supportData.split(", ");
             			
-            	 List<String> newList = new ArrayList(Arrays.asList(supportDataArray));
+            	 List<String> newList = new ArrayList<String>(Arrays.asList(supportDataArray));
             	 obj.setSupportingDataList(newList);
             	
              }

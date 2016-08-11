@@ -16,7 +16,7 @@
 	<!-- Bootstrap -->
 	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -36,47 +36,38 @@ input[type=radio] {
 <h:body id="bodyStyle">
 
 
-	<h:form role="form" id="loginForm">
+<h:form role="form" id="loginForm">
 
-		<div class="navbar navbar-default">
+		<!--  <div class="navbar navbar-default"> -->
+<div class="container-fluid">
+<div>
+  <div class='row' id="divStyle">
 
-			<div class='row' id="divStyle" style="color:white;">
-				<div class="col-md-3">
-					<img alt="ARIES" src="aries.png" /><br /> <font size="-2">Build
-						4-10-2016</font>
-				</div>
-				<div class="col-md-6">
+    <div class="col-md-3">
+      <img alt="ARIES" src="aries.png" /><br />
+      Build 4-10-2016
+    </div>
 
-					<br></br> <br></br>
-					<h3>
-						Adaptive Radiology Interpretation
-						&amps;
-						Education System (ARIES)
-					</h3>
+    <div class="col-md-6"> 
+      <br></br> <br></br>
+      <h3 style="font-size:24px;">Adaptive Radiology Interpretation &amp; Education System</h3>
+    </div>
 
-				</div>
-				<div class="col-md-3">
-					<br></br> <br></br> <font size="-1">Hospital of University
-						of Pennsylvania <br /> Department of Radiology Based on <br />the
-						Work of Emmanuel Botzolakis<br /> Designed by Howard Chen <br /> <a
-						href="https://www.gnu.org/copyleft/gpl.html">GNU Public
-							License</a>
-					</font>
-				</div>
+    <div class="col-md-3">
+      <div class="sidebar">
+        Hospital of University of Pennsylvania <br /> 
+        Department of Radiology Based on <br />
+        the Work of Emmanuel Botzolakis<br /> 
+        Designed by Howard Chen <br />
+        <a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+      </div>
+    </div>
 
-			</div>
-		</div>
+  </div> 
+</div>
 		
-		
-		
-				<!--	<ul class="nav nav-tabs">
-  <li class="active"><a href="/ARIES/">Home</a></li>
-   <li><a href="/ARIES/index.jsf">Clinical</a></li>
-  <li><a href="/ARIES/caseInput_form.jsf">Submit Case</a></li>
-  <li><a href="/ARIES/research.jsf">Research</a></li> 
-  
-</ul>-->
-		<div class="row" style="color:white;">
+
+		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-5" align="center">
 				<h:selectOneRadio id="radioBut" value="#{loginBean.option}"
@@ -96,10 +87,14 @@ input[type=radio] {
 				</h:selectOneRadio>
 			</div>
 		</div>
+		
 		<br></br>
 		<div class="col-md-3"></div>
 		<h:messages globalOnly="true"
 			style="color:#47B247;font-weight:bold;color:red;"></h:messages>
+			</div>
+			
+			
 
 		<div class="container">
 			<p>
@@ -108,7 +103,7 @@ input[type=radio] {
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-4">
-					<div class="panel panel-primary" style="background-color:#00CCFF">
+					<div class="panel panel-primary">
 						<div class="panel-body">
 
 							<div class="form-group">
@@ -127,7 +122,7 @@ input[type=radio] {
 								<label for="exampleInputPassword1">Password</label>
 								<div class="input-group">
 									<span class="input-group-addon"><span
-										class="glyphicon glyphicon-star"></span></span>
+										class="glyphicon glyphicon-lock"></span></span>
 
 									<h:inputSecret id="exampleInputPassword1d" class="form-control"
 										title="Enter Password" value="#{loginBean.password}" redisplay="true"></h:inputSecret>
@@ -142,7 +137,7 @@ input[type=radio] {
 								<div class="col-md-4"></div>
 								<div class="col-md-3">
 									<h:commandButton id="Login" icon="glyphicon glyphicon-lock"
-										class="btn btn-primary" value="Login"
+										class="btn btn-primary btn-login" value="Login"
 										action="#{loginBean.loginProject}" onclick="return validate()" />
 								</div>
 								

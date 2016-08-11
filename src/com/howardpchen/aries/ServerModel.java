@@ -1,7 +1,10 @@
 package com.howardpchen.aries;
 
+
 import java.io.File;
 import java.io.FilenameFilter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +37,9 @@ import com.howardpchen.aries.model.UserCaseInput;
 import com.howardpchen.aries.network.DNETWrapper;
 import com.howardpchen.aries.network.NetworkLoadingException;
 import com.howardpchen.aries.network.NetworkWrapper;
+import com.howardpchen.aries.dao.Database;
 
+import java.sql.DriverManager;
 
 @ManagedBean
 @SessionScoped
@@ -45,6 +50,8 @@ public class ServerModel {
 	// private static final long serialVersionUID = -9026586621419425189L;
  
 	private final String PATH = "/mnt/networks";
+	
+	boolean debugMode = true;
 	
 	// private final String PATH = "/home/shalini/ws2/ARIES/networks";
 	
@@ -58,7 +65,11 @@ public class ServerModel {
 	private Map<String, String> userInputsCase;
 	private Map<String, String> probInputs1;
 	
-	
+	/* Network Selection */
+	private String activeNetwork = ""; // Descriptive name of currently loaded network
+	private List<String> availableNetworks = new ArrayList<String>(); // List of available network descriptive names
+	private Map<String,String> networkNameMap = new HashMap<String,String>(); // Map from network descriptive name to filename
+	private Map<String,String> networkFileMap = new HashMap<String,String>();  
 
 	//private Map<String, String> highestProbsMap;
 	private NetworkWrapper dw;
@@ -68,6 +79,8 @@ public class ServerModel {
 	private String networkNamers = "";
 	private int topDdx = 10;
 	private List<String> networkFileList = new ArrayList<String>();
+	private List<String> networkNameList = new ArrayList<String>();
+	
 	private String[] nodes = new String[0];
 	private String currentFeature = "";
 	private String currentDisease = "";
@@ -211,8 +224,8 @@ public class ServerModel {
 		return this.sensityvityOn;
 	}
 
-	public void setSensityvityOn(boolean sensityvityOn) {
-		this.sensityvityOn = sensityvityOn;
+	public void setSensityvityOn(boolean state) {
+		this.sensityvityOn = state;
 	}
 
 	// CR104
@@ -271,13 +284,16 @@ public class ServerModel {
 		probInputs = new HashMap<String, String>();
 		probInputs1 = new HashMap<String, String>();
 		userInputsCase = new HashMap<String, String>();
+		
+		
 		// changes starts for CR101
 		populateNetworkList();
+		
 		// changes ends for CR101
 		registerSession();
-        networkNamers = "";
-
-
+    
+		//networkNamers = "";
+      
 		File folder = new File(PATH);
 		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
@@ -288,11 +304,45 @@ public class ServerModel {
 					return false;
 			}
 		});
+		
 		for (int i = 0; i < listOfFiles.length; i++) {
-			networkFileList.add(listOfFiles[i].getName());
+			String netFileName = listOfFiles[i].getName();
+			String netDescName = UserDAO.getNetworkFileDescription(listOfFiles[i].getName());
+			
+			if (debugMode) {
+				System.out.println("Network filename " + netFileName + " defines: " + netDescName);
+			}
+			
+			networkFileList.add(netFileName);
+			networkNameList.add(netDescName);
+			
+			availableNetworks.add(netDescName);
+
+			networkNameMap.put( netDescName, netFileName );
+			networkFileMap.put( netFileName, netDescName ); 
+
 		}
+		
+		/*
+		availableNetworks = UserDAO.getNetworkFileDescription( listOfFiles );
+		for ( int i=0; i<availableNetworks.size(); i++ ) {
+			networkFileList.add(listOfFiles[i].getName());
+			networkNameMap.put( listOfFiles[i].getName(), availableNetworks.get(i));
+		}
+		*/
+		
+		activeNetwork = availableNetworks.get(0);
+		/*System.out.println("number available networks:" + availableNetworks.size());
+		for ( int i=0; i<availableNetworks.size(); i++ ) {
+			System.out.println(availableNetworks.get(i)); 
+		}
+		System.out.println("active network: " + activeNetwork);
+		*/
+
 		networkName = networkFileList.get(0);
-		System.out.println("networkName" + networkName);
+			
+		System.out.println("networkName: " + networkName);
+		
 		System.out.println("Called constructor.");
 
 	}
@@ -380,14 +430,19 @@ public class ServerModel {
 
 			String nodeNameWithPrefix = nodes[i];
 			String nodeNameWithoutPrefix = nodes[i];
+			
+
+			
 			String[] stringArray = nodeNameWithPrefix.split("_");
 			String prefix = stringArray[0];
 
 			if (networkPrefixList.contains(prefix)) {
-				nodeNameWithoutPrefix = nodeNameWithPrefix.replace(prefix + "_", "");
+				nodeNameWithoutPrefix = nodeNameWithPrefix.replace(prefix + "_", "").replace("_", " ");
 			} else {
 				prefix = "MS";
 			}
+			
+			if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
 
 			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
 			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);
@@ -417,10 +472,32 @@ public class ServerModel {
 		networkName = s;
 	}
 
+	public String getActiveNetwork () {
+		if (debugMode) System.out.println( "getActiveNetwork()" );
+		return activeNetwork;
+	}
+	
+	public void setActiveNetwork (String s) {
+		if ( debugMode ) System.out.println( "setActiveNetwork(" + s + ")" );
+		if (!s.equals(activeNetwork)) {
+			System.out.println("Cleared user inputs.");
+			userInputs.clear();
+			infoMessages = new ArrayList<String>();
+		}
+		activeNetwork = s;
+	}
+	
+	public List<String> getAvailableNetworks() {
+		if ( debugMode ) System.out.println( "getAvailableNetworks()");
+		return availableNetworks;
+	}
+	
+	
 	public String getNetworkInput() {
 		return networkName;
 	}
-    
+	
+   
 	 public void setFeatureValueQC(String s){
 	    	boolean clearflag = false;
 	    	String[] inputs = s.split(":");
@@ -439,7 +516,7 @@ public class ServerModel {
 				}
 		
 			if(this.getEvent().equalsIgnoreCase("FEATURE ENTERED") && ((inputs.length == 2) || clearflag == true )){
-				User user;
+				//User user;
 				UserCaseInput caseInput = new UserCaseInput();
 				caseList = new CaseList();
 				HttpSession session = Util.getSession();
@@ -742,7 +819,7 @@ public class ServerModel {
 			if (nodes[i].equals("Diseases"))
 				continue;
 			sb.append("<p class='node-title'>" + nodes[i] + "</p>");
-			sb.append("<table id=\"hood\">");
+			sb.append("<table class=\"summarytable\" id=\"hood\">");
 			Map<String, Double> values = dw.getNodeProbs(nodes[i]);
 			
 			
@@ -762,6 +839,7 @@ public class ServerModel {
 	public List<String> getSelectNetworkInputs() {
 		return networkFileList;
 	}
+
 
 	// commented for CR101
 	/*
@@ -2081,6 +2159,7 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 
+	
 	public String getPrePageLoad() {
 		System.out.println("DNET Wrapper session started");
 		this.setEvent("");
@@ -2094,7 +2173,8 @@ public class ServerModel {
 				dw.endSession();
 			}*/
 	        if(!"".equals(networkName)){
-			dw = new DNETWrapper(PATH + "/" + networkName);
+	        String networkFileName = networkNameMap.get(activeNetwork);
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
