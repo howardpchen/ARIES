@@ -16,6 +16,10 @@ body, p, h1, h2, h3, h4, ul, ol, textarea, input {
 body, p, ul, ol, textarea, input {
     background: #333;
 }
+h3 {
+	text-align: center;
+}
+
 
 
 body { 
@@ -36,6 +40,14 @@ p {
 	text-align: left;
 }
 
+p.welcome {
+    color: #E37722;
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
 .container {
 	padding: 0px;
 	margin: 0px;
@@ -45,6 +57,8 @@ p {
 ul.nav {
 	margin-left: 0px;
 	padding-left: 0px;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
 }
 
 .col-md-1 {
@@ -103,7 +117,6 @@ ul.nav {
 }
 
 .sidebar {
-	float: right;
 	font-size: 9pt;
 	margin: 40px 0px 0px 0px;
 }
@@ -112,6 +125,17 @@ ul.nav {
 	color: #66B9BF;
 	background-color: #333;
 	border: medium none;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	padding-bottom: 0px;
+}
+
+.nav-pills > li {
+	margin: 0px;
+	padding: 0px;
+	background-color: #555;
+    border-radius: 10px 10px 0px 0px;
+    border-color: #333;
 }
 
 .nav-pills > li > a {
@@ -119,10 +143,12 @@ ul.nav {
 	color: #66B9BF;
 	font-weight: bold;
 	font-size: 12pt;
+	text-align: center;
 }
 
+/* Space below the menu bar*/
 ul.nav-pills {
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 }
 
 .nav-pills > li.active > a {
@@ -149,14 +175,16 @@ input[type=checkbox] {
 	margin-top: 15px;
 	margin-left: 10px;
 	margin-right: 10px;
+	margin-bottom: 0px;
 	align: right;
 }
 
 
 
 div.checkgroup {
-  float:right;
+  text-align:right;
 }
+
 
 table.mainmenu > td {
 	text-align: right;
@@ -176,6 +204,10 @@ input[type=submit] {
 input[type=submit].btn-login {
     background: #E37722;
     align: center;
+}
+input[type=submit].btn-logout {
+	padding: 5px 15px;
+	margin: 5px 0px;
 }
 
 h2 {
