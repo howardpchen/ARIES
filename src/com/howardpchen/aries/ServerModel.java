@@ -1296,7 +1296,7 @@ public class ServerModel {
 	public void getDWInfo(){
 		String newValue = this.getNwNameforQC();
 		
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") ){
+		if(newValue!= null && !newValue.equalsIgnoreCase("--select--") ){
 			try {
 				Map<String, Double> values = new HashMap<String, Double>();
 				Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
@@ -2161,38 +2161,47 @@ public class ServerModel {
 
 	
 	public String getPrePageLoad() {
-		System.out.println("DNET Wrapper session started");
+		System.out.println("DNET Wrapper session started - Clinical");
 		this.setEvent("");
 		try {
 	        networkNamers = "";
-	        this.setNwNameforResearch("");
-	        this.setNwName("");
-	        this.setNwNameforQC("");
-	        this.setNwNameforEducation("");
+	        //this.setNwNameforResearch("");
+	        //this.setNwName("");
+	        //this.setNwNameforQC("");
+	        //this.setNwNameforEducation("");
+	        
 		/*	if(dw!= null){
 				dw.endSession();
 			}*/
-	        if(!"".equals(networkName)){
-	        String networkFileName = networkNameMap.get(activeNetwork);
-			dw = new DNETWrapper(PATH + "/" + networkFileName);
-			nodes = dw.getNodeNames();
-			for (int i = 0; i < nodes.length; i++) {
-				if (nodes[i].equals("Diseases")) {
-					this.titlesNew = dw.getStates(nodes[i]);
+	        if(!"".equals(activeNetwork)) {
+		        String networkFileName = networkNameMap.get(activeNetwork);
+		        
+		        if ( dw != null ) {
+		        	System.out.println("call: dw.endSession()");
+		        	dw.endSession();
+		        }
+		        
+		        System.out.println("Loading " + networkFileName);
+				dw = new DNETWrapper(PATH + "/" + networkFileName);
+				System.out.println("get node names");
+				nodes = dw.getNodeNames();
+				for (int i = 0; i < nodes.length; i++) {
+					if (nodes[i].equals("Diseases")) {
+						this.titlesNew = dw.getStates(nodes[i]);
+					}
 				}
-			}
-			// changes starts for CR101
-			processNodePrefixes();
-			// changes ends for CR101
-
-			// changes starts for CR102,CR103
-			highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
-			highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
-			highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
-			highestMSSensitiveNodeName = dw.getHighestMSSensitiveNodeName(userInputs);
-			// changes ends for CR102,CR103
-			 
-			Arrays.sort(nodes);
+				// changes starts for CR101
+				processNodePrefixes();
+				// changes ends for CR101
+	
+				// changes starts for CR102,CR103
+				highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
+				highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
+				highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
+				highestMSSensitiveNodeName = dw.getHighestMSSensitiveNodeName(userInputs);
+				// changes ends for CR102,CR103
+				 
+				Arrays.sort(nodes);
 	        }
 		} catch (NetworkLoadingException e) {
 			System.out.println("Error loading the network.");
@@ -2200,6 +2209,7 @@ public class ServerModel {
 		} catch (Exception e) {
 			System.out.println("Error converting filename.");
 		}
+		if ( debugMode ) System.out.println("End getPrePageLoad()");
 		return this.pageLoad;
 	}
 
@@ -2212,9 +2222,9 @@ public class ServerModel {
 	}
 
 	public String getPostPageLoad() {
-		if(dw!= null){
-		dw.endSession();
-		System.out.println("DNET Wrapper session ended");
+		if(dw!= null) {
+			dw.endSession();
+			System.out.println("DNET Wrapper session ended");
 		}
 		return this.pageLoad;
 	}
@@ -3308,7 +3318,7 @@ public class ServerModel {
 		if(!probInputs.isEmpty())
 			probInputs.clear();
 		
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+		if(newValue!= null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)){
 			userInputs.put("Diseases", newValue);
 		}
 		//updateDiagnosisNode1();
@@ -3327,7 +3337,7 @@ public class ServerModel {
 		if(!probInputs1.isEmpty())
 			probInputs1.clear();
 		
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+		if(newValue!= null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)){
 			userInputsCase.put("Diseases", newValue);
 		}
 		//updateDiagnosisNode1();

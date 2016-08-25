@@ -40,12 +40,13 @@
 <h:body onload="onLoadCursor();">
 
 <ui:include src="header.xhtml" />   
+<h:form id="network">
 
 <div class="container-fluid">
-<h:form id="networktest">
+
 
 <div class="row">
-  <div class="col-md-8 selectdiv">
+  <div class="col-md-10 selectdiv">
   <table class="mainmenu">
   	<tr><td><div class="mainmenu"><h2>Select Network:</h2></div></td>
   	   <td><div class="mainmenu">
@@ -53,8 +54,7 @@
 	      <f:selectItems value="#{serverModel.availableNetworks}" />
           </h:selectOneMenu>
   	  </div></td>
-  	</tr>
-  	<tr>
+
   	  <td><div class="mainmenu"><h2>Select Disease:</h2></div></td>
   	  <td><div class="mainmenu">
         <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" valueChangeListener="#{serverModel.getDiseaseAction}">
@@ -73,16 +73,15 @@
   	</tr>
   </table>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-2">
     <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
   </div>
 </div>
 
-</h:form>
 </div>
 
 <div class="container-fluid">
-<h:form >
+
 		
 <!--  Load in the selected network -->		
 <h:inputHidden value="#{serverModel.prePageLoad}" />
@@ -368,8 +367,8 @@
 	
 			
 		</script>
-	</h:form>
 	</div>
+	</h:form>
 
 </h:body>
 

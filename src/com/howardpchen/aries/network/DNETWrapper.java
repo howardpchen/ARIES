@@ -221,11 +221,17 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	public void endSession() {
 		try {
 			net.finalize();
-			env.finalize();
 		} catch (NeticaException e) {
 			System.err.println("Error finalizing existing Network session");
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
+		try {
+			env.finalize();
+		} catch (NeticaException e) {
+			System.err.println("Error finalizing existing Environment session");
+			e.printStackTrace();
+		}
+		
 	}
 	@Override
 	public List<String> getSINodeNames() {
