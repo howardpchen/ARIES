@@ -75,7 +75,7 @@ public class ServerModel {
 	private NetworkWrapper dw;
 	private String pageLoad = "";
 	private int educationCaseNo ;
-	private String networkName = "";
+	//private String networkName = "";
 	private String networkNamers = "";
 	private int topDdx = 10;
 	private List<String> networkFileList = new ArrayList<String>();
@@ -323,25 +323,30 @@ public class ServerModel {
 
 		}
 		
-		/*
-		availableNetworks = UserDAO.getNetworkFileDescription( listOfFiles );
-		for ( int i=0; i<availableNetworks.size(); i++ ) {
-			networkFileList.add(listOfFiles[i].getName());
-			networkNameMap.put( listOfFiles[i].getName(), availableNetworks.get(i));
-		}
-		*/
-		
 		activeNetwork = availableNetworks.get(0);
-		/*System.out.println("number available networks:" + availableNetworks.size());
-		for ( int i=0; i<availableNetworks.size(); i++ ) {
-			System.out.println(availableNetworks.get(i)); 
+		
+		String networkFileName = networkNameMap.get(activeNetwork);
+		try {
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
 		}
-		System.out.println("active network: " + activeNetwork);
-		*/
+		 catch (NetworkLoadingException e) {
+			System.out.println("Error loading the network.");
 
-		networkName = networkFileList.get(0);
-			
-		System.out.println("networkName: " + networkName);
+		} catch (Exception e) {
+			System.out.println("Error converting filename.");
+		}
+		
+		
+		nodes = dw.getNodeNames();
+		for (int i = 0; i < nodes.length; i++) {
+			if (nodes[i].equals("Diseases")) {
+				this.titlesNew = dw.getStates(nodes[i]);
+			}
+		}
+		dw.endSession();
+		dw = null;
+		
+		// Get disease list
 		
 		System.out.println("Called constructor.");
 
@@ -462,7 +467,7 @@ public class ServerModel {
 	}
 
 	// changes ends for CR101
-
+/*
 	public void setNetworkInput(String s) {
 		if (!s.equals(networkName)) {
 			System.out.println("Cleared user inputs.");
@@ -471,7 +476,7 @@ public class ServerModel {
 		}
 		networkName = s;
 	}
-
+*/
 	public String getActiveNetwork () {
 		if (debugMode) System.out.println( "getActiveNetwork()" );
 		return activeNetwork;
@@ -492,11 +497,11 @@ public class ServerModel {
 		return availableNetworks;
 	}
 	
-	
+	/*
 	public String getNetworkInput() {
 		return networkName;
 	}
-	
+	*/
    
 	 public void setFeatureValueQC(String s){
 	    	boolean clearflag = false;
@@ -783,17 +788,19 @@ public class ServerModel {
 
 	@SuppressWarnings("rawtypes")
 	public String[] getDiseaseTitles() {
+		System.out.println("getDiseaseTitles()");
+		/*
 		//String[] titles = null;
-		/*System.out.println("this.getNwName() : " + this.getNwName());
-		if (this.getNwName() != null && (!"-select-".equalsIgnoreCase(this.getNwName()))
-				&& (!"".equalsIgnoreCase(this.getNwName())) && dw != null) {
+		//System.out.println("this.getNwName() : " + this.getNwName());
+		if (activeNetwork != null && (!"--select--".equalsIgnoreCase(activeNetwork))
+				&& (!"".equalsIgnoreCase(activeNetwork)) && dw != null) {
 			//String fileName = UserDAO.getFileName(this.getNwName());
 			try {
 				//dw = new DNETWrapper(PATH + "/" + fileName);
 			//	nodes = dw.getNodeNames();
 				for (int i = 0; i < nodes.length; i++) {
 					if (nodes[i].equals("Diseases")) {
-						titles = dw.getStates(nodes[i]);
+						this.newTitles = dw.getStates(nodes[i]);
 					}
 				}
 
@@ -803,8 +810,7 @@ public class ServerModel {
 				System.out.println("Coming hereeee");
 				e.printStackTrace();
 			}}
-*/
-		
+		*/
 		return this.titlesNew;
 
 	}
@@ -1303,29 +1309,29 @@ public class ServerModel {
 				if(dw != null){
 					dw.endSession();
 				}
-				if(!networkName.equals("")){
-				networkName = UserDAO.getFileName(newValue);
-				dw = new DNETWrapper(PATH + "/" + networkName);
-				nodes = dw.getNodeNames();
-				for (int i = 0; i < nodes.length; i++) {
-					if (nodes[i].equals("Diseases")) {
-						this.titlesNew = dw.getStates(nodes[i]);
+				if(!activeNetwork.equals("")){
+					String networkFileName = networkNameMap.get(activeNetwork);
+					dw = new DNETWrapper(PATH + "/" + networkFileName);
+					nodes = dw.getNodeNames();
+					for (int i = 0; i < nodes.length; i++) {
+						if (nodes[i].equals("Diseases")) {
+							this.titlesNew = dw.getStates(nodes[i]);
+						}
 					}
-				}
-				
-				processNodePrefixes(); 
-				
-				for(String prefix :this.getNetworkPrefixList()) {
 					
-					List<String> features  = getSelectMenuFeatures(prefix);
-					for(String menu : features){	
-						values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
-						valuesNode.put(menu, values);
+					processNodePrefixes(); 
+					
+					for(String prefix :this.getNetworkPrefixList()) {
+						
+						List<String> features  = getSelectMenuFeatures(prefix);
+						for(String menu : features){	
+							values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+							valuesNode.put(menu, values);
+						}
 					}
-				}
-				this.valuesNew = valuesNode; 
-				
-				Arrays.sort(nodes);
+					this.valuesNew = valuesNode; 
+					
+					Arrays.sort(nodes);
 			
 				}	
 				}  
@@ -1411,7 +1417,8 @@ public class ServerModel {
 				/*if(dw!= null){
 					dw.endSession();
 				}*/
-				dw = new DNETWrapper(PATH + "/" + networkName);
+				String networkFileName = networkNameMap.get(activeNetwork);
+				dw = new DNETWrapper(PATH + "/" + networkFileName);
 			} catch (NetworkLoadingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2107,9 +2114,11 @@ public class ServerModel {
 			if(dw != null){
 				dw.endSession();
 			}
-			networkName = UserDAO.getFileName(newValue);
-			if(!networkName.equals("")){
-			dw = new DNETWrapper(PATH + "/" + networkName);
+
+			
+			if(!activeNetwork.equals("")){
+				String networkFileName = networkNameMap.get(activeNetwork);
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
@@ -2187,6 +2196,7 @@ public class ServerModel {
 				nodes = dw.getNodeNames();
 				for (int i = 0; i < nodes.length; i++) {
 					if (nodes[i].equals("Diseases")) {
+						System.out.println("Set new disease list");
 						this.titlesNew = dw.getStates(nodes[i]);
 					}
 				}
@@ -2224,6 +2234,7 @@ public class ServerModel {
 	public String getPostPageLoad() {
 		if(dw!= null) {
 			dw.endSession();
+			dw = null;
 			System.out.println("DNET Wrapper session ended");
 		}
 		return this.pageLoad;
