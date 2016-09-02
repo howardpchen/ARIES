@@ -27,6 +27,13 @@
 	<script type="text/javascript">
 	    function onLoadCursor() {
        	  document.body.style.cursor='default';	
+       	  
+       	  document.getElementById("menu_clinical")).className = "active";
+          document.getElementById("menu_submit")).className = "inactive";
+          document.getElementById("menu_research")).className = "inactive";
+          document.getElementById("menu_education")).className = "inactive";
+          document.getElementById("menu_qc")).className = "inactive";
+       	  
 	    }
 	</script>
 	
@@ -75,9 +82,12 @@
   	</tr>
   </table>
   </div>
+  
   <div class="col-md-2">
-    <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" />
+    <!--  FIXME: deleting this causes resetDisease to be not found at all for some reason -->
+    <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" rendered="false" /> 
   </div>
+  
 </div>
 
 </div>
@@ -100,13 +110,8 @@
 			
 <!-- Begin Rows of features/nodes to set -->										
 <div class="row row2"><div class="col-md-12"><div class="selectdiv">
-		<ui:repeat var="networkPrefix" id="networkPrefixID" 
-			value="#{serverModel.networkPrefixList}">
-
-			<!--  <h:panelGrid style="width:90%;" rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-				<h:outputText style="font-size: 16px; padding:0.2em;"
-					value="#{serverModel.getNetworkPrefixName(networkPrefix)}" /> -->
-					
+		<ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
+		
 			<h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
 				<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 					

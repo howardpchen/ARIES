@@ -57,6 +57,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	
 	@Override
 	public Map<String, Double> getNodeProbs(String nodeName) {
+		//System.out.println("DNETWrapper::getNodeProbs(" + nodeName + ")");
 		Map<String, Double> returnMap = new HashMap<String, Double>();
 		
 		Node myNode = null;
@@ -72,7 +73,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			System.err.println("Error getting node probabilities.");
 			//e.printStackTrace();
 		}
-		System.out.println(nodeName+" : "+returnMap);
+		//System.out.println(nodeName+" : "+returnMap);
 		
 		return returnMap;
 	}
@@ -119,8 +120,8 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 					nodeList.add(n);
 				}
 			}
-			System.out.println("nodeList .... "+nodeList.size());
-			System.out.println(nodeList.toString());
+			//System.out.println("nodeList .... "+nodeList.size());
+			//System.out.println(nodeList.toString());
 			Sensitivity sensitivity = new Sensitivity(targetNode, nodeList, Sensitivity.ENTROPY_SENSV);
 			Double highestSensitiveValue = 0.0d;
 		
@@ -277,6 +278,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	// added for CR103
 		@SuppressWarnings("unchecked")
 		public String getSensitiveForDisease(String disease,Map<String, String> userInputs) {
+			System.out.println("DNETWrapper::getSensitiveForDisease(userInputs)");
 			String sensitiveForDisease = null;
 			try {
 				Map<String, String> userSIInputs = new HashMap<String, String>();
@@ -330,15 +332,15 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 					}
 
 					// if(!"Diseases".equals(n.getName()))
-					System.out.println("n.getName : " + n.getName());
+					//System.out.println("n.getName : " + n.getName());
 					if (n.getName().startsWith("SI_")) {
 						nodeList.add(n);
 					}
 
 				}
-				System.out.println("nodeList .... " + nodeList.size());
-				System.out.println(nodeList.toString());
-                System.out.println(" .... "+targetNode.getNumStates());
+				//System.out.println("nodeList .... " + nodeList.size());
+				//System.out.println(nodeList.toString());
+                //System.out.println(" .... "+targetNode.getNumStates());
 				Sensitivity sensitivity = new Sensitivity(targetNode, nodeList, Sensitivity.ENTROPY_SENSV);
 				Double highestSensitiveValue = 0.0d;
 
@@ -373,6 +375,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	// added for CR103
 	@SuppressWarnings("unchecked")
 	public String getHighestSISensitiveNodeName(Map<String, String> userInputs) {
+		System.out.println("DNETWrapper::getHighestSISensitiveNodeName(userInputs)");
 		String highestSISensitiveNodeName = null;
 		try {
 			Map<String, String> userSIInputs = new HashMap<String, String>();
@@ -409,14 +412,14 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				}
 
 				// if(!"Diseases".equals(n.getName()))
-				System.out.println("n.getName : " + n.getName());
+				//System.out.println("n.getName : " + n.getName());
 				if (n.getName().startsWith("SI_")) {
 					nodeList.add(n);
 				}
 
 			}
-			System.out.println("nodeList .... " + nodeList.size());
-			System.out.println(nodeList.toString());
+			//System.out.println("nodeList .... " + nodeList.size());
+			//System.out.println(nodeList.toString());
 
 			Sensitivity sensitivity = new Sensitivity(targetNode, nodeList, Sensitivity.ENTROPY_SENSV);
 			Double highestSensitiveValue = 0.0d;
@@ -450,6 +453,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 
 	@Override
 	public String getHighestSPSensitiveNodeName(Map<String, String> userInputs) {
+		System.out.println("DNETWrapper::getHighestSPSensitiveNodeName(userInputs)");
 		String highestSPSensitiveNodeName = null;
 		try {
 			Map<String, String> userSPInputs = new HashMap<String, String>();
@@ -526,6 +530,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 
 	@Override
 	public String getHighestCLSensitiveNodeName(Map<String, String> userInputs) {
+		System.out.println("DNETWrapper::getHighestCLSensitiveNodeName(userInputs)");
 		String highestCLSensitiveNodeName = null;
 		try {
 			Map<String, String> userCLInputs = new HashMap<String, String>();
@@ -602,6 +607,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 
 	@Override
 	public String getHighestMSSensitiveNodeName(Map<String, String> userInputs) {
+		System.out.println("DNETWrapper::getHighestMSSensitiveNodeName(userInputs)");
 		String highestMSSensitiveNodeName = null;
 		try {
 			Map<String, String> userMSInputs = new HashMap<String, String>();

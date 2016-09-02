@@ -45,11 +45,11 @@
     <div class="col-md-10">
 	  <ul class="nav nav-pills">
         <li><a href="/ARIES/">Home</a></li>
-		<li><h:commandLink action="#{serverModel.getNavRuleClinical}" value="Clinical"></h:commandLink></li>
-		<li><h:commandLink action="#{serverModel.getNavRuleCase}" value="Submit Case"></h:commandLink></li>
-		<li><h:commandLink action="#{serverModel.getNavRuleResearch}" value="Research"></h:commandLink></li>
-		<li><h:commandLink action="#{serverModel.getNavRuleEducation}" value="Education"></h:commandLink></li>
-	    <li><h:commandLink action="#{serverModel.getNavRuleQC}" value="QC"></h:commandLink></li>
+		<li><h:commandLink id="menu_clinical" action="#{serverModel.getNavRuleClinical}" value="Clinical"></h:commandLink></li>
+		<li><h:commandLink id="menu_submit" action="#{serverModel.getNavRuleCase}" value="Submit Case"></h:commandLink></li>
+		<li><h:commandLink id="menu_research" action="#{serverModel.getNavRuleResearch}" value="Research"></h:commandLink></li>
+		<li><h:commandLink id="menu_education" action="#{serverModel.getNavRuleEducation}" value="Education"></h:commandLink></li>
+	    <li><h:commandLink id="menu_qc" action="#{serverModel.getNavRuleQC}" value="QC"></h:commandLink></li>
 		<!-- <li><a href="">Analytics</a></li> -->
    	  </ul>
     </div>

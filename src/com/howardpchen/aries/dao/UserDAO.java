@@ -8,12 +8,22 @@ import java.util.List;
 
 import com.howardpchen.aries.model.CaseList;
 import com.howardpchen.aries.model.Network;
-import com.howardpchen.aries.model.User;
+//import com.howardpchen.aries.model.User;
 import com.howardpchen.aries.model.UserCaseInput;
 import com.howardpchen.aries.model.UserInfo;
 import java.io.File;
 
+/**
+ * Handle all interactions with MySQL
+ */
 public class UserDAO {      
+	
+	 /**
+	  * login to the MySQL server
+	  * @param username the name of the user
+	  * @param password user's password
+	  * @return true on success, false on failure
+	  */
      public static boolean login(String username, String password) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -40,6 +50,13 @@ public class UserDAO {
         }
 		return result;
     }
+     
+     /**
+      * Obtain feature value for a specific case
+      * @param caseno id number for the case
+      * @param value feature to check
+      * @return
+      */
      public static boolean checkFeatures(int caseno, String value) {
          Connection con = null;
          PreparedStatement ps = null;
