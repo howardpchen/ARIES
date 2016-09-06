@@ -12,25 +12,66 @@ import java.util.TreeMap;
 
 import norsys.netica.*;
 
+/**
+ * Wrapper class for Netica-J Decision Network
+ * @author jeff
+ *
+ */
 public class DNETWrapper extends NetworkWrapper implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 223891435872906573L;
+	
+	/** 
+	 * Netica Environment 
+	 */
 	Environ env;
+	
+	/** 
+	 * Netica Network 
+	 */
 	Net net;
+	
+	/**
+	 * Load a network from a file
+	 * @param filename name of the file to read
+	 * @throws NetworkLoadingException
+	 */
 	public DNETWrapper(String filename) throws NetworkLoadingException{
-		try {
-			
-			env = new Environ("+BotzolakisE/UPenn/120,310-6-A/53080");
-			net = new Net(new Streamer(filename));
-			net.compile();
-			
-		} catch (NeticaException e) {
-			System.err.println("Problem loading network on Netica.");
-			e.printStackTrace();
+		
+		/* FIXME - add a loop here to allow for multiple tries */
+		NeticaException err =  null;
+		int count = 0;
+		boolean initialized = false;
+		
+		while ( !initialized && (count < 100) ) {
+		
+			try {
+				
+				env = new Environ("+BotzolakisE/UPenn/120,310-6-A/53080");
+				net = new Net(new Streamer(filename));
+				net.compile();
+				initialized = true;
+				
+			} catch (NeticaException e) {
+				System.err.println("Problem loading network on Netica.");
+				//e.printStackTrace();
+				err = e;
+				//throw new NetworkLoadingException();
+			}
+			count++;
+		}
+		
+		if ( !initialized ) {
+			System.out.println("Failed to load Netica network");
+			err.printStackTrace();
 			throw new NetworkLoadingException();
 		}
+		else {
+			System.out.println("Netica loaded in " + count + " attempt/s");
+		}
+		
 	}
 	
 	@Override
@@ -172,7 +213,10 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		}
 		return states;
 	}
-	
+
+	/**
+	 * Get an array of the names of all nodes in the network
+	 */
 	@Override
 	public String[] getNodeNames() {
 		String[] names = null;
@@ -180,20 +224,38 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		try {
 			names = new String[net.getNodes().size()];
 			NodeList nl = net.getNodes();
-			@SuppressWarnings("unchecked")
-			Iterator<Node> it = nl.iterator();
+			//@SuppressWarnings("unchecked")
+			Iterator<?> it = nl.iterator();
 			int current = 0;
 			while (it.hasNext()){
-				Node n = it.next();
+				Node n = (Node) it.next();
 				names[current++] = n.getName();
 			}
 		} catch (NeticaException e) {
+			e.printStackTrace();
+		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
 		
 		return names;
 	}
 	
+	@Override
+	public List<String> getNodeNames(String prefix) {
+		List<String> names = new ArrayList<String>();
+		for(String nodeName:getNodeNames()){
+			if(nodeName.startsWith(prefix)){
+				names.add(nodeName);
+			}
+		}
+		return names;
+		}
+	
+	/**
+	 * Set the state value for a given node
+	 * @param nodeName name of the node whose state is being set
+	 * @param state value to set the state to
+	 */
 	@Override
 	public void setNodeState(String nodeName, String state) {
 		Node myNode;
@@ -202,11 +264,15 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			if (myNode != null) myNode.finding().setState(state);
 			
 		} catch (NeticaException e) {
-			System.err.println("Error: Node not found!");
+			System.err.println("Error: Node not found! for name:" + nodeName + " and state: " + state);
 		}
 		
 	}
 	
+	/**
+	 * Clear the state value for a given node
+	 * @param nodeName name of the the node to clear
+	 */
 	public void clearNodeState(String nodeName) {
 		Node myNode;
 		try {
@@ -218,6 +284,10 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		}
 		
 	}
+	
+	/**
+	 * End the current Netica session
+	 */
 	@Override
 	public void endSession() {
 		try {
@@ -226,6 +296,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			System.err.println("Error finalizing existing Network session");
 			e.printStackTrace();
 		}
+		
 		try {
 			env.finalize();
 		} catch (NeticaException e) {

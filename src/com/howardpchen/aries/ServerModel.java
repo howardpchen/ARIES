@@ -127,6 +127,17 @@ public class ServerModel {
 	private String currentDisease = "";
 	private String featureFlag = "false"; 
 	private String[] titlesNew = new String[0];  // Disease names
+	
+	/**
+	 * Descriptive names of diseases for current network
+	 */
+	private List<String> diseaseNames = new ArrayList<String>();
+	
+	/**
+	 * Map from descriptive disease name to node state names
+	 */
+	private Map<String,String> diseaseNameMap = new HashMap<String,String>();
+	
 	private boolean sensityvityOn = false;       // Show most sensitive features
 	
 	/* =============================================================
@@ -337,7 +348,7 @@ public class ServerModel {
 		this.correctDxList = correctDxList;
 	}
 	//For Clinical
-	private String disease;
+	//private String disease;
 
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
@@ -399,12 +410,17 @@ public class ServerModel {
 		}
 		
 		
+		
 		nodes = dw.getNodeNames();
-		for (int i = 0; i < nodes.length; i++) {
-			if (nodes[i].equals("Diseases")) {
-				this.titlesNew = dw.getStates(nodes[i]);
-			}
-		}
+
+	    diseaseNames = Arrays.asList(dw.getStates("Diseases"));
+	    diseaseNameMap.clear();
+	    for (int i=0; i < diseaseNames.size(); i++) {
+	    	String formattedName = diseaseNames.get(i).replace("_", " ");
+	    	diseaseNameMap.put(formattedName,  diseaseNames.get(i));
+	    	diseaseNames.set(i, formattedName);
+	    }
+		
 		dw.endSession();
 		dw = null;
 		
@@ -917,9 +933,11 @@ public class ServerModel {
 		this.setDisease("");
 		return (""); // return to index or refresh index
 	}
-
+ 
+	
+	
 	@SuppressWarnings("rawtypes")
-	public String[] getDiseaseTitles() {
+	public List<String> getDiseaseTitles() {
 		System.out.println("getDiseaseTitles()");
 		/*
 		//String[] titles = null;
@@ -943,7 +961,8 @@ public class ServerModel {
 				e.printStackTrace();
 			}}
 		*/
-		return this.titlesNew;
+		//return this.titlesNew;
+		return this.diseaseNames;
 
 	}
 
@@ -1452,6 +1471,7 @@ public class ServerModel {
 					for (int i = 0; i < nodes.length; i++) {
 						if (nodes[i].equals("Diseases")) {
 							this.titlesNew = dw.getStates(nodes[i]);
+							diseaseNames = Arrays.asList(this.titlesNew);
 						}
 					}
 					
@@ -1514,6 +1534,7 @@ public class ServerModel {
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
 					this.titlesNew = dw.getStates(nodes[i]);
+					diseaseNames = Arrays.asList(this.titlesNew);
 				}
 			}
 			
@@ -2209,6 +2230,7 @@ public class ServerModel {
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
 					this.titlesNew = dw.getStates(nodes[i]);
+					diseaseNames = Arrays.asList(this.titlesNew);
 				}
 			}
 			
@@ -2264,6 +2286,7 @@ public class ServerModel {
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
 					this.titlesNew = dw.getStates(nodes[i]);
+					diseaseNames = Arrays.asList(this.titlesNew);
 				}
 			}
 			
@@ -2338,12 +2361,24 @@ public class ServerModel {
 				dw = new DNETWrapper(PATH + "/" + networkFileName);
 				//System.out.println("get node names");
 				nodes = dw.getNodeNames();
+				
+				String [] diseases = dw.getStates("Diseases");
+				diseaseNames = Arrays.asList(diseases);
+				for ( int i=0; i<diseaseNames.size(); i++) {
+					String formattedName = diseaseNames.get(i).replace("_", " ");
+					diseaseNameMap.put(formattedName, diseaseNames.get(i));
+					diseaseNames.set(i, formattedName);
+				}
+				/*
 				for (int i = 0; i < nodes.length; i++) {
 					if (nodes[i].equals("Diseases")) {
 						//System.out.println("Set new disease list");
 						this.titlesNew = dw.getStates(nodes[i]);
+						this.diseaseNames = Arrays.asList( this.titlesNew );
 					}
 				}
+				*/
+				
 				// changes starts for CR101
 				processNodePrefixes();
 				// changes ends for CR101
@@ -3474,7 +3509,7 @@ public class ServerModel {
 	public void getDiseaseAction(ValueChangeEvent event){
 		if ( debugMode ) System.out.println("getDiseaseAction()");
 		System.out.println("Event Change Value: '" + event.getOldValue() + "' -> '" + event.getNewValue()+"'" );
-		String newValue= event.getNewValue().toString();
+		String newValue = event.getNewValue().toString();
 		
 		String oldValue = "";
 		if(event.getOldValue() != null){
@@ -3486,8 +3521,8 @@ public class ServerModel {
 		if(!probInputs.isEmpty())
 			probInputs.clear();
 		
-		if(newValue != null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)){
-			userInputs.put("Diseases", newValue);
+		if(newValue != null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)) {
+			userInputs.put("Diseases", diseaseNameMap.get(newValue));
 		}
 		
 		//updateDiagnosisNode1();

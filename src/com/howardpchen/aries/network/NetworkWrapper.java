@@ -30,6 +30,7 @@ public abstract class NetworkWrapper {
 	public abstract List<String> getSPNodeNames();
     public abstract List<String> getCLNodeNames();
 	public abstract List<String> getMSNodeNames();
+	public abstract List<String> getNodeNames(String prefix);
 
 	//Ends here
 	 public abstract String[] getStates(String nodeName);
