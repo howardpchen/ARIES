@@ -9,7 +9,7 @@ public abstract class NetworkWrapper {
 		return getNodeProbs("Diseases");
 	}
 	public Map<String,Double> getRadioDiagnosisProbs() {
-		return getNodeProbs1("Diseases");
+		return getNodeProbs("Diseases");
 	}
 	public abstract Map<String, Double> getNodeProbs(String nodeName);
 	public abstract Map<String, Double> getNodeProbs1(String nodeName);

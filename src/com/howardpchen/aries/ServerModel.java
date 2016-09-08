@@ -1218,6 +1218,10 @@ public class ServerModel {
 			userInputs1.remove(it.next());
 		}
 	}
+	
+	/**
+	 * Update the clinical diagnosis plot based on the currently selected feature values
+	 */
 	public void updateDiagnosisNode() {
 		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
@@ -1249,6 +1253,9 @@ public class ServerModel {
 	}
 	
 	
+	/**
+	 * Updage the radiographic diagnosis plot based on the currently selected feature values
+	 */
 	public void updateRadioDiagnosisNode() {
 		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
@@ -1275,6 +1282,10 @@ public class ServerModel {
 		}
 	}
 	
+	/**
+	 * Get the html table with values for the radiographic diagnosis table
+	 * @return A String containing an html table of values for radiographic diagnoses
+	 */
     public String getRadiographicDiag(){
     	// Update the diagnosis node first
     	 updateRadioDiagnosisNode();
@@ -1285,28 +1296,35 @@ public class ServerModel {
 
     			StringBuffer sb = new StringBuffer("");
     			sb.append("<table id='radiodiagnosistable'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
-    			if(dw!= null){
-    			values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
+    			if (dw != null) {
+    				values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
     			}
-    			if(values != null){
-    			s = values.keySet();
-    			int noOfKeys = s.size();
-    			//double diagpercent = 100/noOfKeys;
-    			it = s.iterator();
-    			int count = 0;
-    			while (it.hasNext() && ++count <= topDdx) {
-    				String key = it.next();
-    				String diag = key.replaceAll("_", " ");
-    				if(userInputs.keySet().size() == 0){
-        				sb.append("<tr><td>" + diag).append("<td>").append((100/noOfKeys)).append("</tr>");
-    				}else{
-    				sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
-    				}
-    				
-    			}}
+    			if( values != null) {
+	    			s = values.keySet();
+	    			int noOfKeys = s.size();
+	    			//double diagpercent = 100/noOfKeys;
+	    			it = s.iterator();
+	    			int count = 0;
+	    			while (it.hasNext() && ++count <= topDdx) {
+	    				String key = it.next();
+	    				String diag = key.replaceAll("_", " ");
+	    				
+	    				if(userInputs.keySet().size() == 0){
+	        				sb.append("<tr><td>" + diag).append("<td>").append((100/noOfKeys)).append("</tr>");
+	    				} else {
+	    					sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
+	    				}
+	    				
+	    			}
+    			}
     			sb.append("</table>");
     			return sb.toString();
     }
+    
+	/**
+	 * Get the html table with values for the clinical diagnosis table
+	 * @return A String containing an html table of values for clinincal diagnoses
+	 */
 	public String getDiagnosisNode() {
 		// Update the diagnosis node first
 		fromGraph = "true";
@@ -1319,8 +1337,8 @@ public class ServerModel {
 
 		StringBuffer sb = new StringBuffer("");
 		sb.append("<table id='diagnosistable1'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
-		if(dw != null){
-		values = sortByValue(dw.getDiagnosisProbs(), -1);
+		if(dw != null) {
+			values = sortByValue(dw.getDiagnosisProbs(), -1);
 		}
 	
 		if(values != null){
