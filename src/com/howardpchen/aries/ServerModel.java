@@ -395,7 +395,7 @@ public class ServerModel {
 			networkFileMap.put( netFileName, netDescName ); 
 
 		}
-		
+		java.util.Collections.sort(availableNetworks);
 		activeNetwork = availableNetworks.get(0);
 		
 		String networkFileName = networkNameMap.get(activeNetwork);

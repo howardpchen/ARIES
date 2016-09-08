@@ -17,6 +17,7 @@ body, p, ul, ol, textarea, input {
     background: #333;
 }
 h3 {
+	font-size: 20pt;
 	text-align: center;
 }
 
@@ -107,8 +108,7 @@ ul.nav {
 }
 .col-md-12 {
 	padding: 0px;
-	margin-top: 10px;
-	padding-top: 0px;
+	margin: 0px;
 }
 .col-centered {
 	float; none;
@@ -116,9 +116,11 @@ ul.nav {
 	align: center;
 }
 
+
+
 .sidebar {
 	font-size: 9pt;
-	margin: 40px 0px 0px 0px;
+	margin: 10pt 0pt 0pt 0pt;
 }
 
 .nav-pills {
@@ -272,6 +274,10 @@ a.button, .radiobuttons label, select, input[type=text], input[type=password]
 	padding: 2px 2px;
 }
 
+.category {
+    font-size: 20px;
+}
+
 select.features {
 	position: relative;
 	display: inline-block;
@@ -289,6 +295,8 @@ select.features {
 	padding-left: 0.25em;
  
 }
+
+
 
 .selectdiv select {
 	-webkit-appearance: none;
@@ -353,6 +361,5 @@ table#radiodiagnosistable td {
 	background-color: #07889B;
 	background-image: none;
 }
-
 
 

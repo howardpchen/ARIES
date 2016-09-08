@@ -7,65 +7,51 @@
 <!-- <div class="navbar navbar-default"> -->
 <div class="container-fluid">
 <div>
+<h:form>
   <div class='row' id="divStyle">
 
-    <div class="col-md-2">
-	  <img alt="ARIES" src="aries.png" />
+    <div class="col-xs-10">
+        <div class="row">
+		    <div class="col-xs-3">
+			  <img alt="ARIES" src="aries.png" />
+			</div>
+	
+			<div class="col-xs-9"> 
+			  <br />
+			  <h3>Adaptive Radiology Interpretation &amp; Education System</h3>
+			</div>
+	    </div>
+	    <div></div>
+	    <div class="row">
+	       <div class="col-xs-12">
+	           <ul class="nav nav-pills">
+                 <li><a href="/ARIES/">Home</a></li>
+                 <li><h:commandLink id="menu_clinical" action="#{serverModel.getNavRuleClinical}" value="Clinical"></h:commandLink></li>
+                 <li><h:commandLink id="menu_submit" action="#{serverModel.getNavRuleCase}" value="Submit Case"></h:commandLink></li>
+                 <li><h:commandLink id="menu_research" action="#{serverModel.getNavRuleResearch}" value="Research"></h:commandLink></li>
+                 <li><h:commandLink id="menu_education" action="#{serverModel.getNavRuleEducation}" value="Education"></h:commandLink></li>
+                 <li><h:commandLink id="menu_qc" action="#{serverModel.getNavRuleQC}" value="QC"></h:commandLink></li>
+               </ul>  
+	       </div>
+	    </div>
 	</div>
-
-	<div class="col-md-8"> 
-	  <br /><br />
-	  <h3>Adaptive Radiology Interpretation &amp; Education System</h3>
-	</div>
-
-	<div class="col-md-2">
+	       
+	<div class="col-xs-2">
 	  <div class="sidebar">
         Hospital of University of Pennsylvania <br /> 
         Department of Radiology Based on <br />
         the Work of Emmanuel Botzolakis<br /> 
         Designed by Howard Chen <br />
         Build 8-11-2016<br />
-        <a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
+        <a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a><br /> 
+        <h:commandButton class="btn-logout" value="Logout" action="#{loginBean.logout}" />
+        <p class="welcome">Welcome, #{loginBean.uname}</p>
       </div>
     </div>
 
   </div> 
+  </h:form>
 </div>
-
-
-<h:form>
-  
- <div>
-
-
-   
-
-	
-  <div class="row">
-    <div class="col-md-10">
-	  <ul class="nav nav-pills">
-        <li><a href="/ARIES/">Home</a></li>
-		<li><h:commandLink id="menu_clinical" action="#{serverModel.getNavRuleClinical}" value="Clinical"></h:commandLink></li>
-		<li><h:commandLink id="menu_submit" action="#{serverModel.getNavRuleCase}" value="Submit Case"></h:commandLink></li>
-		<li><h:commandLink id="menu_research" action="#{serverModel.getNavRuleResearch}" value="Research"></h:commandLink></li>
-		<li><h:commandLink id="menu_education" action="#{serverModel.getNavRuleEducation}" value="Education"></h:commandLink></li>
-	    <li><h:commandLink id="menu_qc" action="#{serverModel.getNavRuleQC}" value="QC"></h:commandLink></li>
-		<!-- <li><a href="">Analytics</a></li> -->
-   	  </ul>
-    </div>
-
-    <div class="col-md-2">
-	  <h:commandButton class="btn-logout" value="Logout" action="#{loginBean.logout}" />
-	  <p class="welcome">Welcome, #{loginBean.uname}</p>
-	</div>
-  </div>
-  
-  <!-- This reduces extra spacing for some reason -->
-
-
-
-</div>
-</h:form>
 </div>
 
 </ui:composition>

@@ -54,54 +54,57 @@
 <!--  Load in the selected network -->      
 <h:inputHidden value="#{serverModel.prePageLoad}" />
 
-<div class="row">
-  <div class="col-md-10 selectdiv">
-  <table class="mainmenu">
-  	<tr><td><div class="mainmenu"><h2>Select Network:</h2></div></td>
-  	   <td><div class="mainmenu">
-  	      <h:selectOneMenu value="#{serverModel.activeNetwork}" onchange="this.form.submit()" >
-	      <f:selectItems value="#{serverModel.availableNetworks}" />
-          </h:selectOneMenu>
-  	  </div></td>
+<div class="row marginRow">
+    <div class="col-xs-12 selectdiv mainmenu">
+        <h2>Select Network:</h2>
+        <h:selectOneMenu value="#{serverModel.activeNetwork}" onchange="this.form.submit()" >
+        <f:selectItems value="#{serverModel.availableNetworks}" />
+        </h:selectOneMenu>
+    </div>
+</div>
 
-  	  <td><div class="mainmenu"><h2>Select Disease:</h2></div></td>
-  	  <td><div class="mainmenu">
+<div></div>
+
+<div class="row marginRow">
+    <div class="col-xs-12 selectdiv mainmenu">
+        <h2>Select Features Manually (Below) --OR-- Prepopulate by Disease:</h2>
         <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" valueChangeListener="#{serverModel.getDiseaseAction}">
-	     <f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
-		 <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-	   </h:selectOneMenu> 
-  	  </div></td>
-  	</tr>
-  	<tr>
-  	  <td><div class="mainmenu"><h2>Select Features:</h2></div></td>
-  	  <td><div class="mainmenu checkgroup">
-  	    <h2>Sensitivity:</h2>
-        <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()"> 
-        </h:selectBooleanCheckbox>
-  	  </div></td>
-  	</tr>
-  </table>
+        <f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
+        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+        </h:selectOneMenu> 
+    </div>
+</div>
+
+<div></div>
+
+<div class="row marginRow">
+  <div class="col-xs-12 selectdiv mainmenu">
+    <h2>Highlight Most Discriminating Features:</h2>
+    <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()"> 
+    </h:selectBooleanCheckbox>
   </div>
-  
-  <div class="col-md-2">
+</div>
+
+<div><br /></div>
+
+    
+<div class="row marginRow">  
+  <div class="col-xs-2">
     <!--  FIXME: deleting this causes resetDisease to be not found at all for some reason -->
     <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" rendered="false" /> 
   </div>
-  
+</div>
 </div>
 
-</div>
+<div></div>
 
 <div class="container-fluid">
-
-		
-
 
 <div class="row">
   <h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
 </div>
 
-<div><br /></div>
+<div></div>
 
 								<!-- 	<div >
 											<h:outputText id="infoMsg" value="#{serverModel.infoMsg}"
@@ -109,11 +112,11 @@
 										</div> -->
 			
 <!-- Begin Rows of features/nodes to set -->										
-<div class="row row2"><div class="col-md-12"><div class="selectdiv">
+<div class="row row2"><div class="col-xs-12"><div class="selectdiv">
 		<ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
 		
 			<h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-				<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+				<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
 					
 				<ui:repeat var="feature" id="networkFeatureID" 
 					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
@@ -134,9 +137,9 @@
 
 		<!-- changes ends for CR101 -->
 <div></div>
-<div class="row"><div class="col-md-12">
+<div class="row"><div class="col-xs-12">
 		
-			<h:commandButton value="Reset/Clear Features" action="#{serverModel.resetHandler}" />
+			<h:commandButton value="Reset Features" action="#{serverModel.resetHandler}" />
 	
 </div></div>
 <div></div>
