@@ -414,6 +414,8 @@ public class ServerModel {
 		nodes = dw.getNodeNames();
 
 	    diseaseNames = Arrays.asList(dw.getStates("Diseases"));
+	    Collections.sort(diseaseNames);
+	    
 	    diseaseNameMap.clear();
 	    for (int i=0; i < diseaseNames.size(); i++) {
 	    	String formattedName = diseaseNames.get(i).replace("_", " ");
@@ -2382,6 +2384,9 @@ public class ServerModel {
 				
 				String [] diseases = dw.getStates("Diseases");
 				diseaseNames = Arrays.asList(diseases);
+				Collections.sort(diseaseNames);
+				diseaseNameMap.clear();
+				
 				for ( int i=0; i<diseaseNames.size(); i++) {
 					String formattedName = diseaseNames.get(i).replace("_", " ");
 					diseaseNameMap.put(formattedName, diseaseNames.get(i));
