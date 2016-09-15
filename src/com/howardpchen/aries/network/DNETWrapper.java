@@ -104,12 +104,24 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		Node myNode = null;
 		try {
 			myNode = net.getNode(nodeName);
+			float [] priorProbs = myNode.getCPTable(null);
+			float [] equalProbs = myNode.getCPTable(null);
 			int st = net.getNode(nodeName).getNumStates();
+			
+			for ( int i=0; i < st; i++ ) {
+				equalProbs[i] = (float) (1.0 / st);
+			}
+			myNode.setCPTable(equalProbs);
+			
 			for (int i = 0; i < st; i++) {
 				String title = myNode.state(i).getName();
 				double val = myNode.getBelief(title);
 				returnMap.put(title, val);
 			}
+			
+			myNode.setCPTable(priorProbs);
+			
+			
 		} catch (NeticaException e) {
 			System.err.println("Error getting node probabilities.");
 			//e.printStackTrace();

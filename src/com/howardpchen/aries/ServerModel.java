@@ -591,6 +591,10 @@ public class ServerModel {
 		return availableNetworks;
 	}
 	
+	public void toggleSensitivity( ) {
+		this.sensityvityOn = !this.sensityvityOn;
+	}
+	
 	/*
 	public String getNetworkInput() {
 		return networkName;
@@ -1256,7 +1260,8 @@ public class ServerModel {
 	
 	
 	/**
-	 * Updage the radiographic diagnosis plot based on the currently selected feature values
+	 * Update the radiographic diagnosis plot based on the currently selected feature values
+	 * All clinical features ( "CL_*" ) should be ignored.
 	 */
 	public void updateRadioDiagnosisNode() {
 		Set<String> toRemove = new TreeSet<String>();
@@ -1265,17 +1270,16 @@ public class ServerModel {
 		while (it.hasNext()) {
 			String key = it.next();
 			String response = userInputs.get(key);
-			if(key!=null){
-			if(key.startsWith("CL_")){ 
-				response ="[Clear]";
-			}
+			if (key!=null) {
+				if (key.startsWith("CL_")) { 
+					response ="[Clear]";
+				}
 			}
 			if (response.equals("[Clear]")) {
 				toRemove.add(key);
 				dw.clearNodeState(key);
 			} else
 				dw.setNodeState(key, response);
-			
 		}
 
 		it = toRemove.iterator();
@@ -1289,38 +1293,40 @@ public class ServerModel {
 	 * @return A String containing an html table of values for radiographic diagnoses
 	 */
     public String getRadiographicDiag(){
+    	
     	// Update the diagnosis node first
-    	 updateRadioDiagnosisNode();
-    			Set<String> s = userInputs.keySet();
-    			Iterator<String> it = s.iterator();
-    			Map<String, Double> values = null;
-    			// Then produce the node output
+    	updateRadioDiagnosisNode();
+    	 
+		Set<String> s = userInputs.keySet();
+		Iterator<String> it = s.iterator();
+		Map<String, Double> values = null;
+		// Then produce the node output
 
-    			StringBuffer sb = new StringBuffer("");
-    			sb.append("<table id='radiodiagnosistable'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
-    			if (dw != null) {
-    				values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
-    			}
-    			if( values != null) {
-	    			s = values.keySet();
-	    			int noOfKeys = s.size();
-	    			//double diagpercent = 100/noOfKeys;
-	    			it = s.iterator();
-	    			int count = 0;
-	    			while (it.hasNext() && ++count <= topDdx) {
-	    				String key = it.next();
-	    				String diag = key.replaceAll("_", " ");
-	    				
-	    				if(userInputs.keySet().size() == 0){
-	        				sb.append("<tr><td>" + diag).append("<td>").append((100/noOfKeys)).append("</tr>");
-	    				} else {
-	    					sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
-	    				}
-	    				
-	    			}
-    			}
-    			sb.append("</table>");
-    			return sb.toString();
+		StringBuffer sb = new StringBuffer("");
+		sb.append("<table id='radiodiagnosistable'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
+		if (dw != null) {
+			values = sortByValue(dw.getRadioDiagnosisProbs(), -1);
+		}
+		if( values != null) {
+			s = values.keySet();
+			int noOfKeys = s.size();
+			//double diagpercent = 100/noOfKeys;
+			it = s.iterator();
+			int count = 0;
+			while (it.hasNext() && ++count <= topDdx) {
+				String key = it.next();
+				String diag = key.replaceAll("_", " ");
+				
+				if(userInputs.keySet().size() == 0){
+    				sb.append("<tr><td>" + diag).append("<td>").append((100/noOfKeys)).append("</tr>");
+				} else {
+					sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
+				}
+				
+			}
+		}
+		sb.append("</table>");
+		return sb.toString();
     }
     
 	/**

@@ -65,29 +65,8 @@
 
 <div></div>
 
-<div class="row marginRow">
-    <div class="col-xs-12 selectdiv mainmenu">
-        <h2>Select Features Manually (Below) --OR-- Prepopulate by Disease:</h2>
-        <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" valueChangeListener="#{serverModel.getDiseaseAction}">
-        <f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
-        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-        </h:selectOneMenu> 
-    </div>
-</div>
 
-<div></div>
 
-<div class="row marginRow">
-  <div class="col-xs-12 selectdiv mainmenu">
-    <h2>Highlight Most Discriminating Features:</h2>
-    <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()"> 
-    </h:selectBooleanCheckbox>
-  </div>
-</div>
-
-<div><br /></div>
-
-    
 <div class="row marginRow">  
   <div class="col-xs-2">
     <!--  FIXME: deleting this causes resetDisease to be not found at all for some reason -->
@@ -137,11 +116,31 @@
 
 		<!-- changes ends for CR101 -->
 <div></div>
-<div class="row"><div class="col-xs-12">
-		
-			<h:commandButton value="Reset Features" action="#{serverModel.resetHandler}" />
-	
-</div></div>
+
+<div class="row marginRow">
+    <div class="col-xs-6 selectdiv mainmenu">
+        <h2>Prepopulate by Disease:</h2>
+        <h:selectOneMenu id="diagClinical" value="#{serverModel.disease}" onchange="this.form.submit()" valueChangeListener="#{serverModel.getDiseaseAction}">
+        <f:selectItem itemlabel="--select--" itemValue="--select--"></f:selectItem>
+        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+        </h:selectOneMenu> 
+    </div>
+    <div class="col-xs-4 selectdiv mainmenu">
+    <!--  
+        <h2>Highlight Most Discriminating Features:</h2>
+        <h:selectBooleanCheckbox id="box" value="#{serverModel.sensityvityOn}" onchange="this.form.submit()"> 
+        </h:selectBooleanCheckbox>
+        -->
+        <h:commandButton value="Highlight Most Discriminating" action="#{serverModel.toggleSensitivity}" />
+    </div>
+    <div class="col-xs-2">
+        <h:commandButton value="Reset Features" action="#{serverModel.resetHandler}" />
+    </div>
+    
+</div>
+
+<hr />
+
 <div></div>
 
 		<!-- 
