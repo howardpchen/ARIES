@@ -238,6 +238,11 @@ li {
 	display: inline;
 }
 
+.mainmenu > input 
+{
+	margin-right: 10px;
+}
+
 .mainmenu > select
 	{
 	align: right;
