@@ -6,12 +6,12 @@ import java.util.TreeMap;
 
 public abstract class NetworkWrapper {
 	public Map<String,Double> getDiagnosisProbs() {
-		return getNodeProbs("Diseases");
+		return getNodeProbs("Diseases", false);
 	}
 	public Map<String,Double> getRadioDiagnosisProbs() {
-		return getNodeProbs("Diseases");
+		return getNodeProbs("Diseases", true);
 	}
-	public abstract Map<String, Double> getNodeProbs(String nodeName);
+	public abstract Map<String, Double> getNodeProbs(String nodeName, boolean radiographic);
 	public abstract Map<String, Double> getNodeProbs1(String nodeName);
 	public abstract String[] getNodeNames();
 	public abstract void setNodeState(String nodeName, String state);

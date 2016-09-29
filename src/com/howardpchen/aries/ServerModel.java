@@ -125,6 +125,9 @@ public class ServerModel {
 	
 	private static final String nullDisease = "Populate Features by Disease";
 	
+	private static final String highlightOff = "Highlight Most Descriminating Features";
+	private static final String highlightOn = "Remove Feature Highlighting";
+	
 	private boolean settingDisease = false;
 	private String currentFeature = "";
 	private String currentDisease = nullDisease;
@@ -198,7 +201,13 @@ public class ServerModel {
     List<String> caseListforNw = new ArrayList<String>();
    
     
-    
+    public String getHighlightMessage( ) {
+    	String msg=highlightOff;
+    	if ( this.sensityvityOn ) {
+    		msg=highlightOn;
+    	}
+    	return msg;
+    }
     
     
     
@@ -1003,7 +1012,7 @@ public class ServerModel {
 				continue;
 			sb.append("<p class='node-title'>" + nodes[i] + "</p>");
 			sb.append("<table class=\"summarytable\" id=\"hood\">");
-			Map<String, Double> values = dw.getNodeProbs(nodes[i]);
+			Map<String, Double> values = dw.getNodeProbs(nodes[i], false);
 			
 			
 			Set<String> s = values.keySet();
@@ -1128,7 +1137,7 @@ public class ServerModel {
 		/* Map<String, Double> values = dw.getNodeProbs(nodeName); */
 		// one line cha for CR101
 		double highest = 0.0;
-		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName));
+		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);
 		Set<String> s = values.keySet();
 		Iterator<String> it = s.iterator();
 		returnString.add(nodeName);
@@ -1527,7 +1536,7 @@ public class ServerModel {
 						
 						List<String> features  = getSelectMenuFeatures(prefix);
 						for(String menu : features){	
-							values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+							values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
 							valuesNode.put(menu, values);
 						}
 					}
@@ -1590,7 +1599,7 @@ public class ServerModel {
 				
 				List<String> features  = getSelectMenuFeatures(prefix);
 				for(String menu : features){	
-					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
 					valuesNode.put(menu, values);
 				}
 			}
@@ -1645,7 +1654,7 @@ public class ServerModel {
 				if (nodes[i].equals("Diseases"))
 					continue;
 
-				Map<String, Double> values = dw.getNodeProbs(nodes[i]);
+				Map<String, Double> values = dw.getNodeProbs(nodes[i],false);
 				double highestVal = 0.000;
 				String highestkey = "";
 				List<Double> keylist = new ArrayList<Double>();
@@ -1706,7 +1715,7 @@ public class ServerModel {
 				if (nodes[i].equals("Diseases"))
 					continue;
 
-				Map<String, Double> values = dw.getNodeProbs(nodes[i]);
+				Map<String, Double> values = dw.getNodeProbs(nodes[i],false);
 				double highestVal = 0.000;
 				String highestkey = "";
 				List<Double> keylist = new ArrayList<Double>();
@@ -2295,7 +2304,7 @@ public class ServerModel {
 				
 				List<String> features  = getSelectMenuFeatures(prefix);
 				for(String menu : features){	
-					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
 					valuesNode.put(menu, values);
 				}
 			}
@@ -2351,7 +2360,7 @@ public class ServerModel {
 				
 				List<String> features  = getSelectMenuFeatures(prefix);
 				for(String menu : features){	
-					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu));
+					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
 					valuesNode.put(menu, values);
 				}
 			}

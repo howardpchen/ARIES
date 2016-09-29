@@ -15,6 +15,7 @@ body, p, h1, h2, h3, h4, ul, ol, textarea, input {
 }
 body, p, ul, ol, textarea, input {
     background: #333;
+    outline: 0;
 }
 h3 {
 	font-size: 20pt;
@@ -34,6 +35,9 @@ body {
 
 a {
 	color: #66B9BF;
+}
+a:active {
+	color: #333333;
 }
 
 p {
@@ -66,60 +70,11 @@ ul.nav {
 	padding-bottom: 0px;
 }
 
-.col-md-1 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-2 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-3 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-4 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-5 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-6 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-7 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-8 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-9 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-10 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-11 {
-	padding: 0px;
-	margin: 0px;
-}
-.col-md-12 {
-	padding: 0px;
-	margin: 0px;
-}
 .col-centered {
 	float; none;
 	margin: 0 auto;
 	align: center;
 }
-
 
 
 .sidebar {
@@ -209,6 +164,7 @@ input[type=submit] {
 input[type=submit].btn-login {
     background: #E37722;
     align: center;
+    outline: 0;
 }
 input[type=submit].btn-logout {
 	padding: 5px 15px;
@@ -241,6 +197,7 @@ li {
 .mainmenu > input 
 {
 	margin-right: 10px;
+	outline: 0;
 }
 
 .mainmenu > select
@@ -260,6 +217,7 @@ li {
 	border-color: #07889B;
 	line-height: normal;
 	margin: 6pt;
+	outline: 0;
 }
 
 
@@ -280,6 +238,7 @@ a.button, .radiobuttons label, select, input[type=text], input[type=password]
 	line-height: normal;
 	margin: 6px 6px;
 	padding: 2px 8px;
+	outline: 0;
 }
 
 .category {

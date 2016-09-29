@@ -97,7 +97,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	}
 	
 	@Override
-	public Map<String, Double> getNodeProbs(String nodeName) {
+	public Map<String, Double> getNodeProbs(String nodeName, boolean radiographic ) {
 		//System.out.println("DNETWrapper::getNodeProbs(" + nodeName + ")");
 		Map<String, Double> returnMap = new HashMap<String, Double>();
 		
@@ -105,13 +105,16 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		try {
 			myNode = net.getNode(nodeName);
 			float [] priorProbs = myNode.getCPTable(null);
-			float [] equalProbs = myNode.getCPTable(null);
 			int st = net.getNode(nodeName).getNumStates();
 			
-			for ( int i=0; i < st; i++ ) {
-				equalProbs[i] = (float) (1.0 / st);
+			if ( radiographic ) {	
+				float [] equalProbs = myNode.getCPTable(null);
+	
+				for ( int i=0; i < st; i++ ) {
+					equalProbs[i] = (float) (1.0 / st);
+				}
+				myNode.setCPTable(equalProbs);
 			}
-			myNode.setCPTable(equalProbs);
 			
 			for (int i = 0; i < st; i++) {
 				String title = myNode.state(i).getName();
@@ -119,7 +122,9 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				returnMap.put(title, val);
 			}
 			
-			myNode.setCPTable(priorProbs);
+			if ( radiographic ) {
+				myNode.setCPTable(priorProbs);
+			}
 			
 			
 		} catch (NeticaException e) {
