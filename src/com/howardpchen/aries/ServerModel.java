@@ -123,6 +123,7 @@ public class ServerModel {
 	 */
 	private String[] nodes = new String[0];
 	
+	private boolean settingDisease = false;
 	private String currentFeature = "";
 	private String currentDisease = "";
 	private String featureFlag = "false"; 
@@ -591,8 +592,9 @@ public class ServerModel {
 		return availableNetworks;
 	}
 	
-	public void toggleSensitivity( ) {
+	public String toggleSensitivity( ) {
 		this.sensityvityOn = !this.sensityvityOn;
+		return "";
 	}
 	
 	/*
@@ -822,19 +824,33 @@ public class ServerModel {
 	 * @param s The parameter value to set
 	 */
 	public void setNodeInput(String s) {
+		
+		if ( settingDisease ) {
+			System.out.println("In 'settingDisease' state");
+			System.out.println("probInputs size: " + probInputs.size());
+			System.out.println("probInputs: " + probInputs.toString() );
+	    	}
+		
+		
 		System.out.println("setNodeInput(" + s + ")");
 		String[] inputs = s.split(":");
-		// old before CR101
-		/*
-		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
-		 * (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
-		 */
-	
-		// changes starts for CR101
-		/*if(!userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
-		{*/
+		
 	    System.out.println("userInputs size: " + userInputs.size());
 		System.out.println( "userInputs: " + userInputs.toString() );
+		
+		if ( settingDisease  ) {
+			//System.out.println("probInputs: " + probInputs.toString() );
+			if ( !probInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
+				System.out.println("Clearing value for" + inputs[0]);
+				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+			}
+			else {
+				//userInputs.put(nodeNameReverseMapping.get(inputs[0]), )
+				System.out.println(nodeNameReverseMapping.get(inputs[0]));
+				System.out.println(probInputs.get( nodeNameReverseMapping.get(inputs[0])));
+				userInputs.put( nodeNameReverseMapping.get(inputs[0]), probInputs.get( nodeNameReverseMapping.get(inputs[0])));
+			}
+		}
 		
 		if (inputs.length == 2) {
 			
@@ -843,12 +859,10 @@ public class ServerModel {
 				if ( !userInputs.get( nodeNameReverseMapping.get(inputs[0])).equals(inputs[1]) ) {
 					System.out.println("Resetting value for " + inputs[0]);
 					
-					//probInputs.clear();
-
 					userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 					
 					if ( probInputs.isEmpty() ) {
-						this.setDisease("--select--");
+						currentDisease = "--select--";
 					}
 				}
 			}
@@ -869,19 +883,21 @@ public class ServerModel {
 			else {
 				/* Value set for first time */
 				System.out.println("Setting node value for " + inputs[0]);
-				this.setDisease("--select--");
+				currentDisease = "--select--";
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 			}
 		}
 		else if (inputs.length == 1) {
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+			if ( !settingDisease ) {
+				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+			}
 		}
 		
 		
-	    if(!probInputs.isEmpty()) {
-	    	System.out.println("Setting userInputs to probInputs");
-	    	userInputs.putAll(probInputs);		
-	    }
+	    //if(!probInputs.isEmpty()) {
+	    //	System.out.println("Setting userInputs to probInputs");
+	    //	userInputs.putAll(probInputs);		
+	    //}
 
 		System.out.println( "userInputs: " + userInputs.toString() );
 	    System.out.println("userInputs size: " + userInputs.size());	
@@ -896,6 +912,8 @@ public class ServerModel {
 		 * userInputs.get(currentFeature);
 		 */
 		// one line change for CR101
+		//System.out.println("getNodeInput()");
+		
 		if (!currentFeature.equals(""))
 			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
 		else
@@ -936,8 +954,9 @@ public class ServerModel {
 	
 	
 	public String resetDisease() {
-		this.setDisease("");
-		return (""); // return to index or refresh index
+		currentDisease = "--select--";
+		this.setDisease("--select--");
+		return ("--select--"); // return to index or refresh index
 	}
  
 	
@@ -1590,7 +1609,11 @@ public class ServerModel {
 		}
 		//return this.pageLoad;
 	}
-
+	/**
+	 * Load the the feature values for a given disease
+	 * 
+	 * @return
+	 */
 	public String getFeatureProb() {
 		
 		if ( debugMode ) System.out.println("getFeatureProb()");
@@ -1598,15 +1621,17 @@ public class ServerModel {
 		if (this.getDisease() != null
 				&& !this.getDisease().equalsIgnoreCase("--select--")) {
 			System.out.println("  for disease: " + this.getDisease());
-			try {
-				/*if(dw!= null){
-					dw.endSession();
-				}*/
-				String networkFileName = networkNameMap.get(activeNetwork);
-				dw = new DNETWrapper(PATH + "/" + networkFileName);
-			} catch (NetworkLoadingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			if ( dw == null ) {
+
+				try {
+					String networkFileName = networkNameMap.get(activeNetwork);
+					System.out.println("Open network file: " + networkFileName);
+					dw = new DNETWrapper(PATH + "/" + networkFileName);
+				} catch (NetworkLoadingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			nodes = dw.getNodeNames();
 			
@@ -1646,7 +1671,10 @@ public class ServerModel {
 
 			}
 			}
+			dw.endSession();
+			dw = null;
 		}
+
 		return "";
 
 	}
@@ -2432,6 +2460,11 @@ public class ServerModel {
 	}
 
 	public void setPostPageLoad(String pl) {
+		if ( debugMode ) System.out.println("setPostPageLoad()");
+		settingDisease = false;
+		if ( !probInputs.isEmpty() ) {
+			probInputs.clear();
+		}
 		this.pageLoad = pl;
 	}
 	
@@ -2440,6 +2473,8 @@ public class ServerModel {
 	}
 
 	public String getPostPageLoad() {
+		
+		settingDisease = false;
 		if ( !probInputs.isEmpty() ) {
 			System.out.println("Clear probInputs");
 			probInputs.clear();
@@ -3535,6 +3570,11 @@ public class ServerModel {
 		return currentDisease;
 	}
 	
+	/**
+	 * Called when the the "Prepopulate by Disease" menu is used
+	 * 
+	 * @param event holds info for previous and current value of menu
+	 */
 	public void getDiseaseAction(ValueChangeEvent event){
 		if ( debugMode ) System.out.println("getDiseaseAction()");
 		System.out.println("Event Change Value: '" + event.getOldValue() + "' -> '" + event.getNewValue()+"'" );
@@ -3545,13 +3585,18 @@ public class ServerModel {
 			oldValue = event.getOldValue().toString();
 		}
 		
-		if(!userInputs.isEmpty())
-			userInputs.clear();
-		if(!probInputs.isEmpty())
-			probInputs.clear();
-		
+		currentDisease = newValue;
 		if(newValue != null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)) {
+
+			if(!userInputs.isEmpty())
+				userInputs.clear();
+			if(!probInputs.isEmpty())
+				probInputs.clear();
+			
+			settingDisease = true;
 			userInputs.put("Diseases", diseaseNameMap.get(newValue));
+			
+			getFeatureProb();
 		}
 		
 		//updateDiagnosisNode1();
@@ -3579,16 +3624,19 @@ public class ServerModel {
 	}
 
 	public void setDisease(String disease) {
-		boolean flag = false;
-		if (!disease.equals(currentDisease)) {
-			flag = true;
-		}
+		if ( debugMode ) System.out.println( "setDisease(" + disease + ")");
+
+			/*
+			boolean flag = false;
+			if (!disease.equals(currentDisease) && !disease.equals("--select--")) {
+				flag = true;
+			}
 		
-		currentDisease = disease;
-		if (flag) {
-			getFeatureProb();
-		}
-		
+			currentDisease = disease;
+			if (flag) {
+				getFeatureProb();
+			}
+           */
 		
 	}
 	 public String getFirstDx() {
