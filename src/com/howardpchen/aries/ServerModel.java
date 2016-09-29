@@ -123,9 +123,11 @@ public class ServerModel {
 	 */
 	private String[] nodes = new String[0];
 	
+	private static final String nullDisease = "Populate Features by Disease";
+	
 	private boolean settingDisease = false;
 	private String currentFeature = "";
-	private String currentDisease = "";
+	private String currentDisease = nullDisease;
 	private String featureFlag = "false"; 
 	private String[] titlesNew = new String[0];  // Disease names
 	
@@ -862,7 +864,7 @@ public class ServerModel {
 					userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 					
 					if ( probInputs.isEmpty() ) {
-						currentDisease = "--select--";
+						resetDisease();
 					}
 				}
 			}
@@ -883,7 +885,7 @@ public class ServerModel {
 			else {
 				/* Value set for first time */
 				System.out.println("Setting node value for " + inputs[0]);
-				currentDisease = "--select--";
+				resetDisease();
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 			}
 		}
@@ -954,9 +956,8 @@ public class ServerModel {
 	
 	
 	public String resetDisease() {
-		currentDisease = "--select--";
-		this.setDisease("--select--");
-		return ("--select--"); // return to index or refresh index
+		currentDisease = nullDisease;
+		return "";
 	}
  
 	
@@ -3586,7 +3587,7 @@ public class ServerModel {
 		}
 		
 		currentDisease = newValue;
-		if(newValue != null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)) {
+		if(newValue != null && !newValue.equalsIgnoreCase(nullDisease) && !newValue.equalsIgnoreCase(oldValue)) {
 
 			if(!userInputs.isEmpty())
 				userInputs.clear();
