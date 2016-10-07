@@ -7,12 +7,12 @@
 
 
 <h:head>
-	<title>Adaptive Radiology Interpretation / Education System
-		(ARIES)</title>
+	<title>Adaptive Radiology Interpretation / Education System (ARIES)</title>
 
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!--  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    -->
+    
 	<!-- Bootstrap -->
 	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
@@ -23,139 +23,60 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="./resources/js/bootstrap.min.js"></script>
 
-	<style>
-input[type=radio] {
-	margin-right: 5px;
-	margin-left: 14px;
-}
-</style>
-
-
 </h:head>
 
 <h:body id="bodyStyle">
 
-
+<ui:include src="public_header.xhtml" />  
 <h:form role="form" id="loginForm">
 
-		<!--  <div class="navbar navbar-default"> -->
 <div class="container-fluid">
-<div>
-  <div class='row' id="divStyle">
+  
+      <div class="row">
 
-    <div class="col-md-2">
-      <img alt="ARIES" src="aries.png" />
-    </div>
+	    <div class="col-xs-4"></div>
+	    <div class="col-xs-4">
+             <div class="form-group">
+			     <label for="exampleInputEmail1">Username</label>
+				 <div class="input-group">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+					<h:inputText id="exampleInputEmail1" class="form-control login" title="Enter UserName" value="#{loginBean.uname}" />
+ 				 </div>
+				 <div id="error1" style="color: red"></div>
+			 </div>
 
-    <div class="col-md-8"> 
-      <br /><br />
-      <h3>Adaptive Radiology Interpretation &amp; Education System</h3>
-    </div>
+			 <div class="form-group">
+			     <label for="exampleInputPassword1">Password</label>
+				 <div class="input-group">
+				    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                    <h:inputSecret id="exampleInputPassword1d" class="form-control login" title="Enter Password" value="#{loginBean.password}" redisplay="true"></h:inputSecret>
+			     </div>
+				 <div id="errors2" style="color: red;"></div>
+			 </div>
+			 
+			 <hr />
+			 
 
-    <div class="col-md-2">
-      <div class="sidebar">
-        Hospital of University of Pennsylvania <br /> 
-        Department of Radiology Based on <br />
-        the Work of Emmanuel Botzolakis<br /> 
-        Designed by Howard Chen <br />
-        Build 8-11-2016<br />
-        <a href="https://www.gnu.org/copyleft/gpl.html">GNU Public License</a>
-      </div>
-    </div>
-
-  </div> 
-</div>
-		
-
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-5" align="center">
-				<h:selectOneRadio id="radioBut" value="#{loginBean.option}"
-					onchange="this.form.submit()" required="true">
-
-					<f:selectItem itemValue="Clinical" itemLabel=" Clinical " />
-
-					<f:selectItem itemValue="Submit Case" itemLabel=" SubmitCase  " />
-
-					<f:selectItem itemValue="Research" itemLabel=" Research  " />
-
-					<f:selectItem itemValue="Education" itemLabel=" Education  " />
-					
-					<f:selectItem itemValue="QC" itemLabel="QC" />
-					
-					<f:selectItem itemValue="Analytics" itemLabel="Analytics" />
-				</h:selectOneRadio>
-			</div>
+             <h:outputText value="Not a User? " />
+             <h:link value ="Register here" outcome="registration"></h:link>
+                
+			 <h:commandButton id="Login" icon="glyphicon glyphicon-lock" class="btn-login" 
+			   value="Login" action="#{loginBean.loginProject}" onclick="return validate()" />     
+          </div>
+		  <div class="col-xs-4"></div>
+				
 		</div>
 		
-		<br></br>
-		<div class="col-md-3"></div>
-		<h:messages globalOnly="true"
-			style="color:#47B247;font-weight:bold;color:red;"></h:messages>
-			</div>
+		<!--  Error message for bad username and/or password -->
+		<div class="row">
+		  <div class="col-xs-4"></div>
+          <div class="col-xs-4">
+            <h:messages globalOnly="true" class="errorMsg"></h:messages>
+          </div>
+          <div class="col-xs-4"></div>
+        </div>
+		
 			
-			
-
-		<div class="container">
-			<p>
-				<br />
-			</p>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-4">
-					<div class="panel panel-primary">
-						<div class="panel-body">
-
-							<div class="form-group">
-								<label for="exampleInputEmail1">Username</label>
-								<div class="input-group">
-									<span class="input-group-addon"><span
-										class="glyphicon glyphicon-user"></span></span>
-									<h:inputText id="exampleInputEmail1" class="form-control"
-										title="Enter UserName" value="#{loginBean.uname}" />
-
-								</div>
-								<div id="error1" style="color: red"></div>
-							</div>
-
-							<div class="form-group">
-								<label for="exampleInputPassword1">Password</label>
-								<div class="input-group">
-									<span class="input-group-addon"><span
-										class="glyphicon glyphicon-lock"></span></span>
-
-									<h:inputSecret id="exampleInputPassword1d" class="form-control"
-										title="Enter Password" value="#{loginBean.password}" redisplay="true"></h:inputSecret>
-
-								</div>
-								<div id="errors2" style="color: red;"></div>
-							</div>
-							<hr />
-
-
-							<div class="row">
-								<div class="col-md-4"></div>
-								<div class="col-md-3">
-									<h:commandButton id="Login" icon="glyphicon glyphicon-lock"
-										class="btn-login" value="Login"
-										action="#{loginBean.loginProject}" onclick="return validate()" />
-								</div>
-								
-							</div>
-
-                          
-					
-					</div>
-						</div>
-						 <div class="row">
-                          <div class="col-md-1"></div>
-                           <div class="col-md-8" style="color:white;">
-                           <h:outputText value="Not a User? " />
-                           <h:link value ="Register here" outcome="registration"></h:link>
-                           </div>
-                           </div>
-				</div>
-			</div>
 		</div> 
 	</h:form>
 

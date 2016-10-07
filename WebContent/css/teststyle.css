@@ -39,6 +39,9 @@ a {
 a:active {
 	color: #333333;
 }
+a:hover {
+	color: #E37722;
+}
 
 p {
 	margin-left: 20px;
@@ -71,7 +74,7 @@ ul.nav {
 }
 
 .col-centered {
-	float; none;
+	float: none;
 	margin: 0 auto;
 	align: center;
 }
@@ -153,22 +156,31 @@ table.mainmenu > td {
 
 /* Buttons for "Edit Features", "Logout", "Reset" */
 input[type=submit] {
-	padding: 5px 15px;
+	padding: 3px 15px;
 	background: #07889B;
 	border: 0 none;
 	font-color: #000;
 	cursor: pointer;
-	border-radius: 15px 15px;
+	border-radius: 8px;
+	border-width: 3px;
 	margin: 5px 5px;
 }
 input[type=submit].btn-login {
     background: #E37722;
     align: center;
     outline: 0;
+    margin-left: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-weight: bold;
 }
 input[type=submit].btn-logout {
 	padding: 5px 15px;
 	margin: 5px 0px;
+}
+
+input[type=submit].btn-register {
+	outline: 0;
 }
 
 h2 {
@@ -207,22 +219,23 @@ li {
 	text-align: center;
 	display: inline-block;
 	background-color: #07889B;
-	color: #EEE;
+	color: #EEEEEE;
 	font-size: 11pt;
 	cursor: pointer;
 	text-decoration: none;
-	border-radius: 10pt;
+	border-radius: 10px;
 	border-style: solid;
 	border-width: 3px;
 	border-color: #07889B;
 	line-height: normal;
-	margin: 6pt;
+	margin: 6px;
 	outline: 0;
+	padding: 2px 8px;
 }
 
 
 /* Select Network, Disease */
-a.button, .radiobuttons label, select, input[type=text], input[type=password]
+a.button, .radiobuttons label, select
 	{
 	text-align: left;
 	display: inline-block;
@@ -241,9 +254,35 @@ a.button, .radiobuttons label, select, input[type=text], input[type=password]
 	outline: 0;
 }
 
+select.registration {
+    text-align: left;
+    background: #888;
+    color: #EEE;
+    cursor: pointer;
+    border-color: #888;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 7px;
+    outline: 0;
+    line-height: normal;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 2px;
+    margin-bottom: 0px;
+}
+
+input[type=password], input[type=text] {
+	background: #EEE;
+}
+
+
+
 .category {
     font-size: 20px;
 }
+
+
+
 
 select.features {
 	position: relative;
@@ -263,7 +302,12 @@ select.features {
  
 }
 
-
+input[type=text]:disabled {
+	background: #555;
+}
+input[type=text]:enabled {
+    background: #EEE;
+}
 
 .selectdiv select {
 	-webkit-appearance: none;
@@ -320,7 +364,7 @@ table#radiodiagnosistable td {
 }
 
 .panel-primary {
-	background-color:  #333333;
+	background-color:  #555;
 	border: none;
 }
 .panel > .panel-heading {
@@ -328,5 +372,26 @@ table#radiodiagnosistable td {
 	background-color: #07889B;
 	background-image: none;
 }
+form-group.label {
+	text-align: left;
+}
 
+.errorMsg {
+	color: red;
+	font-weight: bold;
+}
 
+Absolute-Center {
+	margin: auto;
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+	text-align: center;
+}
+
+Absolute-Center.is-Responsive {
+	width: 50%;
+	height: 50%;
+	min-width: 200px;
+	max-width: 400px;
+	padding: 40px;
+}

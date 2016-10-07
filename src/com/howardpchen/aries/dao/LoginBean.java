@@ -31,7 +31,26 @@ public class LoginBean implements Serializable {
 	private String organization;
 	private String traininglevel;
 	private String email;
-	private String orgText;
+	private String orgText = "Please supply organization name";
+	
+	private boolean knownOrg = true;
+	
+	public boolean isKnownOrg() {
+		System.out.println("isKnownOrg()");
+		return knownOrg;
+	}
+	
+	public boolean getKnownOrg() {
+		System.out.println("getKnownOrg()");
+		return knownOrg;
+	}
+	
+	public void setKnownOrg(boolean isKnown) {
+		System.out.println("setKnownOrg()");
+		knownOrg = isKnown;
+	}
+	
+	
 	
 
 	public String getOrgText() {
@@ -40,6 +59,7 @@ public class LoginBean implements Serializable {
 
 	public void setOrgText(String orgText) {
 		this.orgText = orgText;
+		System.out.println("setOrgText(" + orgText + ")" );
 	}
 	public LoginBean(){
     	this.setOption("Clinical");
@@ -197,7 +217,17 @@ public class LoginBean implements Serializable {
 	}
 	
 	public void setOrganization(String organization) {
+		System.out.println("setOrganization("+organization+")");
 		this.organization = organization;
+		
+		if (organization.equals("Other")) {
+			setKnownOrg(false);
+			setOrgText("Please supply organization name");
+		}
+		else {
+			setKnownOrg(true);
+			setOrgText("");
+		}
 	}
 	
 	public String getTraininglevel() {
