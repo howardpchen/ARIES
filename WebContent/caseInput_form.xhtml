@@ -45,238 +45,252 @@ input[type=checkbox], input[type=radio] {
 	<f:view>
 		<h:form role="form" id="caseInput">
 			
-			<div class="row">
-
-				<div class="col-md-3"></div>
-				<div class="col-md-6">
+			<!-- 			
+			    <div class="row">
+				<div class="col-xs-3"></div>
+				<div class="col-xs-6">
 				    <h:outputText id="errorMsg" value="#{serverModel.errorMsg}" escape="false"></h:outputText>
 					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
 				</div>
+				<div class="col-xs-3"></div>
 			</div>
+			-->
 			
-			<div class="container">
-				<p>
-					<br />
-				</p>
+			<div class="container-fluid">
 			
 				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-10">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-8">
 						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<h4>Case Submission Form</h4>
-							</div>
 							<div class="panel-body">
  
- 
  								<fieldset id="formDiv">
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="network">Network :<font color="red">*</font> </label>
-									</div>
-									<div class="input-group">
-									
-
-										<h:selectOneMenu id="network" value="#{serverModel.nwName}" 
-										onchange="this.form.submit()" valueChangeListener="#{serverModel.getPrePageLoad1}" reRender="diagnosis" >
-											<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-											<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems> 
-										</h:selectOneMenu> 
-
-									</div> 
-								</div>
-
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-
-										<label for="organization">Organization<font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-
-										<h:selectOneMenu value="#{serverModel.organization}">
-											<f:selectItem itemLabel="-select-"></f:selectItem>
-											<f:selectItem itemValue="CHOP" itemLabel="CHOP"></f:selectItem>
-											<f:selectItem itemValue="UPHS" itemLabel="UPHS"></f:selectItem>
-										</h:selectOneMenu>
-
+ 								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="network">Network</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectOneMenu id="network" value="#{serverModel.nwName}" class="registration"
+												  onchange="this.form.submit()" valueChangeListener="#{serverModel.getPrePageLoad1}" reRender="diagnosis" >
+													<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+													<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems> 
+												</h:selectOneMenu> 
+		
+											</div> 
+										</div>
 									</div>
 								</div>
-								
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
 
-										<label for="modality">Modality : <font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-
-										<h:selectOneMenu id="modality" value="#{serverModel.modality}">
-											<f:selectItem itemLabel="-select-"></f:selectItem>
-											<f:selectItem itemValue="MR" itemLabel="MR"></f:selectItem>
-											<f:selectItem itemValue="XR" itemLabel="XR"></f:selectItem>
-											<f:selectItem itemValue="CT" itemLabel="CT"></f:selectItem>
-										</h:selectOneMenu>
-
+                                <div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="organization">Organization</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectOneMenu value="#{serverModel.organization}" class="registration"> 
+													<f:selectItem itemLabel="-select-"></f:selectItem>
+													<f:selectItem itemValue="CHOP" itemLabel="CHOP"></f:selectItem>
+													<f:selectItem itemValue="UPHS" itemLabel="UPHS"></f:selectItem>
+												</h:selectOneMenu>
+		
+											</div>
+										</div>
 									</div>
 								</div>
 								
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="accession">Accession :<font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-										<h:inputText id="accession" value="#{serverModel.accession}"
-											onblur="return validate()" />
-
-									</div>
-									<div id="error" style="color: red"></div>
-								</div>
-								
-
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="mrNum">MR Number(Last 5) : <font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-										<h:inputText id="mrNum" value="#{serverModel.patientId}"
-											maxlength="5"></h:inputText>
-
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+												<label for="modality">Modality</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectOneMenu id="modality" value="#{serverModel.modality}" class="registration">
+													<f:selectItem itemLabel="-select-"></f:selectItem>
+													<f:selectItem itemValue="MR" itemLabel="MR"></f:selectItem>
+													<f:selectItem itemValue="XR" itemLabel="XR"></f:selectItem>
+													<f:selectItem itemValue="CT" itemLabel="CT"></f:selectItem>
+												</h:selectOneMenu>
+		
+											</div>
+										</div>
 									</div>
 								</div>
 								
-															<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="age">Patient Age :<font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-										<h:inputText id="age" value="#{serverModel.age}" maxlength="3" onblur="return checkNumber()"/>
-
-									</div>
-									<div id="age_error" style="color: red"></div>
-								</div>
-
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-
-										<label for="gender">Gender : <font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-
-										<h:selectOneRadio id="gender" value="#{serverModel.gender}">
-											<f:selectItem itemValue="Female" itemLabel="Female"></f:selectItem>
-											<f:selectItem itemValue="Male" itemLabel="Male"></f:selectItem>
-										</h:selectOneRadio>
-
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="accession">Accession</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+		
+												<h:inputText id="accession" value="#{serverModel.accession}"
+													onblur="return validate()" class="form-control" />
+		
+											</div>
+											<div id="error" style="color: red"></div>
+										</div>
 									</div>
 								</div>
 								
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-
-										<label for="supportData">Supporting Data : <font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-
-										<h:selectManyCheckbox id="supportData"
-											value="#{serverModel.supportingDataList}">
-											<f:selectItem itemValue="Pathology" itemLabel="Pathology"></f:selectItem>
-											<f:selectItem itemValue="Laboratory" itemLabel="Laboratory"></f:selectItem>
-											<f:selectItem itemValue="Clinical history"
-												itemLabel="Clinical history"></f:selectItem>
-											<f:selectItem itemValue="Imaging findings"
-												itemLabel="Imaging findings"></f:selectItem>
-
-										</h:selectManyCheckbox>
-
+                                <div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="mrNum">MR Number(Last 5)</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+		
+												<h:inputText id="mrNum" value="#{serverModel.patientId}"
+													maxlength="5" class="form-control"></h:inputText>
+		
+											</div>
+										</div>
 									</div>
 								</div>
 								
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="description">Supporting data details : </label>
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="age">Patient Age</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:inputText id="age" value="#{serverModel.age}" class="form-control" maxlength="3" onblur="return checkNumber()"/>
+											</div>
+										</div>
+										<div id="age_error" style="color: red"></div>
 									</div>
-									<div class="input-group">
-
-										<h:inputTextarea value="#{serverModel.description}"
-											style="height:80px;width:260px;"></h:inputTextarea>
-									</div>
-
 								</div>
 
-
-
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="diagnosis">Correct Diagnosis :<font color="red">*</font></label>
+                                <div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="gender">Gender</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectOneRadio id="gender" value="#{serverModel.gender}">
+													<f:selectItem itemValue="Female" itemLabel="Female"></f:selectItem>
+													<f:selectItem itemValue="Male" itemLabel="Male"></f:selectItem>
+												</h:selectOneRadio>
+		
+											</div>
+										</div>
 									</div>
-									<div class="input-group">
+								</div>
+								
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="supportData">Supporting Data</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectManyCheckbox id="supportData"
+													value="#{serverModel.supportingDataList}">
+													<f:selectItem itemValue="Pathology" itemLabel="Pathology"></f:selectItem>
+													<f:selectItem itemValue="Laboratory" itemLabel="Laboratory"></f:selectItem>
+													<f:selectItem itemValue="Clinical history"
+														itemLabel="Clinical history"></f:selectItem>
+													<f:selectItem itemValue="Imaging findings"
+														itemLabel="Imaging findings"></f:selectItem>
+		
+												</h:selectManyCheckbox>
+		
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="description">Supporting data details</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:inputTextarea class="form-control" value="#{serverModel.description}" cols="75" rows="5"></h:inputTextarea>
+											</div>
+	                                    </div>
+									</div>
+								</div>
 
-										<h:selectOneMenu id="diagnosis"
-											value="#{serverModel.correctDx}"
-											onchange='showText()'  valueChangeListener="#{serverModel.getCorrectDxAction}"> 
-											<f:selectItem itemLabel="-select-"></f:selectItem>
-											<f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
-											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-										</h:selectOneMenu>
-
-
+                                <div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="diagnosis">Correct Diagnosis</label>
+										</div>
+										<div class="col-xs-8">	
+											<div class="input-group">
+												<h:selectOneMenu id="diagnosis"
+												    class="registration"
+													value="#{serverModel.correctDx}"
+													onchange='showText()'  valueChangeListener="#{serverModel.getCorrectDxAction}"> 
+													<f:selectItem itemLabel="-select-"></f:selectItem>
+													<f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+													<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+												</h:selectOneMenu>
+											</div>
+										</div>
 									</div>
 								</div>
 							
-								<div class="form-group" style="text-align: center;" id="inputTex" >
-									<div class="col-md-4"></div>
-									<div class="input-group" > 
-										<h:inputText value="#{serverModel.correctDxText}"/>
-									</div> 
-								</div>
-									
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="qcperson">QC Person :<font color="red">*</font></label>
-									</div>
-									<div class="input-group">
-
-										<h:selectOneMenu id="qcperson"
-											value="#{serverModel.qcperson}"> 
-											<f:selectItems value="#{serverModel.usersList}"></f:selectItems>
-										</h:selectOneMenu>
-
-
-									</div>
-								</div>
-
-								
-
-	
-								 <p><br/></p>
+							    <div class="row form-row">
 								<div class="form-group">
-									<div class="col-md-3"></div>
-
-									<div class="col-md-2"> 
-										<h:commandButton id="submit_btn" class="btn btn-primary"
-											value="Case Submit" action="#{serverModel.save}"
-											reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
-									</div> 
-									<div class="col-md-1"> 
-										<h:commandButton id="reset" value="Reset"
-											class="btn btn-primary" action="#{serverModel.clear}"
-											reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
+										<div class="col-xs-4"></div>
+										<div class="col-xs-8">
+											<div class="input-group" > 
+												<h:inputText class="form-control" value="#{serverModel.correctDxText}"/>
+											</div>
+										</div> 
 									</div>
+								</div>
 									
+								<div class="row form-row">
+									<div class="form-group">
+										<div class="col-xs-4">
+											<label for="qcperson">QC Person</label>
+										</div>
+										<div class="col-xs-8">
+											<div class="input-group">
+												<h:selectOneMenu id="qcperson" class="registration"
+													value="#{serverModel.qcperson}"> 
+													<f:selectItems value="#{serverModel.usersList}"></f:selectItems>
+												</h:selectOneMenu>
+											</div>
+										</div>
+									</div>
+								</div>
 
-
-								</div> 
+                                <hr />
+                                <div class="row">
+									<div class="form-group">
+										<div class="col-xs-4"></div>
+	
+										<div class="col-xs-2"> 
+											<h:commandButton id="submit_btn" class="btn btn-block btn-register"
+												value="Case Submit" action="#{serverModel.save}"
+												reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
+										</div> 
+										<div class="col-xs-2"> 
+											<h:commandButton id="reset" value="Reset"
+												class="btn btn-block btn-register" action="#{serverModel.clear}"
+												reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
+										</div>
+										<div class="col-xs-4"></div>
+									</div>
+								</div>
 								</fieldset> 
 
 							</div> 
 						</div>   
 					</div>
+					<div class="col-xs-2"></div>
 				</div>
 			</div>
 			<h:inputHidden value="#{serverModel.postPageLoad1}" />

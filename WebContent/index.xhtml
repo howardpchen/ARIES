@@ -126,8 +126,9 @@
         <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
         </h:selectOneMenu> 
         
-        <h:commandButton value="Reset Features" action="#{serverModel.resetHandler}" />
         <h:commandButton value="#{serverModel.highlightMessage}" action="#{serverModel.toggleSensitivity}" />
+        
+        <h:commandButton value="Reset Features" action="#{serverModel.resetHandler}" />
     </div>
 </div>
 
