@@ -152,6 +152,22 @@ public class ServerModel {
     //private int caseid;
     private CaseList caseList;
     private int caseNo;
+    
+    private boolean knownDx = true;
+    
+    private String activeCaseNetwork = "-select-";
+    
+	/**
+	 * Descriptive names of diseases for current case submit network
+	 */
+	private List<String> caseDiseaseNames = new ArrayList<String>();
+	
+	/**
+	 * Map from descriptive disease name to node state names
+	 */
+	private Map<String,String> caseDiseaseNameMap = new HashMap<String,String>();
+	
+	private boolean clearInputs = false;
 	
 	
 	/* =============================================================
@@ -316,6 +332,21 @@ public class ServerModel {
 		this.sensityvityOn = state;
 	}
 
+	public boolean isKnownDx() {
+		System.out.println("isKnownDx()");
+		return this.knownDx;
+	}
+	
+	public boolean getKnownDx() {
+		System.out.println("getKnownDx()");
+		return this.knownDx;
+	}
+	
+	public void setKnownDx(boolean isKnown) {
+		System.out.println("setKnownDx(" + isKnown + ")");
+		this.knownDx = isKnown;
+	}
+	
 	// CR104
 	private String option;
 	private String accession;
@@ -524,6 +555,7 @@ public class ServerModel {
 				if (nodeName.equals("Diseases"))
 					continue;
 				features.add(nodeName);
+				//System.out.println(prefix + " - " + nodeName);
 			}
 		}
 
@@ -1132,12 +1164,11 @@ public class ServerModel {
 	}
 
 	public List<String> selectMenuInputs(String nodeName) {
+		//System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
 		List<String> returnString = new ArrayList<String>();
-		// old before CR101
-		/* Map<String, Double> values = dw.getNodeProbs(nodeName); */
-		// one line cha for CR101
-		double highest = 0.0;
-		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);
+
+	
+		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);	
 		Set<String> s = values.keySet();
 		Iterator<String> it = s.iterator();
 		returnString.add(nodeName);
@@ -1145,8 +1176,7 @@ public class ServerModel {
 			String key = it.next();
 			returnString.add(nodeName + ":" + key);
 		}
-		// returnString.add(nodeName + ":[Clear]");
-		//System.out.println("newMap"+newMap);
+
 		return returnString;
 	}
 	
@@ -1560,64 +1590,63 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 	
-	public void getPrePageLoad1(ValueChangeEvent event) {
-		System.out.println("DNET Wrapper session started");
-		this.setEvent("FEATURE ENTERED");
-		this.setFeatureFlag("false");
-		String newValue= event.getNewValue().toString();
-		String oldValue = "";
-		if(event.getOldValue()!= null){
-			oldValue = event.getOldValue().toString();
+
+	
+	public void caseChangeNetwork(ValueChangeEvent event) {
+		System.out.println("caseChangeNetwork");
+		clearInputs = true;
+	}
+	
+	public String getCasePrePageLoad() {
+		System.out.println("+");
+		System.out.println("+");
+		System.out.println("+");
+		System.out.println("DNET Wrapper session started - Case Input");
+		
+		if ( clearInputs == true ) {
+			System.out.println("clear inputs");
+			userInputs.clear();
+			probInputs.clear();
+			clearInputs = false;
 		}
-		String networkName = "";
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+		
+		this.setEvent("");
 		try {
-			if(dw!= null){
-				dw.endSession();
-				//this.setNetworkInput("");
-				this.setNwNameforResearch("");
-				this.setNwNameforEducation("");
-				this.setNwNameforQC("");
-				this.setNwName("");
-			}
-			Map<String, Double> values = new HashMap<String, Double>();
-			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
-			
-			networkName = UserDAO.getFileName(newValue);
-			dw = new DNETWrapper(PATH + "/" + networkName);
-			nodes = dw.getNodeNames();
-			for (int i = 0; i < nodes.length; i++) {
-				if (nodes[i].equals("Diseases")) {
-					this.titlesNew = dw.getStates(nodes[i]);
-					diseaseNames = Arrays.asList(this.titlesNew);
-				}
-			}
-			
-			processNodePrefixes(); 
-			
-			for(String prefix :this.getNetworkPrefixList()) {
+	        networkNamers = "";
+
+	        if(!"".equals(activeNetwork)) {
+		        String networkFileName = networkNameMap.get(activeNetwork);
+		        
+		        if ( dw != null ) {
+		        	System.out.println("call: dw.endSession()");
+		        	dw.endSession();
+		        }
+		        
+				dw = new DNETWrapper(PATH + "/" + networkFileName);
+				nodes = dw.getNodeNames();
 				
-				List<String> features  = getSelectMenuFeatures(prefix);
-				for(String menu : features){	
-					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
-					valuesNode.put(menu, values);
-				}
-			}
-			this.valuesNew = valuesNode; 
-			
-			Arrays.sort(nodes);
-			
-			
+				String [] diseases = dw.getStates("Diseases");
+				diseaseNames = Arrays.asList(diseases);
+				Collections.sort(diseaseNames);
+				diseaseNameMap.clear();
 				
-			}  
-		 catch (NetworkLoadingException e) {
+				for ( int i=0; i<diseaseNames.size(); i++) {
+					String formattedName = diseaseNames.get(i).replace("_", " ");
+					diseaseNameMap.put(formattedName, diseaseNames.get(i));
+					diseaseNames.set(i, formattedName);
+				}
+
+				processNodePrefixes();
+				Arrays.sort(nodes);
+	        }
+		} catch (NetworkLoadingException e) {
 			System.out.println("Error loading the network.");
 
 		} catch (Exception e) {
 			System.out.println("Error converting filename.");
 		}
-		}
-		//return this.pageLoad;
+		if ( debugMode ) System.out.println("End casePrePageLoad()");	
+		return "";
 	}
 	/**
 	 * Load the the feature values for a given disease
@@ -2395,6 +2424,10 @@ public class ServerModel {
 	public void setPrePageLoad(String pl) {
 		this.pageLoad = pl;
 	}
+	
+	public void setCasePrePageLoad(String pl) {
+		this.pageLoad = pl;
+	}
 
 	
 	public String getPrePageLoad() {
@@ -2640,8 +2673,8 @@ public class ServerModel {
 
 	public void setNwName(String nwName) {
 		if(!nwName.equals(this.getNwName())){
-		userInputsCase.clear();
-		System.out.println("Clearing User Inputs");
+			userInputsCase.clear();
+			System.out.println("Clearing User Inputs");
 		}
 		this.nwName = nwName;
 	}
@@ -2793,9 +2826,13 @@ public class ServerModel {
 			return false;
 	}
 
+	/**
+	 * Save the current case to the database
+	 * @return
+	 */
 	public String save() {
 		String networkcode = null;
-		User user ;
+		User user;
 		if(basicCaseValidate() == true){
 			return null;
 		}
@@ -3339,6 +3376,8 @@ public class ServerModel {
 		this.setSupportingDataList(new ArrayList<String>());
 		//this.setQcFlag("false");
 		this.prefixNodeListMapping.clear(); 
+		userInputs.clear();
+		probInputs.clear();
 		return "";
 	}
 	
@@ -3614,21 +3653,31 @@ public class ServerModel {
 	}
 	
 	public void getCorrectDxAction(ValueChangeEvent event){
+		System.out.println("getCorrectDxAction()");
 		String newValue = "";
-		if(event.getNewValue() != null)
-		newValue= event.getNewValue().toString();
+		if (event.getNewValue() != null) {
+			newValue= event.getNewValue().toString();
+		}
 		String oldValue = "";
-		if(event.getOldValue()!= null){
+		if (event.getOldValue() != null) {
 			oldValue = event.getOldValue().toString();
 		}
-		if(!userInputsCase.isEmpty())
-			userInputsCase.clear();
-		if(!probInputs1.isEmpty())
-			probInputs1.clear();
 		
-		if(newValue!= null && !newValue.equalsIgnoreCase("--select--") && !newValue.equalsIgnoreCase(oldValue)){
-			userInputsCase.put("Diseases", newValue);
+		//if(!userInputsCase.isEmpty())
+		//	userInputsCase.clear();
+		//if(!probInputs1.isEmpty())
+		//	probInputs1.clear();
+		
+		if(newValue != null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+			//userInputsCase.put("Diseases", newValue);
 		}
+		
+		if (newValue.equals("Other")) {
+			setKnownDx(false);
+		} else {
+			setKnownDx(true);
+		}
+		
 		//updateDiagnosisNode1();
 		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 	}
