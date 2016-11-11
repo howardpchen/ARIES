@@ -169,6 +169,10 @@ public class ServerModel {
 	
 	private boolean clearInputs = false;
 	
+	public List<String> saveCaseError = new ArrayList<String>();
+	
+	
+	
 	
 	/* =============================================================
 	 * For Education Page
@@ -225,9 +229,7 @@ public class ServerModel {
     	return msg;
     }
     
-    
-    
-    
+   
     public String getCaseNoforQCSetter() {
 		return caseNoforQCSetter;
 	}
@@ -2690,44 +2692,75 @@ public class ServerModel {
 		}
 	}
 	public boolean basicCaseValidate(){
-		this.setErrorMsg("");
-		if(errorMessages != null && errorMessages.size()>0)
-			errorMessages.clear();
-		errorMessages = new ArrayList<String>();
-		if(this.getNwName().equals("") || "-select-".equalsIgnoreCase(this.getNwName())){
-			errorMessages.add("Please select Network");
+		boolean hasErrors = false;
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		Iterator<FacesMessage> msgIter = context.getMessages();
+		while( msgIter.hasNext() ) {
+			msgIter.next();
+			msgIter.remove();
 		}
-		else if(this.getAccession().equals("")){
-			errorMessages.add("Please enter Accession");
+
+
+		if(this.getActiveNetwork().equals("") || "-select-".equalsIgnoreCase(this.getActiveNetwork())){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select network", ""));
 		}
-		else if(this.getPatientId().equals("")){
-			errorMessages.add("Please enter MR Number");
+		
+		if (this.getAccession().equals("")){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add accession number", ""));
 		}
-		else if(this.getOrganization().equals("")){
-			errorMessages.add("Please select Organization");
+		
+		if(this.getPatientId().equals("")){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add MR Number", ""));
 		}
-		else if(this.getModality().equals("")){
-			errorMessages.add("Please select Modality");
+		
+		if ( (this.getOrganization().equals("")) || this.getOrganization().equals("-select-") ) {
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select Organization", ""));
+		}
+		
+		if ( (this.getModality().equals("")) || this.getModality().equals("-select-") ) {
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select Modality", ""));
+		}
+
+		
+		if (this.getCorrectDx().equals("")){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add correct diagnosis", ""));
+		}
+		
+		if (this.getSupportingDataList().size()==0 || this.supportingDataList== null){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add supporting data", ""));
 		}
 		/*else if(this.getDescription().equals("")){
-			errorMessages.add("Please select Supporting Data Details");
-		}*/
-		else if(this.getCorrectDx().equals("")){
-			errorMessages.add("Please select Correct Diagnosis");
+		errorMessages.add("Please select Supporting Data Details");
+	    }*/
+		
+		if (this.getAge().equals("")){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add Patient Age", ""));
 		}
-		else if(this.getSupportingDataList().size()==0 || this.supportingDataList== null){
-			errorMessages.add("Please enter Supporting Data");
+		
+		if (this.getGender().equals("")){
+			hasErrors = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: add Patient Gender", ""));
 		}
-		else if(this.getAge().equals("")){
-			errorMessages.add("Please enter age");
-		}
-		else if(this.getGender().equals("")){
-			errorMessages.add("Please select Gender");
-		}
-		if(errorMessages.size()>0){
-			return true;
-		}else 
-			return false;
+		
+		return hasErrors;
 	}
 
 	public boolean ResearchCaseValidate(){
@@ -2832,10 +2865,19 @@ public class ServerModel {
 	 */
 	public String save() {
 		String networkcode = null;
-		User user;
-		if(basicCaseValidate() == true){
+
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Attempt to save case", ""));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Attempt to save case line 2", ""));
+		System.out.println("Attempt to save case");
+		
+		
+		if( basicCaseValidate() == true ) {
 			return null;
 		}
+		
+		// Save a "Submit Case"
 		if(this.getReviewCase().equalsIgnoreCase("false") && this.getFromQcPage().equalsIgnoreCase("false")){
 		try {
 			networkcode = UserDAO.getCode(this.getNwName());
@@ -2869,10 +2911,10 @@ public class ServerModel {
 			String username = null;
 			String password = null;
 			if(session.getAttribute("username") != null){
-			username = session.getAttribute("username").toString();
+				username = session.getAttribute("username").toString();
 			}
 			if(session.getAttribute("password") != null){
-			password = session.getAttribute("password").toString();
+				password = session.getAttribute("password").toString();
 			}
 			int userid = UserDAO.getUserID(username, password);
 			caseList.setSubmittedBy(userid);
@@ -2902,7 +2944,7 @@ public class ServerModel {
 					}
 
 				}
-				  return "caseInput_form2?faces-redirect=true";
+				  return "caseInput_form?faces-redirect=true";
 				}
 				else{
 					

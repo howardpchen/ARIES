@@ -313,6 +313,13 @@ input[type=checkbox], input[type=radio] {
 										<div class="col-xs-4"></div>
 									</div>
 								</div>
+								<div class="row">
+								    <div class="col-xs-4"></div>
+								    <div class="col-xs-4">
+                                        <h:messages globalOnly="true" style="color:red;font-weight:bold;" value="messages" ></h:messages>
+								    </div>
+								    <div class="col-xs-4"></div>
+								</div>
 								</fieldset> 
 
 							</div> 
@@ -333,7 +340,7 @@ input[type=checkbox], input[type=radio] {
 
 			var flag = 0;
 			document.getElementById("error").innerText =  "";
-			 document.getElementById("error").textContent= "";
+			document.getElementById("error").textContent= "";
 			var userName = document.getElementById("caseInput:accession").value;
 
 			if (/[^0-9a-zA-Z\s]/gi.test(userName)) {
