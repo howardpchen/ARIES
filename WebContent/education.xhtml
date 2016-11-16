@@ -1,207 +1,160 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core">
-
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
 
 
 <h:head>
-	<title>Adaptive Radiology Interpretation / Education System
-		(ARIES)</title>
-
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-	<!-- Bootstrap -->
-	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="./resources/js/bootstrap.min.js"></script>
-	<style>
-a {
-	text-decoration: underline;
-}
-
-input[type=checkbox], input[type=radio] {
-	margin-right: 1px;
-	margin-left: 1px;
-}
-.nav-tabs {
-    border-bottom: 0px solid #ddd;
-}
-</style>
+    <title>Adaptive Radiology Interpretation / Education System
+        (ARIES)</title>
+    <link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+    <link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/collapseTable.js"></script>
+    <script type="text/javascript" src="./js/skel.min.js"></script>
+    <script type="text/javascript" src="./js/skel-panels.min.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+    <script type="text/javascript" src="./js/modules/data.js"></script>
+    
+    <script type="text/javascript">
+        function onLoadCursor() {
+          document.body.style.cursor='default'; 
+          
+          document.getElementById("menu_clinical")).className = "active";
+          document.getElementById("menu_submit")).className = "inactive";
+          document.getElementById("menu_research")).className = "inactive";
+          document.getElementById("menu_education")).className = "inactive";
+          document.getElementById("menu_qc")).className = "inactive";
+          
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function onWaitCursor() {
+          document.body.style.cursor='wait';    
+        }
+    </script>
 
 </h:head>
-<h:body id="bodyStyle">
-<ui:include src="header.xhtml" />  
 
-	<f:view>
-		<h:form role="form" id="education">
+<h:body>
 
-			<!-- <div>
+<ui:include src="header.xhtml" />   
+<h:form id="network">
+<div class="container-fluid">
 
-				<a href="/ARIES/">Back To Home</a>
+<div class="row marginRow">
+    <div class="col-xs-12 selectdiv mainmenu">
+        <h2>Select Network:</h2>
+        <h:selectOneMenu value="#{serverModel.educationNetwork}" onchange="this.form.submit()" >
+        <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+        <f:selectItems value="#{serverModel.availableNetworks}" />
+        </h:selectOneMenu>
+        <h:inputHidden value="#{serverModel.educationPrePageLoad}" />
+    </div>
+</div>
 
-			</div> -->
-			
-			<div>
-				<p>
-					<br />
-				</p>
-				<div class="row">
-					
-					<div>
-						<div class="panel panel-primary">
-							<div class="panel-heading" align="center"><h4>Education</h4>
-							</div>
-							<div class="panel-body">
- 
- 
- 								
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-										<label for="network">Network :<font color="red">*</font> </label>
-									</div>
-									<div class="input-group">
-									
-
-										<h:selectOneMenu id="network" value="#{serverModel.nwNameforEducation}" 
-										onchange="this.form.submit()" valueChangeListener="#{serverModel.educationPageLoad}" reRender="diagnosis" >
-											<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-											<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems> 
-										</h:selectOneMenu> 
-
-									</div> 
-								</div>
-
-                                  <h:panelGroup rendered="#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}" >
+<h:panelGroup rendered="#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}" >
                                   
-                             <div>
-                                <h3>Enter Inputs for Accession: #{serverModel.accessionNo}</h3>
-								<ui:repeat var="networkPrefix"
-									value="#{serverModel.networkPrefixList}">
+<h3>Enter Inputs for Accession: #{serverModel.accessionNo}</h3>
+<ui:repeat var="networkPrefix" value="#{serverModel.networkPrefixList}">
                                     
-									<h:panelGrid id="pg_inputs" cellspacing="2"  
-										rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
-										<h:outputText 
-											value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+    <h:panelGrid id="pg_inputs" cellspacing="2" rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
+	<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
 
-										<ui:repeat var="feature" 
-											value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+	<ui:repeat var="feature" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
 
-											<h:outputText value="#{serverModel.currentFeature(feature)}" />
+	   <h:outputText value="#{serverModel.currentFeature(feature)}" />
 
-											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClass1(feature)}" 
-												value="#{serverModel.educationNodeInput}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.saveFeaturesforEducation}">
-												<f:selectItems
-													value="#{serverModel.selectMenuInputsForEducation(feature)}" /> 
-											</h:selectOneMenu>
+	   <h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClass1(feature)}" value="#{serverModel.educationNodeInput}" onchange="this.form.submit()"  valueChangeListener="#{serverModel.saveFeaturesforEducation}">
+	       <f:selectItems value="#{serverModel.selectMenuInputsForEducation(feature)}" /> 
+	   </h:selectOneMenu>
 											
 
-										</ui:repeat>
-									</h:panelGrid>
+	</ui:repeat>
+    </h:panelGrid>
+</ui:repeat>
+</h:panelGroup>
 
-								</ui:repeat>
-								 <p><br/></p> 
-								</div>
-								</h:panelGroup>
-								<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0 }">
-								<div class="form-group" style="text-align: center;">
-									<div class="col-md-4">
-									<label for="firstdiag">First Diagnosis :<font color="red">*</font></label>
-									</div>
-									<div class="input-group"> 
 
-										<h:selectOneMenu id="firstdiag"
-											value="#{serverModel.firstDx}" >
-											<f:selectItem itemLabel="-select-"></f:selectItem>
-											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-										</h:selectOneMenu>
-									</div>
-									<br/>
-									<div class="col-md-4">
-									<label for="seconddiag">Second Diagnosis :<font color="red">*</font></label>
-									</div>
-									<div class="input-group"> 
+<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0 }">
+    <div class="form-group">
+    
+	<div class="col-xs-4">
+	   <label for="firstdiag">First Diagnosis :<font color="red">*</font></label>
+	</div>
+	
+	<div class="input-group"> 
 
-										<h:selectOneMenu id="seconddiag"
-											value="#{serverModel.secondDx}">
-											<f:selectItem itemLabel="-select-"></f:selectItem>
-											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-										</h:selectOneMenu>
-									</div>
-									<br/>
-									<div class="col-md-4">
-									<label for="thirdddiag">Third Diagnosis :<font color="red">*</font></label>
-									</div>
-									<div class="input-group"> 
+	   <h:selectOneMenu id="firstdiag" value="#{serverModel.firstDx}" >
+	       <f:selectItem itemLabel="-select-"></f:selectItem>
+		   <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+	   </h:selectOneMenu>
+	   
+	</div>
 
-										<h:selectOneMenu id="thirdddiag"
-											value="#{serverModel.thirdDx}"  >
-											<f:selectItem itemLabel="-select-" ></f:selectItem>
-											<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-										</h:selectOneMenu>
-									</div>
+	<div class="col-xs-4">
+	   <label for="seconddiag">Second Diagnosis :<font color="red">*</font></label>
+	</div>
+	
+	<div class="input-group"> 
+        <h:selectOneMenu id="seconddiag" value="#{serverModel.secondDx}">
+		  <f:selectItem itemLabel="-select-"></f:selectItem>
+		  <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+	    </h:selectOneMenu>
+	</div>
+	
+	<div class="col-xs-4">
+	   <label for="thirdddiag">Third Diagnosis :<font color="red">*</font></label>
+	</div>
 									
-								</div>
-								</h:panelGroup>
+	<div class="input-group"> 
+        <h:selectOneMenu id="thirdddiag" value="#{serverModel.thirdDx}" >
+            <f:selectItem itemLabel="-select-" ></f:selectItem>
+			<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+		</h:selectOneMenu>
+	</div>
+									
+    </div>
+</h:panelGroup>
 								
-								<div class="row">
+<div class="row">
+    <div class="col-md-1"></div>
+	<div class="col-md-8">
+	   <h:outputText value="#{serverModel.educationErrMsg}" escape="false"></h:outputText>
+	   <h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+	</div>
+</div>
 
-									<div class="col-md-1"></div>
-									<div class="col-md-8">
-										<h:outputText value="#{serverModel.educationErrMsg}"
-											escape="false"></h:outputText>
-										<h:messages globalOnly="true"
-											style="color:red;font-weight:bold;"></h:messages>
-									</div>
-								</div>
-								<p>
-									<br />
-								</p>
-
-								<div class="form-group">
-									<div class="col-md-2"></div>
-                                    <div class="col-md-1"> 
+<div class="form-group">
+    <div class="col-xs-2"></div>
+    <div class="col-xs-1"></div>
+	<div class="col-xs-2"> 
+	   <h:commandButton id="check" class="btn btn-primary" rendered = "#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNewtork and serverModel.educationCaseNo != 0}"
+	       value="Check Features" action="#{serverModel.checkFeatures}" />
+	</div> 
+	<div class="col-xs-2"> 
+	   <h:commandButton id="checkDiag" class="btn btn-primary" rendered = "#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0}"
+	       value="Check Diagnosis" action="#{serverModel.educationCompleted}" />
+	</div> 
+	<div class="col-xs-2"> 
+	   <h:commandButton id="done_btn" class="btn btn-success" rendered = "#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0}"
+	       value="Next" action="#{serverModel.nextCase}" />
+	</div>
 									
-									</div>
-									<div class="col-md-2"> 
-										<h:commandButton id="check" class="btn btn-primary" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
-											value="Check Features" action="#{serverModel.checkFeatures}" />
-									</div> 
-									<div class="col-md-2"> 
-										<h:commandButton id="checkDiag" class="btn btn-primary" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
-											value="Check Diagnosis" action="#{serverModel.educationCompleted}" />
-									</div> 
-									<div class="col-md-2"> 
-										<h:commandButton id="done_btn" class="btn btn-success" rendered = "#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}"
-											value="Next" action="#{serverModel.nextCase}" />
-									</div>
-									
-								</div>
-		                        
-							</div> 
-	
-								</div> 
-                               
-                        
-							
-						</div>   
-					</div>
-				</div>
+</div>
+<h:inputHidden value="#{serverModel.postEducationPageLoad}" />                      
+</div> 
 			
-			<h:inputHidden value="#{serverModel.postEducationPageLoad}" />
-          </h:form>  
-          
- 
-	</f:view>
-	
+</h:form>  
 </h:body>
 
 </html>

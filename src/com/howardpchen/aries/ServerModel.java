@@ -180,14 +180,42 @@ public class ServerModel {
 	private int educationCaseNo ;
     private List<String> educationErrorMessages = new ArrayList<String>();
     private String educationErrMsg;
+    private String educationNetwork = "-select-";
     
+    private boolean changingEducationNetwork = false;
     
+	public String getEducationNetwork( ) {
+		return educationNetwork;
+	}
+	
+	public void setEducationNetwork( String network ) {
+		educationNetwork = network;
+	}
+	
 	/* =============================================================
 	 * For Research Page
 	 * ============================================================= */
     private List<String> researchErrorMessages;
     private String researchErrMsg;
     private int randomCaseNo;
+    
+    /**
+     * Has the selected network just changed
+     */
+    private boolean changingResearchNetwork = false;
+    
+    /**
+	 * Descriptive name of currently selected research network
+	 */
+	private String researchNetwork = "-select-"; 
+	
+	public String getResearchNetwork( ) {
+		return researchNetwork;
+	}
+	
+	public void setResearchNetwork( String network ) {
+		researchNetwork = network;
+	}
     
 	/* =============================================================
 	 * For QC Page
@@ -2298,29 +2326,29 @@ public class ServerModel {
 		UserDAO.SaveFeatureforOthers(caseInput);
 }
 	}
-	public void researchPageLoad(ValueChangeEvent event) {
-		System.out.println("DNET Wrapper session started");
-		//this.setEvent("FEATURE ENTERED");
-		//this.setFeatureFlag("false");
-		networkNamers ="";
-		String newValue= event.getNewValue().toString();
-		String oldValue = "";
-		if(event.getOldValue()!= null){
-			oldValue = event.getOldValue().toString();
-		}
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+	
+	public void setResearchPrePageLoad( String pl  ) {
+		this.pageLoad = pl;
+	}
+	
+	public String getResearchPrePageLoad() {
+		System.out.println("DNET Wrapper session started - Research");
+
+		String network = this.researchNetwork;
+		
+		if( changingResearchNetwork && !researchNetwork.equals("-select-") ) {
 		try {
-			this.setRandomCaseNo(CaseNo(newValue));
+			this.setRandomCaseNo(CaseNo(this.researchNetwork));
 			
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 			if(dw!= null){
 				dw.endSession();
-				//this.setNetworkInput("");
 			}
-			networkNamers = UserDAO.getFileName(newValue);
-			if(!networkNamers.equals("")){
-			dw = new DNETWrapper(PATH + "/" + networkNamers);
+			
+			String networkFileName = networkNameMap.get(researchNetwork);
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
+
 			nodes = dw.getNodeNames();
 			for (int i = 0; i < nodes.length; i++) {
 				if (nodes[i].equals("Diseases")) {
@@ -2336,6 +2364,7 @@ public class ServerModel {
 				List<String> features  = getSelectMenuFeatures(prefix);
 				for(String menu : features){	
 					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
+					System.out.println(menu + " -> " + nodeNameReverseMapping.get(menu));
 					valuesNode.put(menu, values);
 				}
 			}
@@ -2343,9 +2372,7 @@ public class ServerModel {
 			
 			Arrays.sort(nodes);
 			}
-			
-				
-			}  
+ 
 		 catch (NetworkLoadingException e) {
 			System.out.println("Error loading the network.");
 
@@ -2353,8 +2380,78 @@ public class ServerModel {
 			System.out.println("Error converting filename.");
 		}
 		}
-		//return this.pageLoad;
+		
+		return this.pageLoad;
 	}
+	
+	
+	public void researchChangeNetwork(ValueChangeEvent event) {
+		System.out.println("DNET Wrapper session started - Research");
+		changingResearchNetwork = true;
+	}
+	
+	public void setEducationPrePageLoad( String pl  ) {
+		this.pageLoad = pl;
+	}
+	
+	public String getEducationPrePageLoad() {
+		System.out.println("DNET Wrapper session started - Education");
+
+		String network = this.educationNetwork;
+		
+		if( changingEducationNetwork && !educationNetwork.equals("-select-") ) {
+		try {
+			
+			Map<String, Double> values = new HashMap<String, Double>();
+			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
+			if(dw!= null){
+				dw.endSession();
+			}
+			
+			String networkFileName = networkNameMap.get(educationNetwork);
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
+
+			nodes = dw.getNodeNames();
+			for (int i = 0; i < nodes.length; i++) {
+				if (nodes[i].equals("Diseases")) {
+					this.titlesNew = dw.getStates(nodes[i]);
+					diseaseNames = Arrays.asList(this.titlesNew);
+				}
+			}
+			
+			processNodePrefixes(); 
+			
+			for(String prefix :this.getNetworkPrefixList()) {
+				
+				List<String> features  = getSelectMenuFeatures(prefix);
+				for(String menu : features){	
+					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
+					System.out.println(menu + " -> " + nodeNameReverseMapping.get(menu));
+					valuesNode.put(menu, values);
+				}
+			}
+			this.valuesNew = valuesNode; 
+			
+			Arrays.sort(nodes);
+			}
+ 
+		 catch (NetworkLoadingException e) {
+			System.out.println("Error loading the network.");
+
+		} catch (Exception e) {
+			System.out.println("Error converting filename.");
+		}
+		}
+		
+		return this.pageLoad;
+	}
+	
+	public void educationChangeNetwork(ValueChangeEvent event) {
+		System.out.println("DNET Wrapper session started - Education");
+		changingEducationNetwork = true;
+	}
+	
+	
 	public void educationPageLoad(ValueChangeEvent event) {
 		System.out.println("DNET Wrapper session started");
 		//this.setEvent("FEATURE ENTERED");
@@ -2919,6 +3016,7 @@ public class ServerModel {
 			int userid = UserDAO.getUserID(username, password);
 			caseList.setSubmittedBy(userid);
 			caseList.setQcperson(this.getQcperson());
+			
 			this.setCaseList(caseList);
 			if (caseListValidation()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -3828,43 +3926,64 @@ public class ServerModel {
 		}
 		return accessionNo;
 	}
-	public String getRsrchAccessionNo(){
+	public String getResearchAccessionNumber() {
+		System.out.println("ServerModel.getResearchAccessionNumber()");
 		String accessionNo ="";
 		userInputsForRs.clear();
+		
 	    int caseid = this.getRandomCaseNo();
 	    HttpSession session = Util.getSession();
 		String username = null;
 		String password = null;
-		if(session.getAttribute("username") != null){
-		username = session.getAttribute("username").toString();
+		if(session.getAttribute("username") != null) {
+			username = session.getAttribute("username").toString();
 		}
-		if(session.getAttribute("password") != null){
-		password = session.getAttribute("password").toString();
+		if(session.getAttribute("password") != null) {
+			password = session.getAttribute("password").toString();
 		}
 		int userid = UserDAO.getUserID(username, password);
 		accessionNo = UserDAO.getAccessionNo(caseid,userid);
-		 String[] input = new String[0];
-		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
-		 list = UserDAO.getUserCaseInput(caseid);
-		 for(UserCaseInput userCaseInput:list){
-			 input = userCaseInput.getValue().split("] ");
-			// values.add(input[1]);
-			 if(input.length > 1){
-			 String[] val = input[1].split("=");
-			 if(val.length > 0 && nodeNameReverseMapping.get(val[0]).startsWith("CL_")){
-		     String networkcode = UserDAO.getCode(this.getNwNameforResearch());
-			 userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
-			 UserCaseInput caseinput = new UserCaseInput();
-			 caseinput.setUserid(userid);
-			 caseinput.setCaseid(caseid);
-			 caseinput.setSessionid(session.getId());
-			 caseinput.setEventid(1001);
-			 caseinput.setPageInfo("Research");
-			 caseinput.setValue("["+networkcode+"]"+" "+val[0]+"="+val[1]);
-			 UserDAO.SaveFeatureforOthers(caseinput);
-			 }
-			 }
-		 }
+		
+		System.out.println("accessionNo: " + accessionNo);
+		System.out.println("caseid: " + caseid);
+		
+		
+		String[] input = new String[0];
+		List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		list = UserDAO.getUserCaseInput(caseid);
+		for(UserCaseInput userCaseInput:list) {
+			
+			System.out.println(userCaseInput.getValue());
+			input = userCaseInput.getValue().split("] ");
+			System.out.println("input: "+input[1]);
+	
+			if(input.length > 1) {
+				String[] val = input[1].split("=");
+				String nodeName = val[0].replace("_",  " ");
+				System.out.println("nodeName: " + nodeName);
+				System.out.println(val.length);
+				System.out.println(nodeNameReverseMapping.get(nodeName));
+				
+				if(val.length > 0 && nodeNameReverseMapping.get(nodeName).startsWith("CL_")) {
+					System.out.println("val: " + val[0]);
+					String networkcode = UserDAO.getCode(this.getResearchNetwork());
+					System.out.println("network code: " + networkcode);
+					userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+					UserCaseInput caseinput = new UserCaseInput();
+					caseinput.setUserid(userid);
+					caseinput.setCaseid(caseid);
+					caseinput.setSessionid(session.getId());
+					caseinput.setEventid(1001);
+					caseinput.setPageInfo("Research");
+					caseinput.setValue("["+networkcode+"]"+" "+val[0]+"="+val[1]);
+					UserDAO.SaveFeatureforOthers(caseinput);
+			    }
+				else {
+					System.out.println("skipped this value");
+				}
+			}
+		}
+		
 		 
 		return accessionNo;
 	}

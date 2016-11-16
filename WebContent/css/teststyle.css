@@ -364,9 +364,15 @@ table#radiodiagnosistable td {
 }
 
 .panel-primary {
-	background-color:  #555;
+	background-color: #333333;
 	border: none;
 }
+
+.panel > .panel-body {
+    background-color: #333333;
+    border: none;	
+}
+
 .panel > .panel-heading {
 	text-align: center;
 	background-color: #07889B;

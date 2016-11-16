@@ -155,14 +155,14 @@ public class UserDAO {
     	 Connection con = null;
     	 Statement stmnt = null;
     	 String code = null;
-    	 try{
+    	 try {
     		 con = Database.getConnection();
     		 stmnt = con.createStatement();
     		 ResultSet rs=stmnt.executeQuery("select code from networks where description ='"+nwName+"'");
     		 while(rs.next()){
     		 code = rs.getString("code");
     		}
-    	 }catch (Exception ex) {
+    	 } catch (Exception ex) {
              System.out.println("Error in getCode() -->" + ex.getMessage());
           } finally {
              Database.close(con);
@@ -304,8 +304,18 @@ public class UserDAO {
              con = Database.getConnection();
              statement = con.createStatement();
              ResultSet rs = statement.executeQuery(query+caseid+"'");
+             
              while(rs.next()){
             	 userCaseInput = new UserCaseInput();
+            	 /*
+            	 System.out.println(rs.getInt("userid"));
+            	 System.out.println(rs.getInt("caseid"));
+            	 System.out.println(rs.getString("sessionid"));
+            	 System.out.println(rs.getInt("eventid"));
+            	 System.out.println(rs.getString("value"));
+            	 System.out.println(rs.getDate("datetimeentered"));
+            	 */
+            	 
             	 userCaseInput.setUserid(rs.getInt("userid"));
             	 userCaseInput.setCaseid(rs.getInt("caseid"));
             	 userCaseInput.setSessionid(rs.getString("sessionid"));
