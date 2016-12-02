@@ -125,8 +125,8 @@ public class ServerModel {
 	
 	private static final String nullDisease = "Populate Features by Disease";
 	
-	private static final String highlightOff = "Highlight Most Descriminating Features";
-	private static final String highlightOn = "Remove Feature Highlighting";
+	private static final String highlightOff = "Highlight Most Discriminating Features";
+	private static final String highlightOn =  "     Remove Feature Highlighting      ";
 	
 	private boolean settingDisease = false;
 	private String currentFeature = "";
@@ -198,6 +198,8 @@ public class ServerModel {
     private List<String> researchErrorMessages;
     private String researchErrMsg;
     private int randomCaseNo;
+    private boolean researchNetworkLoaded = false;
+    private String accessionNo = "";
     
     /**
      * Has the selected network just changed
@@ -817,8 +819,10 @@ public class ServerModel {
 		else
 			return "";
 	}
-	public void setResearchNodeInput(String s) {
-		String[] inputs = s.split(":");
+    
+    
+	//public void setResearchNodeInput(String s) {
+		//String[] inputs = s.split(":");
 		// old before CR101
 		/*
 		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
@@ -832,8 +836,8 @@ public class ServerModel {
 			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");*/
 		// changes ends for CR101
 		
-	}
-
+	//}
+   
 	public String getResearchNodeInput() {
 		// old before CR101
 		/*
@@ -908,8 +912,8 @@ public class ServerModel {
 		System.out.println("setNodeInput(" + s + ")");
 		String[] inputs = s.split(":");
 		
-	    System.out.println("userInputs size: " + userInputs.size());
-		System.out.println( "userInputs: " + userInputs.toString() );
+	    //System.out.println("userInputs size: " + userInputs.size());
+		//System.out.println( "userInputs: " + userInputs.toString() );
 		
 		if ( settingDisease  ) {
 			//System.out.println("probInputs: " + probInputs.toString() );
@@ -918,9 +922,8 @@ public class ServerModel {
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 			}
 			else {
-				//userInputs.put(nodeNameReverseMapping.get(inputs[0]), )
-				System.out.println(nodeNameReverseMapping.get(inputs[0]));
-				System.out.println(probInputs.get( nodeNameReverseMapping.get(inputs[0])));
+				//System.out.println(nodeNameReverseMapping.get(inputs[0]));
+				//System.out.println(probInputs.get( nodeNameReverseMapping.get(inputs[0])));
 				userInputs.put( nodeNameReverseMapping.get(inputs[0]), probInputs.get( nodeNameReverseMapping.get(inputs[0])));
 			}
 		}
@@ -930,9 +933,10 @@ public class ServerModel {
 			/* A set value has changed */
 			if ( userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
 				if ( !userInputs.get( nodeNameReverseMapping.get(inputs[0])).equals(inputs[1]) ) {
-					System.out.println("Resetting value for " + inputs[0]);
+					System.out.println("Resetting value for " + inputs[0] + " to " +  probInputs.get( nodeNameReverseMapping.get(inputs[0])) );
 					
-					userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+					//userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+					userInputs.put(nodeNameReverseMapping.get(inputs[0]), probInputs.get( nodeNameReverseMapping.get(inputs[0])));
 					
 					if ( probInputs.isEmpty() ) {
 						resetDisease();
@@ -976,6 +980,33 @@ public class ServerModel {
 	    System.out.println("userInputs size: " + userInputs.size());	
 		// changes ends for CR101
 		
+	}
+	
+	/**
+	 * Set the parameter for a node 
+	 * 
+	 * This is called any time that a "Select Feature" menu is used to set a parameter on research page.
+	 * The input parameter will be of the form "node name" or "node name:value"
+	 * If no value is passed (first case), the value is set to "[Clear]"
+	 * 
+	 * @param s The parameter value to set
+	 */
+	public void setResearchNodeInput(String s) {	
+		
+		System.out.println("setResearchNodeInput(" + s + ")");
+		String[] inputs = s.split(":");
+			
+		if (inputs.length == 2) {
+			System.out.println("Setting node value for " + inputs[0] + " to " + inputs[1] );
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+
+		}
+		else if (inputs.length == 1) { 
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+		}
+
+		System.out.println( "userInputsForRs: " + userInputsForRs.toString() );
+	    System.out.println("userInputsForRs size: " + userInputsForRs.size());	
 	}
 
 	public String getNodeInput() {
@@ -1210,6 +1241,24 @@ public class ServerModel {
 		return returnString;
 	}
 	
+	public List<String> selectMenuInputsForResearch(String nodeName) {
+		System.out.println("ServerModel.selectMenuInputsForResearch(" + nodeName + ")" );
+		List<String> returnString = new ArrayList<String>();
+
+	
+		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);	
+		Set<String> s = values.keySet();
+		Iterator<String> it = s.iterator();
+		returnString.add(nodeName);
+		while (it.hasNext()) {
+			String key = it.next();
+			returnString.add(nodeName + ":" + key);
+		}
+
+		return returnString;
+	}
+	
+	
 	public List<String> selectMenuInputsFromCase(String nodeName) {
 		List<String> returnString = new ArrayList<String>();
 		// old before CR101
@@ -1251,26 +1300,7 @@ public class ServerModel {
 		return returnString;
 	}
 	
-	public List<String> selectMenuInputsForResearch(String nodeName) {
-		List<String> returnString = new ArrayList<String>();
-		// old before CR101
-		/* Map<String, Double> values = dw.getNodeProbs(nodeName); */
-		// one line change for CR101
-	
-		 
-			Map<String, Double> values = this.valuesNew.get(nodeName);//dw.getNodeProbs(nodeNameReverseMapping.get(nodeName));
-			if(values != null){
-			Set<String> s = values.keySet();
-			Iterator<String> it = s.iterator(); 
-			returnString.add(nodeName);
-			while (it.hasNext()) {
-				String key = it.next();
-				returnString.add(nodeName + ":" + key);
-			}
-			}
-			// returnString.add(nodeName + ":[Clear]");
-			return returnString;
-}
+
 	public List<String> selectMenuInputsForEducation(String nodeName) {
 		List<String> returnString = new ArrayList<String>();
 		// old before CR101
@@ -2034,7 +2064,9 @@ public class ServerModel {
 		}else 
 			return false;
 	}
-	public String checkFeatures(){
+	public String checkFeatures() {
+		
+		System.out.println("ServerModel.checkFeatures()");
 		
 		 String[] input = new String[0];
 			// List<String> values = new ArrayList<String>();
@@ -2043,9 +2075,10 @@ public class ServerModel {
 			 for(UserCaseInput userCaseInput:list){
 				 input = userCaseInput.getValue().split("] ");
 				// values.add(input[1]);
-				 if(input.length == 2){
-				 String[] val = input[1].split("=");
-				 dbFeatures.put(nodeNameReverseMapping.get(val[0]),val[1]);
+				 if(input.length == 2) {
+					 System.out.println("input: " + input[1]);
+					 String[] val = input[1].split("=");
+					 dbFeatures.put(nodeNameReverseMapping.get(val[0]),val[1]);
 				 }
 			 }
 			 /* FIXME - this is not valid
@@ -2264,6 +2297,12 @@ public class ServerModel {
 		UserDAO.SaveFeature(caseInput);
 }
 	}
+	
+	
+	/**
+	 * Save features selected for Research page
+	 * @param event
+	 */
 	public void saveFeatures(ValueChangeEvent event){
 		String newValue=null;
 		String[] inputs = null ;
@@ -2277,20 +2316,20 @@ public class ServerModel {
 		/*if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}*/
-		if(inputs != null){
-		if(userInputsForRs.containsKey(nodeNameReverseMapping.get(inputs[0])))
-		{
-		if(inputs.length == 2){
-		if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
-		return;
+		
+		if(inputs != null) {
+			if(userInputsForRs.containsKey(nodeNameReverseMapping.get(inputs[0]))) {
+				if(inputs.length == 2) {
+					if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+						return;
+				}
+				if(inputs.length == 1) {
+					if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
+						return;
+						clearflag = true;
+				}
+			}
 		}
-		if(inputs.length == 1){
-			if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
-				return;
-			clearflag = true;
-		}
-		}
-	}
 
 	if((inputs != null) && ((inputs.length == 2) || clearflag == true )){
 		User user;
@@ -2333,12 +2372,13 @@ public class ServerModel {
 	
 	public String getResearchPrePageLoad() {
 		System.out.println("DNET Wrapper session started - Research");
-
-		String network = this.researchNetwork;
 		
-		if( changingResearchNetwork && !researchNetwork.equals("-select-") ) {
+		if( ( changingResearchNetwork && !researchNetwork.equals("-select-") ) ||
+			( !researchNetworkLoaded && !researchNetwork.equals("-select-") ) ) {
 		try {
+			changingResearchNetwork = false;
 			this.setRandomCaseNo(CaseNo(this.researchNetwork));
+			System.out.println("Random Case No: " + randomCaseNo);
 			
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
@@ -2386,8 +2426,11 @@ public class ServerModel {
 	
 	
 	public void researchChangeNetwork(ValueChangeEvent event) {
-		System.out.println("DNET Wrapper session started - Research");
+		System.out.println("researchChangeNetwork()");
 		changingResearchNetwork = true;
+		researchNetworkLoaded = false;
+		accessionNo = "";
+		randomCaseNo = 0;
 	}
 	
 	public void setEducationPrePageLoad( String pl  ) {
@@ -2401,6 +2444,8 @@ public class ServerModel {
 		
 		if( changingEducationNetwork && !educationNetwork.equals("-select-") ) {
 		try {
+			
+			this.setEducationCaseNo(CaseNo(this.educationNetwork));
 			
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
@@ -2432,6 +2477,8 @@ public class ServerModel {
 			}
 			this.valuesNew = valuesNode; 
 			
+			
+			
 			Arrays.sort(nodes);
 			}
  
@@ -2447,7 +2494,7 @@ public class ServerModel {
 	}
 	
 	public void educationChangeNetwork(ValueChangeEvent event) {
-		System.out.println("DNET Wrapper session started - Education");
+		System.out.println("educationChangeNetwork");
 		changingEducationNetwork = true;
 	}
 	
@@ -3424,6 +3471,12 @@ public class ServerModel {
 	}
 
 	public String actionCompleted(){
+		
+		// FIXME - do nothing for now, mimic "skip" button
+		return this.clearInput();
+		
+		/**
+		 
 		this.setResearchErrMsg("");
 		if(ResearchCaseValidate() == true){
 			return null;
@@ -3435,13 +3488,14 @@ public class ServerModel {
 		userCaseInput.setCaseid(this.getCaseNo());
 		String withoutLastComma ="";
 		StringBuffer sb = new StringBuffer();
-		/*if(this.getCorrectDxList() != null & this.getCorrectDxList().size() >0){
-		for(String CorrectDx:correctDxList){
-			sb.append(CorrectDx).append(", ");
-			}
-			withoutLastComma = sb.substring(0, sb.length() - ", ".length());
-		}
-		userCaseInput.setValue(withoutLastComma);*/
+		
+		//if(this.getCorrectDxList() != null & this.getCorrectDxList().size() >0){
+		//for(String CorrectDx:correctDxList){
+		//	sb.append(CorrectDx).append(", ");
+		//	}
+		//	withoutLastComma = sb.substring(0, sb.length() - ", ".length());
+		//}
+		//userCaseInput.setValue(withoutLastComma);
 		sb.append(this.getFirstDx()+", "+this.getSecondDx()+", "+this.getThirdDx());
 		userCaseInput.setValue(sb.toString());
 		String username =null; 
@@ -3473,6 +3527,7 @@ public class ServerModel {
 	   // session.invalidate();
 		this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
 		return "";
+		*/
 		
 	}
 
@@ -3532,6 +3587,10 @@ public class ServerModel {
       	return "qualityControl?faces-redirect=true";
     }
 	
+	/**
+	 * Skip research case
+	 * @return
+	 */
     public String clearInput(){
     	//this.setNwNameforResearch("");
     	//this.getRandomCaseNo();
@@ -3542,8 +3601,11 @@ public class ServerModel {
     	this.setComments("");
 		this.setCorrectDxList(new ArrayList<String>());
 		researchErrorMessages = new ArrayList<String>();
-    	this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
-    	return "";
+		this.researchNetworkLoaded = false;
+		this.randomCaseNo = 0;
+		changingResearchNetwork = true;
+		
+		return "";
     }
     public String nextCase(){
     	//this.setNwNameforEducation("");
@@ -3866,10 +3928,12 @@ public class ServerModel {
 		int randomCaseNo = 0;
 		String code = null;
 		if(nwName != null && !"-select-".equalsIgnoreCase(nwName)){
-			code= UserDAO.getCode(nwName);
+			code = UserDAO.getCode(nwName);
+			System.out.println("code = " + code);
 			randomCaseNo = UserDAO.getCaseId(code);
 		}
 		return randomCaseNo;
+		
 	}
 	public String getAccessionNo() {
 		String accessionNo = "";
@@ -3926,8 +3990,81 @@ public class ServerModel {
 		}
 		return accessionNo;
 	}
+	
 	public String getResearchAccessionNumber() {
 		System.out.println("ServerModel.getResearchAccessionNumber()");
+		if ( ! this.researchNetworkLoaded ) {
+		//tring accessionNo = "";
+		userInputsForRs.clear();
+		
+	    int caseid = this.getRandomCaseNo();
+	    HttpSession session = Util.getSession();
+		String username = null;
+		String password = null;
+		if(session.getAttribute("username") != null) {
+			username = session.getAttribute("username").toString();
+		}
+		if(session.getAttribute("password") != null) {
+			password = session.getAttribute("password").toString();
+		}
+		int userid = UserDAO.getUserID(username, password);
+		accessionNo = UserDAO.getAccessionNo(caseid,userid);
+		
+		System.out.println("accessionNo: " + accessionNo);
+		System.out.println("caseid: " + caseid);
+		
+		
+		String[] input = new String[0];
+		List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		list = UserDAO.getUserCaseInput(caseid);
+		
+		for(UserCaseInput userCaseInput:list) {
+			
+			System.out.println(userCaseInput.getValue());
+			input = userCaseInput.getValue().split("] ");
+			System.out.println("input: "+input[0]);
+	
+			if(input.length > 1) {
+				String[] val = input[1].split("=");
+				String nodeName = val[0].replace("_",  " ");
+				System.out.println("nodeName: " + nodeName);
+				System.out.println(val.length);
+				System.out.println(nodeNameReverseMapping.get(nodeName));
+				
+				// FIXME - temp hack to figure out why this happens
+				String fullNodeName = nodeNameReverseMapping.get(nodeName);
+				if ( fullNodeName == null ) {
+					System.out.println("Couldn't find mapping for node: " + nodeName);
+					fullNodeName = "XX_";
+				}
+				
+				if(val.length > 0 && fullNodeName.startsWith("CL_")) {
+					System.out.println("val: " + val[0]);
+					String networkcode = UserDAO.getCode(this.getResearchNetwork());
+					System.out.println("network code: " + networkcode);
+					userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+					UserCaseInput caseinput = new UserCaseInput();
+					caseinput.setUserid(userid);
+					caseinput.setCaseid(caseid);
+					caseinput.setSessionid(session.getId());
+					caseinput.setEventid(1001);
+					caseinput.setPageInfo("Research");
+					caseinput.setValue("["+networkcode+"]"+" "+val[0]+"="+val[1]);
+					UserDAO.SaveFeatureforOthers(caseinput);
+			    }
+				else {
+					System.out.println("skipped this value");
+				}
+			}
+		}
+			this.researchNetworkLoaded = true;
+		}
+		 
+		return this.accessionNo;
+	}
+	
+	public String getEducationAccessionNumber() {
+		System.out.println("ServerModel.getEducationAccessionNumber()");
 		String accessionNo ="";
 		userInputsForRs.clear();
 		

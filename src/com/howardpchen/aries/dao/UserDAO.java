@@ -151,7 +151,41 @@ public class UserDAO {
 		return filename;
     	 
      }
-     public static String getCode(String nwName){
+     
+     public static String guessCodeWhenNull( String nwName ) {
+    	System.out.println("guessCodeWhenNull("+nwName+")");
+    	
+    	String code = null; 
+
+    	if ( nwName.indexOf("BG_") != -1 ) {
+    		code = "BG";
+    	}
+    	else if ( nwName.indexOf("CHEST_") != -1 ) {
+    		code = "CH";
+    	}
+    	else if ( nwName.indexOf("KD_") != -1 ) {
+    		code= "KD";
+    	}
+    	else if ( nwName.indexOf("MSK_") != -1 ) {
+    		code = "MSK";
+    	}
+    	else if ( nwName.indexOf("NIR_") != -1 ) {
+    		code = "NIR";
+    	}
+    	else if ( nwName.indexOf("NV_") != -1 ) {
+    		code = "NV";
+    	}
+    	else if ( nwName.indexOf("SP_") != -1 ) {
+    		code = "SP";
+    	}
+    	
+    	return code;
+     }
+     
+     
+     
+     public static String getCode(String nwName) {
+    	 System.out.println("getCode(" + nwName + ")");
     	 Connection con = null;
     	 Statement stmnt = null;
     	 String code = null;
@@ -159,9 +193,15 @@ public class UserDAO {
     		 con = Database.getConnection();
     		 stmnt = con.createStatement();
     		 ResultSet rs=stmnt.executeQuery("select code from networks where description ='"+nwName+"'");
-    		 while(rs.next()){
-    		 code = rs.getString("code");
-    		}
+    		 while(rs.next()) {
+    			 code = rs.getString("code");
+    		 }
+    		 
+    		// FIXME - temp fix for codes
+    		 if ( code == null ) {
+    			 code = guessCodeWhenNull( nwName );
+    		 }
+    		 
     	 } catch (Exception ex) {
              System.out.println("Error in getCode() -->" + ex.getMessage());
           } finally {

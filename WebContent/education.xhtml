@@ -54,7 +54,7 @@
 <div class="row marginRow">
     <div class="col-xs-12 selectdiv mainmenu">
         <h2>Select Network:</h2>
-        <h:selectOneMenu value="#{serverModel.educationNetwork}" onchange="this.form.submit()" >
+        <h:selectOneMenu value="#{serverModel.educationNetwork}" onchange="this.form.submit()" valueChangeListener="#{serverModel.educationChangeNetwork}" >
         <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
         <f:selectItems value="#{serverModel.availableNetworks}" />
         </h:selectOneMenu>
@@ -62,9 +62,9 @@
     </div>
 </div>
 
-<h:panelGroup rendered="#{serverModel.nwNameforEducation != '-select-' and not empty serverModel.nwNameforEducation and serverModel.educationCaseNo != 0}" >
+<h:panelGroup rendered="#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0}" >
                                   
-<h3>Enter Inputs for Accession: #{serverModel.accessionNo}</h3>
+<h3>Enter Inputs for Accession: #{serverModel.educationAccessionNumber}</h3>
 <ui:repeat var="networkPrefix" value="#{serverModel.networkPrefixList}">
                                     
     <h:panelGrid id="pg_inputs" cellspacing="2" rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
@@ -84,45 +84,67 @@
 </ui:repeat>
 </h:panelGroup>
 
+<hr />
 
 <h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0 }">
     <div class="form-group">
     
-	<div class="col-xs-4">
-	   <label for="firstdiag">First Diagnosis :<font color="red">*</font></label>
-	</div>
-	
-	<div class="input-group"> 
-
-	   <h:selectOneMenu id="firstdiag" value="#{serverModel.firstDx}" >
-	       <f:selectItem itemLabel="-select-"></f:selectItem>
-		   <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-	   </h:selectOneMenu>
-	   
-	</div>
-
-	<div class="col-xs-4">
-	   <label for="seconddiag">Second Diagnosis :<font color="red">*</font></label>
-	</div>
-	
-	<div class="input-group"> 
-        <h:selectOneMenu id="seconddiag" value="#{serverModel.secondDx}">
-		  <f:selectItem itemLabel="-select-"></f:selectItem>
-		  <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-	    </h:selectOneMenu>
-	</div>
-	
-	<div class="col-xs-4">
-	   <label for="thirdddiag">Third Diagnosis :<font color="red">*</font></label>
-	</div>
-									
-	<div class="input-group"> 
-        <h:selectOneMenu id="thirdddiag" value="#{serverModel.thirdDx}" >
-            <f:selectItem itemLabel="-select-" ></f:selectItem>
-			<f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-		</h:selectOneMenu>
-	</div>
-									
+                                <div class="row form-row">
+                                    <div class="form-group">
+                                        <div class="col-xs-3">
+                                            <label for="diagnosis">First Diagnosis:</label>
+                                        </div>
+                                        <div class="col-xs-9"> 
+                                            <div class="input-group">
+                                                <h:selectOneMenu id="firstdiag"
+                                                    class="registration"
+                                                    value="#{serverModel.firstDx}"> 
+                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
+                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                              <div class="row form-row">
+                                    <div class="form-group">
+                                        <div class="col-xs-3">
+                                            <label for="diagnosis">Second Diagnosis:</label>
+                                        </div>
+                                        <div class="col-xs-9"> 
+                                            <div class="input-group">
+                                                <h:selectOneMenu id="seconddiag"
+                                                    class="registration"
+                                                    value="#{serverModel.secondDx}"> 
+                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
+                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row form-row">
+                                    <div class="form-group">
+                                        <div class="col-xs-3">
+                                            <label for="diagnosis">Third Diagnosis:</label>
+                                        </div>
+                                        <div class="col-xs-9"> 
+                                            <div class="input-group">
+                                                <h:selectOneMenu id="thirddiag"
+                                                    class="registration"
+                                                    value="#{serverModel.thirdDx}"> 
+                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
+                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>									
     </div>
 </h:panelGroup>
 								
@@ -138,7 +160,7 @@
     <div class="col-xs-2"></div>
     <div class="col-xs-1"></div>
 	<div class="col-xs-2"> 
-	   <h:commandButton id="check" class="btn btn-primary" rendered = "#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNewtork and serverModel.educationCaseNo != 0}"
+	   <h:commandButton id="check" class="btn btn-primary" rendered = "#{serverModel.educationNetwork != '-select-' and not empty serverModel.educationNetwork and serverModel.educationCaseNo != 0}"
 	       value="Check Features" action="#{serverModel.checkFeatures}" />
 	</div> 
 	<div class="col-xs-2"> 
