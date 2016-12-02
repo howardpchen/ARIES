@@ -177,10 +177,11 @@ public class ServerModel {
 	/* =============================================================
 	 * For Education Page
 	 * ============================================================= */
-	private int educationCaseNo ;
+	private int educationCaseNo = 0;
     private List<String> educationErrorMessages = new ArrayList<String>();
     private String educationErrMsg;
     private String educationNetwork = "-select-";
+    private boolean educationNetworkLoaded = false;
     
     private boolean changingEducationNetwork = false;
     
@@ -886,7 +887,7 @@ public class ServerModel {
 		 */
 		// one line change for CR101
 		if (!currentFeature.equals(""))
-			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
+			return currentFeature + ":" + userInputsForRs.get(nodeNameReverseMapping.get(currentFeature));
 		else
 			return "";
 	}
@@ -1203,7 +1204,7 @@ public class ServerModel {
 		else if(userInputs2.containsKey(nodeNameReverseMapping.get(nodeName))){
 	    	return "red";
 	    }
-		else if((userInputs.containsKey(nodeNameReverseMapping.get(nodeName)))){
+		else if((userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName)))){
 			return "hasChoice";
 		}
 		
@@ -2081,7 +2082,8 @@ public class ServerModel {
 					 dbFeatures.put(nodeNameReverseMapping.get(val[0]),val[1]);
 				 }
 			 }
-			 /* FIXME - this is not valid
+			 
+			 //FIXME - this is not valid
 			 if(!(userInputs.isEmpty())) {
 				 for(Map.Entry<String, String> userInputs : userInputs.entrySet()){
 					 if(!(dbFeatures.isEmpty())){
@@ -2099,7 +2101,8 @@ public class ServerModel {
 					 
 				 }
 			 }
-			 */
+			 
+			 
 			 educationErrorMessages = new ArrayList<String>();
 			 userInputs.putAll(dbFeatures);
 			 
@@ -2120,14 +2123,14 @@ public class ServerModel {
 		/*if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}*/
-		if(userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
+		if(userInputsForRs.containsKey(nodeNameReverseMapping.get(inputs[0])))
 		{
 		if(inputs.length == 2){
-		if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
+		if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals(inputs[1]))
 		return;
 		}
 		if(inputs.length == 1){
-			if((userInputs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
+			if((userInputsForRs.get(nodeNameReverseMapping.get(inputs[0]))).equals("clear"))
 				return;
 			clearflag = true;
 		}
@@ -2148,21 +2151,21 @@ public class ServerModel {
 		caseInput.setUserid(userid);
 		
 		caseInput.setSessionid(session.getId());
-		String networkcode = UserDAO.getCode(this.getNwNameforEducation());
+		String networkcode = UserDAO.getCode(this.getEducationNetwork());
 		caseInput.setCaseid(this.getEducationCaseNo());
 		caseInput.setEventid(1001);
 		caseInput.setPageInfo("Education");
-		String code = UserDAO.getCode(this.getNwNameforEducation());
+		String code = UserDAO.getCode(this.getEducationNetwork());
 		
 		
 		//s="";
 		if (inputs.length == 2){
 			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+inputs[1]);
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 	}
 		else if(clearflag == true){
 			caseInput.setValue("["+code+"]"+" "+inputs[0]+"="+"[Clear]");
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
+			userInputsForRs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 		}
 		UserDAO.SaveFeatureforOthers(caseInput);
 	}
@@ -2439,13 +2442,14 @@ public class ServerModel {
 	
 	public String getEducationPrePageLoad() {
 		System.out.println("DNET Wrapper session started - Education");
-
-		String network = this.educationNetwork;
 		
-		if( changingEducationNetwork && !educationNetwork.equals("-select-") ) {
+		if ( ( changingEducationNetwork && !educationNetwork.equals("-select-") ) ||
+			 ( (!educationNetworkLoaded) && (!educationNetwork.equals("-select-")) ) ) {
 		try {
-			
+			changingEducationNetwork = false;
+			System.out.println("Edu network not loaded");
 			this.setEducationCaseNo(CaseNo(this.educationNetwork));
+			System.out.println("Education Case No: " + this.educationCaseNo);
 			
 			Map<String, Double> values = new HashMap<String, Double>();
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
@@ -2496,6 +2500,7 @@ public class ServerModel {
 	public void educationChangeNetwork(ValueChangeEvent event) {
 		System.out.println("educationChangeNetwork");
 		changingEducationNetwork = true;
+		educationNetworkLoaded = false;
 	}
 	
 	
@@ -3453,7 +3458,7 @@ public class ServerModel {
 		
 		userCaseInput.setSessionid(session.getId());
 		//UserDAO.SaveFeature(userCaseInput);
-		String nwcode = UserDAO.getCode(this.getNwNameforEducation());
+		String nwcode = UserDAO.getCode(this.getEducationNetwork());
         //UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3953,7 +3958,7 @@ public class ServerModel {
 		List<String> clearedkeylist = new ArrayList<String>();
 		List<UserCaseInput> list = new ArrayList<UserCaseInput>();
 		list = UserDAO.getUserCaseInput(caseid);
-		String networkcode = UserDAO.getCode(this.getNwNameforEducation());
+		String networkcode = UserDAO.getCode(this.getEducationNetwork());
 		for (UserCaseInput userCaseInput : list) {
 			input = userCaseInput.getValue().split("] ");
 			// values.add(input[1]);
@@ -4065,10 +4070,14 @@ public class ServerModel {
 	
 	public String getEducationAccessionNumber() {
 		System.out.println("ServerModel.getEducationAccessionNumber()");
-		String accessionNo ="";
+		//String accessionNo ="";
+		if ( !educationNetworkLoaded ) {
+			System.out.println("Relead edu network");
+			this.educationNetworkLoaded = true;
+			
 		userInputsForRs.clear();
 		
-	    int caseid = this.getRandomCaseNo();
+	    int caseid = this.getEducationCaseNo();
 	    HttpSession session = Util.getSession();
 		String username = null;
 		String password = null;
@@ -4079,7 +4088,7 @@ public class ServerModel {
 			password = session.getAttribute("password").toString();
 		}
 		int userid = UserDAO.getUserID(username, password);
-		accessionNo = UserDAO.getAccessionNo(caseid,userid);
+		this.accessionNo = UserDAO.getAccessionNo(caseid,userid);
 		
 		System.out.println("accessionNo: " + accessionNo);
 		System.out.println("caseid: " + caseid);
@@ -4092,7 +4101,7 @@ public class ServerModel {
 			
 			System.out.println(userCaseInput.getValue());
 			input = userCaseInput.getValue().split("] ");
-			System.out.println("input: "+input[1]);
+			System.out.println("input: "+input[0]);
 	
 			if(input.length > 1) {
 				String[] val = input[1].split("=");
@@ -4101,9 +4110,16 @@ public class ServerModel {
 				System.out.println(val.length);
 				System.out.println(nodeNameReverseMapping.get(nodeName));
 				
-				if(val.length > 0 && nodeNameReverseMapping.get(nodeName).startsWith("CL_")) {
+				// FIXME - temp fix
+				String fullNodeName = nodeNameReverseMapping.get(nodeName);
+				if ( fullNodeName == null ) {
+					System.out.println("Unable to find mapping for node: " + nodeName);
+					fullNodeName = "XX_";
+				}
+				
+				if(val.length > 0 && fullNodeName.startsWith("CL_")) {
 					System.out.println("val: " + val[0]);
-					String networkcode = UserDAO.getCode(this.getResearchNetwork());
+					String networkcode = UserDAO.getCode(this.getEducationNetwork());
 					System.out.println("network code: " + networkcode);
 					userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
 					UserCaseInput caseinput = new UserCaseInput();
@@ -4120,9 +4136,9 @@ public class ServerModel {
 				}
 			}
 		}
-		
-		 
-		return accessionNo;
+		}
+				 
+		return this.accessionNo;
 	}
 
 
