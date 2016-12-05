@@ -57,13 +57,34 @@ public class ServerModel {
 	
 	boolean debugMode = true;
 	
+	/**
+	 * Features set by user on Clinical page
+	 */
 	private Map<String, String> userInputs;
+	
 	private Map<String, String> userInputs1;
 	private Map<String, String> userInputs2;
+	
+	/**
+	 * "Correct" features for case being viewed in Education page
+	 */
 	private Map<String, String> dbFeatures;
+	
+	/**
+	 * Features set by user on QC page
+	 */
 	private Map<String, String> userInputsForQc;
+	
+	/**
+	 * User inputs for Research and Education page
+	 */
 	private Map<String, String> userInputsForRs;
+	
+	/**
+	 * Most likely Features for a given disease
+	 */
 	private Map<String, String> probInputs;
+	
 	private Map<String, String> userInputsCase;
 	private Map<String, String> probInputs1;
 	
@@ -338,23 +359,17 @@ public class ServerModel {
 		this.event = event;
 	}
 
-	// changes starts for CR102,CR103
 	private String highestSISensitiveNodeName = "";
 	private String highestSPSensitiveNodeName = "";
 	private String highestCLSensitiveNodeName = "";
 	private String highestMSSensitiveNodeName = "";
-	// changes ends for CR102,CR103
 	private String SensitiveForDisease = "";
 
-	// changes starts for CR101
 	private Map<String, String> nodeNameDirectMapping = new HashMap<String, String>();
 	private Map<String, String> nodeNameReverseMapping = new HashMap<String, String>();
 	private TreeMap<String, List<String>> prefixNodeListMapping = new TreeMap<String, List<String>>();
 	private ArrayList<String> networkPrefixList = new ArrayList<String>();
 	private Map<String, String> prefixNameMapping = new HashMap<String, String>();
-	// changes ends for CR101
-
-	// changes starts for CR103
 
 
 	public boolean isSensityvityOn() {
@@ -597,7 +612,7 @@ public class ServerModel {
 
 	private void processNodePrefixes() {
 		
-		if ( debugMode ) System.out.println("processNodePrefixes()");
+		if ( debugMode ) System.out.println("ServerModel.processNodePrefixes()");
 		
 		nodeNameDirectMapping = new HashMap<String, String>();
 		nodeNameReverseMapping = new HashMap<String, String>();
@@ -618,7 +633,7 @@ public class ServerModel {
 				prefix = "MS";
 			}
 			
-			//if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
+			if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
 
 			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
 			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);
@@ -1155,7 +1170,7 @@ public class ServerModel {
 		 */
 		if (userInputs.containsKey(nodeNameReverseMapping.get(nodeName))
 				&& !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
-			return "hasChoice";
+			return "hasChoice unverified";
 		}
 		
 		// changes starts for CR102,CR103
@@ -1195,21 +1210,33 @@ public class ServerModel {
 
 	}
 	public String featureClass1(String nodeName) {
-		if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
-			return "red";
-	    }
-		else if(userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
-			return "green";
+		
+		String nodeClass = "";
+		
+		//if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
+		//	return "red";
+	    //}
+		
+		
+		if ((userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName)))) {
+			nodeClass = "hasChoice";
+			
+			if (userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
+				nodeClass = nodeClass + " correct";
+			}
+			else if (userInputs2.containsKey(nodeNameReverseMapping.get(nodeName))){
+		    	nodeClass = nodeClass + " incorrect";
+		    }
 		}
-		else if(userInputs2.containsKey(nodeNameReverseMapping.get(nodeName))){
-	    	return "red";
-	    }
-		else if((userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName)))){
-			return "hasChoice";
+		else {
+			if (!dbFeatures.isEmpty() ) {
+				if ( dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName))) {
+					nodeClass = "incorrect";
+				}
+			}
 		}
 		
-		else
-			return "";
+		return nodeClass;
 
 	}
     public String featureClassRs(String nodeName) {
@@ -2065,40 +2092,76 @@ public class ServerModel {
 		}else 
 			return false;
 	}
+	
+	/**
+	 * Check the user supplied inputs against the database
+	 * @return
+	 */
 	public String checkFeatures() {
 		
-		System.out.println("ServerModel.checkFeatures()");
+		 if ( debugMode ) System.out.println("ServerModel.checkFeatures()");
 		
 		 String[] input = new String[0];
-			// List<String> values = new ArrayList<String>();
-			 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
-			 list = UserDAO.getUserCaseInput(this.getEducationCaseNo());
-			 for(UserCaseInput userCaseInput:list){
-				 input = userCaseInput.getValue().split("] ");
-				// values.add(input[1]);
-				 if(input.length == 2) {
-					 System.out.println("input: " + input[1]);
-					 String[] val = input[1].split("=");
-					 dbFeatures.put(nodeNameReverseMapping.get(val[0]),val[1]);
+
+		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+		 list = UserDAO.getUserCaseInput(this.getEducationCaseNo());
+
+		 for ( UserCaseInput userCaseInput:list ) {
+			 System.out.println( userCaseInput.getValue() );
+			 // Trim off category code
+			 input = userCaseInput.getValue().split("] ");
+
+			 if(input.length == 2) {
+				 String[] val = input[1].split("=");
+				 String nodeName = val[0].replace("_", " ");
+				 System.out.println("  correct input: (" + nodeNameReverseMapping.get(nodeName) + ") " + val[0] + " -> " + val[1] );
+				 dbFeatures.put(nodeNameReverseMapping.get(nodeName),val[1]);
 				 }
-			 }
 			 
-			 //FIXME - this is not valid
-			 if(!(userInputs.isEmpty())) {
-				 for(Map.Entry<String, String> userInputs : userInputs.entrySet()){
-					 if(!(dbFeatures.isEmpty())){
-					 for(Map.Entry<String, String> dbInputs : dbFeatures.entrySet()){
-						 if((userInputs.getKey().equals(dbInputs.getKey())) && (userInputs.getValue().equals(dbInputs.getValue()))){
-							 userInputs1.put(userInputs.getKey(),userInputs.getValue());
+		 	}
+		 
+			 
+			 //FIXME
+			 if(!(userInputsForRs.isEmpty())) {
+				 for( Map.Entry<String, String> userInput : userInputsForRs.entrySet() ) {
+					 System.out.println("  User Input: " + userInput.getKey() + " -> " + userInput.getValue() );
+					 if( !(dbFeatures.isEmpty()) ) {
+						 
+						 if ( dbFeatures.containsKey( userInput.getKey() ) ) {
+							 
+							 if ( userInput.getValue().equals( dbFeatures.get(userInput.getKey() ))) {
+								 // Correct selection
+								 userInputs1.put(userInput.getKey(), userInput.getValue());
+								 
+							 }
+							 else {
+								 //Incorrect selection
+								 userInputs2.put(userInput.getKey(),  userInput.getValue());
+							 }
+							 
+							 System.out.println("  Gold Input: " + userInput.getKey() + " -> " + dbFeatures.get( userInput.getKey() ) );
 						 }
-						 else{
-							 userInputs2.put(userInputs.getKey(), userInputs.getValue());
-						 }
+						 
+						 /**
+						 for(Map.Entry<String, String> dbInputs : dbFeatures.entrySet()) {
+							 
+							 //System.out.println("  dbInput: " + dbInputs.getKey() + " -> " + dbInputs.getValue() );
+							 if (userInput.getKey().equals(dbInputs.getKey())) {
+								 if (userInput.getValue().equals(dbInputs.getValue())) {
+									 userInputs1.put(userInput.getKey(),userInput.getValue());
+									 System.out.println("  -- Agree");
+								 }
+								 else {
+									 userInputs2.put(userInput.getKey(), userInput.getValue());
+									 System.out.println("  -- Disagree");
+								 }
+							 }
+					     }
+						 **/
 					 }
-				 }else{
-						 userInputs2.put(userInputs.getKey(), userInputs.getValue());
+					 else {
+						 //userInputs2.put(userInput.getKey(), userInput.getValue());
 					 }
-					 
 				 }
 			 }
 			 

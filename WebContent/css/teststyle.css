@@ -284,23 +284,7 @@ input[type=password], input[type=text] textarea {
 
 
 
-select.features {
-	position: relative;
-	display: inline-block;
-	background: #777777;
-	color: #EEEEEE;
-	text-decoration: none;
-	font-size: 14px; /*change for CR102 */
-	outline: 0;
-	white-space: nowrap;
-	border: 5px;
-	border-radius: 5px;
-	border-width: 3px;
-	border-style: solid;
-	border-color: #777777;
-	padding-left: 0.25em;
- 
-}
+
 
 input[type=text]:disabled {
 	background: #555;
@@ -315,18 +299,44 @@ input[type=text]:enabled {
 	appearance: none;
 }
 
+select.features {
+    position: relative;
+    display: inline-block;
+    background: #777777;
+    color: #EEEEEE;
+    text-decoration: none;
+    font-size: 14px; 
+    outline: 0;
+    white-space: nowrap;
+    border: 5px;
+    border-radius: 5px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #777777;
+    padding-left: 0.25em;
+ 
+}
+
 select.hasChoice {
 	color: #222;
 	background: #66B9BF;
-	border-color: #66B9BF;
+    border-color: #66B9BF;
 }
 
 select.sensitive {
-	border: 5px
-	border-radius: 8px;
+	border: 5px;
+	border-radius: 5px;
 	border-style: solid;
 	border-width: 3px;
-	border-color: #E37222;
+	border-color: #00FF00;
+}
+
+select.correct {
+    border: 5px;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #00FF00;
 }
 
 p.node-title {
