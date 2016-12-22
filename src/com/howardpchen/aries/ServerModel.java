@@ -1,7 +1,10 @@
 package com.howardpchen.aries;
 
-
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -53,6 +56,8 @@ public class ServerModel {
 	// private static final long serialVersionUID = -9026586621419425189L;
  
 	private final String PATH = "/mnt/networks";
+	private final String NETWORKDESCRIPTIONS = "/mnt/networks/AriesNetworks.csv";
+	
 	//private final String PATH = System.getenv("ARIES_NETWORK_PATH");
 	
 	boolean debugMode = true;
@@ -106,6 +111,11 @@ public class ServerModel {
 	 * Map from descriptive network name to filename
 	 */
 	private Map<String,String> networkNameMap = new HashMap<String,String>(); 
+	
+	/**
+	 * Map from descriptive network name to network code
+	 */
+	private Map<String,String> networkCodeMap = new HashMap<String,String>();
 	
 	/**
 	 * Map from network filename to descriptive name
@@ -440,6 +450,93 @@ public class ServerModel {
 	}
 	//For Clinical
 	//private String disease;
+	
+	private String getAriesNetworkFileDescription( String filename ) {
+		String desc = "";
+	
+		String baseName = filename.split(".dne")[0];
+		String[] nameParts  = baseName.split("_");
+		String code = nameParts[0];
+		String version = nameParts[1].split("P")[1];
+		String line = "";
+		
+		try ( BufferedReader reader = new BufferedReader(new FileReader(NETWORKDESCRIPTIONS)) ) {
+			while (( line = reader.readLine()) != null ) {
+				String[] networkEntry = line.split(",");
+				if (networkEntry[0].equals(code) ) {
+					desc = networkEntry[1] + " - " + networkEntry[2] + " (ver. " + version + ")";
+				}
+			}
+			
+			reader.close();
+			
+		} catch (IOException e ) {
+			e.printStackTrace();
+		} 
+		
+		return desc;
+	}
+	
+	/*
+	 * Get descriptions for all network files
+	 */
+	private void getAriesNetworkFileDescriptions(  )  {
+		
+		// Get all valid network filenames
+		File folder = new File(PATH);
+		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				if (name.toLowerCase().endsWith(".dne")) {
+					//System.out.println("Found " + name);
+					return true;
+				} else
+					return false;
+			}
+		});
+		
+		System.out.println("Reading " + listOfFiles.length + " files");
+		
+		// For each file, get description and code
+		for (int i = 0; i < listOfFiles.length; i++) {
+			String netFileName = listOfFiles[i].getName();
+			System.out.println("Checking info for file: " + netFileName);
+			
+			String desc = "";
+			
+			String baseName = netFileName.split(".dne")[0];
+			String[] nameParts  = baseName.split("_");
+			String code = nameParts[0];
+			String version = nameParts[1].split("P")[1];
+			String line = "";
+			
+			try ( BufferedReader reader = new BufferedReader(new FileReader(NETWORKDESCRIPTIONS)) ) {
+				while (( line = reader.readLine()) != null ) {
+					String[] networkEntry = line.split(",");
+					if (networkEntry[0].equals(code) ) {
+						desc = networkEntry[1] + " - " + networkEntry[2] + " (ver. " + version + ")";
+					}
+				}
+				
+				reader.close();
+				
+			} catch (IOException e ) {
+				e.printStackTrace();
+			}
+
+			networkFileList.add(netFileName);
+			networkNameList.add(desc);
+			
+			availableNetworks.add(desc);
+
+			networkNameMap.put( desc, netFileName );
+			networkFileMap.put( netFileName, desc );
+			networkCodeMap.put( desc, code );
+
+		}
+		
+		java.util.Collections.sort(availableNetworks);
+		
+	}
 
 	public ServerModel() {
 		userInputs = new HashMap<String, String>();
@@ -452,42 +549,17 @@ public class ServerModel {
 		probInputs1 = new HashMap<String, String>();
 		userInputsCase = new HashMap<String, String>();
 		
-		// changes starts for CR101
+		// Manually fix feature prefix descriptions (SI=signal, etc)
 		populateNetworkList();
 		
-		// changes ends for CR101
 		registerSession();
     
-		//networkNamers = "";
-      
-		File folder = new File(PATH);
-		File[] listOfFiles = folder.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				if (name.toLowerCase().endsWith(".dne")) {
-					//System.out.println("Found " + name);
-					return true;
-				} else
-					return false;
-			}
-		});
-		
-		for (int i = 0; i < listOfFiles.length; i++) {
-			String netFileName = listOfFiles[i].getName();
-			String netDescName = UserDAO.getNetworkFileDescription(listOfFiles[i].getName());
-			
-			//if (debugMode) System.out.println("Network filename " + netFileName + " defines: " + netDescName);
-			
-			networkFileList.add(netFileName);
-			networkNameList.add(netDescName);
-			
-			availableNetworks.add(netDescName);
-
-			networkNameMap.put( netDescName, netFileName );
-			networkFileMap.put( netFileName, netDescName ); 
-
-		}
-		java.util.Collections.sort(availableNetworks);
+		System.out.println("Read all network file descriptions");
+		getAriesNetworkFileDescriptions();
+				
+		// Default for clinical page
 		activeNetwork = availableNetworks.get(0);
+		
 		
 		String networkFileName = networkNameMap.get(activeNetwork);
 		try {
@@ -513,6 +585,7 @@ public class ServerModel {
 	    	diseaseNameMap.put(formattedName,  diseaseNames.get(i));
 	    	diseaseNames.set(i, formattedName);
 	    }
+	    
 		
 		dw.endSession();
 		dw = null;
@@ -542,6 +615,7 @@ public class ServerModel {
 	 * @return list of prefixes for feature categories of selected network
 	 */
 	public List<String> getNetworkPrefixList() {
+		System.out.println("ServerModel.getNetworkPrefixList()");
 		return networkPrefixList;
 	}
 
@@ -551,6 +625,7 @@ public class ServerModel {
 	 * @return
 	 */
 	public String getNetworkPrefixName(String prefix) {
+		System.out.println("ServerModel.getNetworkPrefixName(" + prefix + ")");
 		return prefixNameMapping.get(prefix);
 	}
 
@@ -610,6 +685,14 @@ public class ServerModel {
 		return features;
 	}
 
+	/*
+	 * Read in all network node names for menus. Strip of the prefix that indicates
+	 * a category (signal, clinical, etc) and remove underscores for readability
+	 * Fill in:
+	 *   nodeNameDirectMapping:  Netica name  -> Display name
+	 *   nodeNameReverseMapping: Display name -> Netica name
+	 *   prefixNodeListMapping:  Display name -> Prefix code
+	 */
 	private void processNodePrefixes() {
 		
 		if ( debugMode ) System.out.println("ServerModel.processNodePrefixes()");
@@ -633,7 +716,7 @@ public class ServerModel {
 				prefix = "MS";
 			}
 			
-			if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
+			//if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
 
 			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
 			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);
@@ -652,22 +735,17 @@ public class ServerModel {
 		}
 	}
 
-	// changes ends for CR101
-/*
-	public void setNetworkInput(String s) {
-		if (!s.equals(networkName)) {
-			System.out.println("Cleared user inputs.");
-			userInputs.clear();
-			infoMessages = new ArrayList<String>();
-		}
-		networkName = s;
-	}
-*/
+	/*
+	 * Get network for clinical page
+	 */
 	public String getActiveNetwork () {
 		if (debugMode) System.out.println( "getActiveNetwork()" );
 		return activeNetwork;
 	}
 	
+	/*
+	 * Set network for clinical page
+	 */
 	public void setActiveNetwork (String s) {
 		if ( debugMode ) System.out.println( "setActiveNetwork(" + s + ")" );
 		if (!s.equals(activeNetwork)) {
@@ -678,22 +756,23 @@ public class ServerModel {
 		activeNetwork = s;
 	}
 	
+	/*
+	 * Get a list of all currently available network descriptions
+	 */
 	public List<String> getAvailableNetworks() {
 		if ( debugMode ) System.out.println( "getAvailableNetworks()");
 		return availableNetworks;
 	}
 	
+	/*
+	 * Toggle feature sensitivity highlighting
+	 */
 	public String toggleSensitivity( ) {
 		this.sensityvityOn = !this.sensityvityOn;
 		return "";
 	}
 	
-	/*
-	public String getNetworkInput() {
-		return networkName;
-	}
-	*/
-   
+  
 	 public void setFeatureValueQC(String s){
 	    	boolean clearflag = false;
 	    	String[] inputs = s.split(":");
@@ -1376,6 +1455,7 @@ public class ServerModel {
 	 * Update the clinical diagnosis plot based on the currently selected feature values
 	 */
 	public void updateDiagnosisNode() {
+		System.out.println("ServerModel.updateDiagnosisNode()");
 		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
 		
@@ -1403,6 +1483,8 @@ public class ServerModel {
 		while (it.hasNext()) {
 			userInputs.remove(it.next());
 		}
+		
+		System.out.println("end ServerModel.updateDiagnosisNode()");
 	}
 	
 	
@@ -1481,6 +1563,8 @@ public class ServerModel {
 	 * @return A String containing an html table of values for clinincal diagnoses
 	 */
 	public String getDiagnosisNode() {
+		System.out.println("ServerModel.getDiagnosisNode()");
+		
 		// Update the diagnosis node first
 		fromGraph = "true";
 		updateDiagnosisNode();
@@ -1492,22 +1576,29 @@ public class ServerModel {
 
 		StringBuffer sb = new StringBuffer("");
 		sb.append("<table id='diagnosistable1'><tr><td>Diagnosis</td><td>Probability (%)</td></tr>");
+		
+		
 		if(dw != null) {
 			values = sortByValue(dw.getDiagnosisProbs(), -1);
-		}
-	
-		if(values != null){
-		s = values.keySet();
-		it = s.iterator();
-		int count = 0;
-		while (it.hasNext() && ++count <= topDdx) {
-			String key = it.next();
-			String diag = key.replaceAll("_", " ");
-			sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
-		}
-		sb.append("</table>");
+		} else {
+			System.out.println("No network open");
 		}
 		
+		System.out.println( "values size: " + values.size() );
+	
+		if (values != null) {
+			s = values.keySet();
+			it = s.iterator();
+			int count = 0;
+			while (it.hasNext() && ++count <= topDdx) {
+				String key = it.next();
+				String diag = key.replaceAll("_", " ");
+				sb.append("<tr><td>" + diag).append("<td>").append(convertToPercentage(values.get(key))).append("</tr>");
+			}
+			sb.append("</table>");
+		}
+		
+		System.out.println("end ServerModel.getDiagnosisNode()");
 		return sb.toString();
 	}
 
@@ -2643,7 +2734,9 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 
-	
+	/*
+	 * Pre page loader for Clinical page
+	 */
 	public String getPrePageLoad() {
 		System.out.println("+");
 		System.out.println("+");
@@ -2651,15 +2744,8 @@ public class ServerModel {
 		System.out.println("DNET Wrapper session started - Clinical");
 		this.setEvent("");
 		try {
-	        networkNamers = "";
-	        //this.setNwNameforResearch("");
-	        //this.setNwName("");
-	        //this.setNwNameforQC("");
-	        //this.setNwNameforEducation("");
-	        
-		/*	if(dw!= null){
-				dw.endSession();
-			}*/
+	        //networkNamers = "";
+
 	        if(!"".equals(activeNetwork)) {
 		        String networkFileName = networkNameMap.get(activeNetwork);
 		        
@@ -2678,26 +2764,16 @@ public class ServerModel {
 				Collections.sort(diseaseNames);
 				diseaseNameMap.clear();
 				
+				System.out.println("Disease name formattings");
 				for ( int i=0; i<diseaseNames.size(); i++) {
 					String formattedName = diseaseNames.get(i).replace("_", " ");
 					diseaseNameMap.put(formattedName, diseaseNames.get(i));
 					diseaseNames.set(i, formattedName);
+					System.out.println(formattedName);
 				}
-				/*
-				for (int i = 0; i < nodes.length; i++) {
-					if (nodes[i].equals("Diseases")) {
-						//System.out.println("Set new disease list");
-						this.titlesNew = dw.getStates(nodes[i]);
-						this.diseaseNames = Arrays.asList( this.titlesNew );
-					}
-				}
-				*/
 				
-				// changes starts for CR101
 				processNodePrefixes();
-				// changes ends for CR101
-	
-				// changes starts for CR102,CR103
+
 				highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
 				highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
 				highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
@@ -3996,7 +4072,8 @@ public class ServerModel {
 		int randomCaseNo = 0;
 		String code = null;
 		if(nwName != null && !"-select-".equalsIgnoreCase(nwName)){
-			code = UserDAO.getCode(nwName);
+			//code = UserDAO.getCode(nwName);
+			code = networkCodeMap.get(nwName);
 			System.out.println("code = " + code);
 			randomCaseNo = UserDAO.getCaseId(code);
 		}

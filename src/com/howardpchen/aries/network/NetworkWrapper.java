@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 public abstract class NetworkWrapper {
 	public Map<String,Double> getDiagnosisProbs() {
+		System.out.println("NetworkWrapper.getDiagnosisProbs()");
 		return getNodeProbs("Diseases", false);
 	}
 	public Map<String,Double> getRadioDiagnosisProbs() {
