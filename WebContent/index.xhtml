@@ -54,7 +54,7 @@
 <!--  Load in the selected network -->      
 <h:inputHidden value="#{serverModel.prePageLoad}" />
 
-<div class="row marginRow">
+<div class="row">
     <div class="col-xs-12 selectdiv mainmenu">
         <h2>Select Network:</h2>
         <h:selectOneMenu value="#{serverModel.activeNetwork}" onchange="this.form.submit()" >
@@ -66,7 +66,7 @@
 <div></div>
 
 
-<div class="row marginRow">  
+<div class="row">  
   <div class="col-xs-2">
     <!--  FIXME: deleting this causes resetDisease to be not found at all for some reason -->
     <h:commandButton value="Edit Features" action="#{serverModel.resetDisease}" rendered="false" /> 
