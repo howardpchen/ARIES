@@ -17,15 +17,14 @@ body, p, ul, ol, input {
     background: #333;
     outline: 0;
 }
-h3 {
-	font-size: 20pt;
-	text-align: center;
-}
+
 hr {
 	color: #EEE;
-	
 }
 
+div.row {
+	border: 2px solid red;
+}
 
 label {
 	 margin-right: 10px;
@@ -186,6 +185,18 @@ h2 {
 	padding: 0px;
 }
 
+h3 {
+    font-size: 20pt;
+    text-align: center;
+}
+
+/* use for form row labels */
+h4 {
+    font-size: 14pt;
+    margin: 10px 0px 0px 0px;
+    padding: 0px;
+}
+
 
 ul { 
 	list-style-type:none;
@@ -231,6 +242,7 @@ li {
 }
 
 
+
 /* Select Network, Disease */
 a.button, .radiobuttons label, select
 	{
@@ -265,7 +277,7 @@ select.registration {
     padding-top: 2px;
     padding-bottom: 2px;
     margin-top: 2px;
-    margin-bottom: 0px;
+    margin-bottom: 2px;
     margin-left: 0px;
 }
 
