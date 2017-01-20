@@ -103,6 +103,13 @@ public class ServerModel {
 	private String activeNetwork = ""; 
 	
 	/**
+	 * Name of active subpage
+	 */
+	private enum PageType { HOME, CLINICAL, CASE, RESEARCH, EDUCATION, QC };
+	
+	private PageType activePage = PageType.CLINICAL;
+	
+	/**
 	 * List of descriptive names for available networks
 	 */
 	private List<String> availableNetworks = new ArrayList<String>(); 
@@ -736,6 +743,14 @@ public class ServerModel {
 	}
 
 	/*
+	 * Get network for case page
+	 */
+	public String getActiveCaseNetwork () {
+		if (debugMode) System.out.println( "getActiveNetwork()" );
+		return activeCaseNetwork;
+	}
+	
+	/*
 	 * Get network for clinical page
 	 */
 	public String getActiveNetwork () {
@@ -754,6 +769,19 @@ public class ServerModel {
 			infoMessages = new ArrayList<String>();
 		}
 		activeNetwork = s;
+	}
+	
+	/*
+	 * Set network for case page
+	 */
+	public void setActiveCaseNetwork (String s) {
+		if ( debugMode ) System.out.println( "setActiveCaseNetwork(" + s + ")" );
+		if (!s.equals(activeCaseNetwork)) {
+			System.out.println("Cleared user case inputs.");
+			userInputs.clear();
+			infoMessages = new ArrayList<String>();
+		}
+		activeCaseNetwork = s;
 	}
 	
 	/*
@@ -1727,6 +1755,7 @@ public class ServerModel {
 				Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 				if(dw != null){
 					dw.endSession();
+					dw = null;
 				}
 				if(!activeNetwork.equals("")){
 					String networkFileName = networkNameMap.get(activeNetwork);
@@ -1793,12 +1822,13 @@ public class ServerModel {
 		try {
 	        networkNamers = "";
 
-	        if(!"".equals(activeNetwork)) {
-		        String networkFileName = networkNameMap.get(activeNetwork);
+	        if(!"".equals(this.activeNetwork) && !"-select-".equals(this.activeNetwork)) {
+		        String networkFileName = networkNameMap.get(this.activeNetwork);
 		        
 		        if ( dw != null ) {
 		        	System.out.println("call: dw.endSession()");
 		        	dw.endSession();
+		        	dw = null;
 		        }
 		        
 				dw = new DNETWrapper(PATH + "/" + networkFileName);
@@ -1819,7 +1849,7 @@ public class ServerModel {
 				Arrays.sort(nodes);
 	        }
 		} catch (NetworkLoadingException e) {
-			System.out.println("Error loading the network.");
+			System.out.println("Error loading the network: " + this.activeNetwork);
 
 		} catch (Exception e) {
 			System.out.println("Error converting filename.");
@@ -1835,10 +1865,18 @@ public class ServerModel {
 	public String getFeatureProb() {
 		
 		if ( debugMode ) System.out.println("getFeatureProb()");
-
-		if (this.getDisease() != null
-				&& !this.getDisease().equalsIgnoreCase("--select--")) {
-			System.out.println("  for disease: " + this.getDisease());
+		
+		String iDisease = null;
+		
+		if ( activePage == PageType.CLINICAL) {
+			iDisease = this.getDisease();
+		}
+		else if (activePage == PageType.CASE ) {
+			iDisease = this.getCorrectDx();
+		}
+		
+		if (iDisease != null && !iDisease.equalsIgnoreCase("--select--") && !iDisease.equalsIgnoreCase("-select-") && !iDisease.equals("") ) {
+			System.out.println("  for disease: " + iDisease);
 			
 			if ( dw == null ) {
 
@@ -1893,6 +1931,8 @@ public class ServerModel {
 			dw = null;
 		}
 
+		if ( debugMode ) System.out.println("Finish getFeatureProb() with probInputs() size = " + this.probInputs.size() );
+		
 		return "";
 
 	}
@@ -1906,6 +1946,7 @@ public class ServerModel {
 			try {
 				if(dw!= null){
 					dw.endSession();
+					dw = null;
 				}
 				
 				dw = new DNETWrapper(PATH + "/" + filename);
@@ -1953,7 +1994,8 @@ public class ServerModel {
 		}
 			}
 		if(dw!=null){
-		dw.endSession();
+			dw.endSession();
+			dw = null;
 		}
 		return "";
 
@@ -2541,6 +2583,7 @@ public class ServerModel {
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 			if(dw!= null){
 				dw.endSession();
+				dw = null;
 			}
 			
 			String networkFileName = networkNameMap.get(researchNetwork);
@@ -2609,6 +2652,7 @@ public class ServerModel {
 			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
 			if(dw!= null){
 				dw.endSession();
+				dw = null;
 			}
 			
 			String networkFileName = networkNameMap.get(educationNetwork);
@@ -2674,6 +2718,7 @@ public class ServerModel {
 		try {
 			if(dw != null){
 				dw.endSession();
+				dw = null;
 			}
 
 			
@@ -2745,13 +2790,14 @@ public class ServerModel {
 		this.setEvent("");
 		try {
 	        //networkNamers = "";
-
+			System.out.println("activeNetwork: " + activeNetwork);
 	        if(!"".equals(activeNetwork)) {
 		        String networkFileName = networkNameMap.get(activeNetwork);
 		        
 		        if ( dw != null ) {
 		        	System.out.println("call: dw.endSession()");
 		        	dw.endSession();
+		        	dw = null;
 		        }
 		        
 		        //System.out.println("Loading " + networkFileName);
@@ -2823,12 +2869,15 @@ public class ServerModel {
 
 		return this.pageLoad;
 	}
+	
+	
 	public void setPostResearchPageLoad(String pl) {
 		this.pageLoad = pl;
 	}
 	public String getPostResearchPageLoad() {
 		if(this.getNwNameforEducation()!=null && !this.getNwNameforEducation().equalsIgnoreCase("-select-") && dw != null){
 		dw.endSession();
+		dw = null;
 		System.out.println("DNET Wrapper session ended");
 		}
 		return this.pageLoad;
@@ -2839,6 +2888,7 @@ public class ServerModel {
 	public String getPostEducationPageLoad() {
 		if(this.getNwNameforEducation()!=null && !this.getNwNameforEducation().equalsIgnoreCase("-select-") && dw != null){
 		dw.endSession();
+		dw = null;
 		System.out.println("DNET Wrapper session ended");
 		}
 		return this.pageLoad;
@@ -2847,6 +2897,7 @@ public class ServerModel {
 	public String getPostPageLoad1() {
 		if(this.getNwName()!=null && !this.getNwName().equalsIgnoreCase("-select-") && dw != null){
 		dw.endSession();
+		dw = null;
 		System.out.println("DNET Wrapper session ended");
 		}
 		return this.pageLoad;
@@ -3843,20 +3894,38 @@ public class ServerModel {
 
 	
 	public String getNavRuleClinical() {
+		activePage = PageType.CLINICAL;
+		activeNetwork = availableNetworks.get(0);
+		//probInputs.clear();
 		//userInputs.clear();
-		if(dw!= null){
+		if(dw != null){
 			dw.endSession();
+			dw = null;
 		}
+		//this.setActiveNetwork( "" );
 		return "index?faces-redirect=true";
 	}
 	public String getNavRuleCase() {
+		//userInputs.clear();
+		//probInputs.clear();
+		activePage = PageType.CASE;
+		if(dw!= null){
+			dw.endSession();
+			dw = null;
+		}
 		/*clearDefault();
 		this.setNwName("");;*/
 		clearDefault();
 		this.setFromQcPage("false");
+		this.setActiveNetwork("-select-");
 		return "caseInput_form?faces-redirect=true";
 	}
 	public String getNavRuleQC() {
+		activePage = PageType.QC;
+		if(dw!= null){
+			dw.endSession();
+			dw = null;
+		}
 		/*userInputsForQc.clear();
 		this.setNwNameforQC("");
 		clearDefault();*/
@@ -3865,6 +3934,11 @@ public class ServerModel {
 		return "qualityControl?faces-redirect=true";
 	}
 	public String getNavRuleResearch() {
+		activePage = PageType.RESEARCH;
+		if(dw!= null){
+			dw.endSession();
+			dw = null;
+		}
 		/*userInputsForRs.clear();
 		this.setNwNameforResearch("");
     	this.setFirstDx("");
@@ -3882,6 +3956,11 @@ public class ServerModel {
 		return "research?faces-redirect=true";
 		}
 	public String getNavRuleEducation() {
+		activePage = PageType.EDUCATION;
+		if(dw!= null){
+			dw.endSession();
+			dw = null;
+		}
 		/*userInputs.clear();
 		this.setNwNameforEducation("");*/
     	this.setFirstDx("");
@@ -3981,7 +4060,7 @@ public class ServerModel {
 		}
 		
 		currentDisease = newValue;
-		if(newValue != null && !newValue.equalsIgnoreCase(nullDisease) && !newValue.equalsIgnoreCase(oldValue)) {
+		if(newValue != null && !newValue.equals("-select-") && !newValue.equalsIgnoreCase(nullDisease) && !newValue.equalsIgnoreCase(oldValue)) {
 
 			if(!userInputs.isEmpty())
 				userInputs.clear();
@@ -3998,8 +4077,10 @@ public class ServerModel {
 		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 	}
 	
-	public void getCorrectDxAction(ValueChangeEvent event){
-		System.out.println("getCorrectDxAction()");
+	public void getCorrectDxAction(ValueChangeEvent event) {
+	
+		if ( debugMode ) System.out.println("getCorrectDxAction()");
+
 		String newValue = "";
 		if (event.getNewValue() != null) {
 			newValue= event.getNewValue().toString();
@@ -4009,22 +4090,43 @@ public class ServerModel {
 			oldValue = event.getOldValue().toString();
 		}
 		
-		//if(!userInputsCase.isEmpty())
-		//	userInputsCase.clear();
-		//if(!probInputs1.isEmpty())
-		//	probInputs1.clear();
-		
-		if(newValue != null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
-			//userInputsCase.put("Diseases", newValue);
+		currentDisease = newValue;
+		if(newValue != null && 
+		   !newValue.equals("-select-") && 
+		   !newValue.equalsIgnoreCase(nullDisease) && 
+		   !newValue.equalsIgnoreCase(oldValue) &&
+		   !newValue.equalsIgnoreCase("Other") ) {
+
+			if(!userInputs.isEmpty())
+				userInputs.clear();
+			if(!probInputs.isEmpty())
+				probInputs.clear();
+			
+			this.setCorrectDx(newValue);
+			
+			settingDisease = true;
+			userInputs.put("Diseases", diseaseNameMap.get(newValue));
+			getFeatureProb();
+		}
+		else {
+			if (debugMode) System.out.println("No change found in 'correctDxAction()'");
 		}
 		
-		if (newValue.equals("Other")) {
+		//if(newValue != null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+		//	userInputs.put("Diseases", newValue);
+		//}
+		
+		if (newValue.equalsIgnoreCase("Other")) {
+			if (debugMode) System.out.println("'Other' disease chosen");
+			settingDisease = true; // ???
 			setKnownDx(false);
+			probInputs.clear();
+			userInputs.clear();
 		} else {
 			setKnownDx(true);
 		}
 		
-		//updateDiagnosisNode1();
+		//updateDiagnosisNode();
 		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 	}
 

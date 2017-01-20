@@ -52,16 +52,16 @@
 <div class="container-fluid">
 
 	<!--  Load in the selected network -->      
-	<h:inputHidden value="#{serverModel.prePageLoad}" />
-	
+
 	<div class="row form-row">
 	    <div class="col-xs-2">
 	        <h4>Network</h4>
 	     </div>
 	     <div class="col-xs-10">
-	       <div class="input-group">
+	       <div class="input-group">     
 	           <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
 	               onchange="this.form.submit()" valueChangeListener="#{serverModel.caseChangeNetwork}"  reRender="diagnosis" >
+	               <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
                    <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
                </h:selectOneMenu>
                   
@@ -193,7 +193,9 @@
 	            <h:selectOneMenu id="diagnosis"
 	                class="registration"
 	                value="#{serverModel.correctDx}"
-	                onchange='this.form.submit()'  valueChangeListener="#{serverModel.getCorrectDxAction}"> 
+	                onchange='this.form.submit()'  
+	                valueChangeListener="#{serverModel.getCorrectDxAction}"> 
+	                
 	                <f:selectItem itemLabel="-select-"></f:selectItem>
 	                <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
 	                <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
@@ -215,7 +217,9 @@
 
     <hr />
     
+    
     <!-- Begin Rows of features/nodes to set -->                                        
+    <h:panelGroup rendered="#{serverModel.activeNetwork != '-select-'}" >
     <div class="row row2"><div class="col-xs-12"><div class="selectdiv">
             <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
             
@@ -238,6 +242,7 @@
     
             </ui:repeat>
     </div></div></div>
+    </h:panelGroup>
     
     <hr />
     
@@ -259,7 +264,11 @@
     
     </div>
 
+    <h:inputHidden value="#{serverModel.postPageLoad}" />
+
 	</h:form>
+	
+	
 	
    <script type="text/javascript">
      
