@@ -510,7 +510,15 @@ public class UserDAO {
 		return savesuccess;
      }
      
-     public static void SaveFeature(UserCaseInput userCaseInput){
+     /** 
+      * SaveFeature
+      * save a selected feature for a "case"
+      * 
+      * @param userCaseInput formatted string for feature value
+      */
+     public static void SaveFeature(UserCaseInput userCaseInput) {
+    	 System.out.println("SaveFeature( " + userCaseInput.getValue() + " )");
+    	 
     	 Connection con = null;
     	 PreparedStatement ps = null;
     	 Timestamp currentDate = new Timestamp(new Date().getTime());

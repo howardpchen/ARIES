@@ -3323,20 +3323,11 @@ public class ServerModel {
 		
 		String networkcode = null;
 
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Attempt to save case", ""));
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Attempt to save case line 2", ""));
-		
 		if( basicCaseValidate() == true ) {
-			System.out.println("Errors found - case not submitted");
-			return null;
+			return "caseInput_form?redirect=true";
 		}
 		
-		System.out.println("Basic Case Validation Passed");
-		
-		// Save a "Submit Case"
-		
+		// Save a "Submit Case"		
 		try {
 			networkcode = UserDAO.getCode(this.networkNameMap.get(this.activeNetwork));
 			CaseList caseList = new CaseList();
@@ -3378,7 +3369,7 @@ public class ServerModel {
 			}
 			int userid = UserDAO.getUserID(username, password);
 			caseList.setSubmittedBy(userid);
-			caseList.setQcperson(this.getQcperson());
+			caseList.setQcperson(this.getQcperson()); // FIXME - what goes here?
 						
 			this.setCaseList(caseList);
 			
@@ -3394,7 +3385,7 @@ public class ServerModel {
 			
 			if ( caseListValidation() ) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"This combination of organization, MR number, and network already exists - Case not submitted", ""));
+						"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
 				return "caseInput_form?redirect=true";
 			} 
 			else {
@@ -3402,25 +3393,25 @@ public class ServerModel {
 				
 				if( success ) {
 					System.out.println("UserDAO.SaveCaseList() returned success");
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Save appears to be a success", ""));
 					
 					// FIXME - is this correct?
-				    if(!probInputs.isEmpty()) {
-				    	userInputsCase.putAll(probInputs1);
-				    	for (Map.Entry<String, String> entry : userInputsCase.entrySet()) {
+				    if(!userInputs.isEmpty()) {
+				    	for (Map.Entry<String, String> entry : userInputs.entrySet()) {
 					    	if(!entry.getKey().contains("Diseases")) {
 						    	UserCaseInput caseinput = new UserCaseInput();
 						    	caseinput.setUserid(userid);
 						    	caseinput.setCaseid(getCaseid());
 						    	caseinput.setSessionid(session.getId());
 						    	caseinput.setEventid(1001);
-						        caseinput.setValue("["+networkcode+"]"+" "+nodeNameDirectMapping.get(entry.getKey())+"="+entry.getValue());
-						        //UserDAO.SaveFeature(caseinput);
+						    	String featureName = nodeNameDirectMapping.get(entry.getKey()).replace(" ",  "_");
+						        caseinput.setValue("[" + networkcode + "]" + " " + featureName + "=" + entry.getValue());
+						        UserDAO.SaveFeature(caseinput);
 					    	}
 				    	}	
 				    }
 				  
-				  // FIXME - reset all form values here
+				  // FIXME - reset all form values here or leave that to user?
+				  this.clear();
 				    
 				  return "caseInput_form?faces-redirect=true";
 				  //return "";
@@ -3924,6 +3915,9 @@ public class ServerModel {
 		this.prefixNodeListMapping.clear(); 
 		userInputs.clear();
 		probInputs.clear();
+		
+		this.activeNetwork = "-select-";
+		
 		return "";
 	}
 	
