@@ -503,7 +503,7 @@ public class UserDAO {
     		 savesuccess=true;
     	 }catch (Exception ex) {
     		 savesuccess = false;
-             System.out.println("Error in Save Case Records -->" + ex.getMessage());
+             System.out.println("Error in Save Case Records --> " + ex.getMessage());
           } finally {
              Database.close(con);
          }

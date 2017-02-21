@@ -192,6 +192,9 @@ h4 {
     margin: 10px 0px 0px 0px;
     padding: 0px;
 }
+.warning {
+	color: #E37722;
+}
 
 
 ul { 
@@ -344,7 +347,7 @@ select.correct {
     border-radius: 5px;
     border-style: solid;
     border-width: 3px;
-    border-color: rgba(0,255,0,0.6);
+    border-color: rgba(180,255,180,1.0);
 }
 
 select.incorrect {
@@ -352,7 +355,7 @@ select.incorrect {
     border-radius: 5px;
     border-style: solid;
     border-width: 3px;
-    border-color: rgba(255,0,0,0.8);
+    border-color: rgba(255,0,0,0.7);
 }
 
 p.node-title {
@@ -426,4 +429,29 @@ Absolute-Center.is-Responsive {
 	min-width: 200px;
 	max-width: 400px;
 	padding: 40px;
+}
+
+.messageError {
+	width: 100%;
+	font-size: 12pt;
+	color: #E37722;
+	font-weight: bold;
+	text-align: center;
+	display: block;
+	}
+.messageInfo {
+    width: 100%;
+    font-size: 12pt;
+    color: #66B9BF;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    }
+	
+.errorGroup ul li {
+	width: 100%;
+	text-align: center;
+}
+
+	
 }

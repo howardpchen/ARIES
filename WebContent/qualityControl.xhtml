@@ -1,126 +1,112 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core">
-
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
 
 
 <h:head>
-	<title>Adaptive Radiology Interpretation / Education System
-		(ARIES)</title>
-
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-	<!-- Bootstrap -->
-	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="./resources/js/bootstrap.min.js"></script>
-	<style>
-a {
-	text-decoration: underline;
-}
-
-input[type=checkbox], input[type=radio] {
-	margin-right: 1px;
-	margin-left: 1px;
-}
-
-.nav-tabs {
-	border-bottom: 0px solid #ddd;
-}
-</style>
+    <title>Adaptive Radiology Interpretation / Education System
+        (ARIES)</title>
+    <link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+    <link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/collapseTable.js"></script>
+    <script type="text/javascript" src="./js/skel.min.js"></script>
+    <script type="text/javascript" src="./js/skel-panels.min.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+    <script type="text/javascript" src="./js/modules/data.js"></script>
+    
+    <script type="text/javascript">
+        function onLoadCursor() {
+          document.body.style.cursor='default'; 
+          
+          document.getElementById("menu_clinical")).className = "active";
+          document.getElementById("menu_submit")).className = "inactive";
+          document.getElementById("menu_research")).className = "inactive";
+          document.getElementById("menu_education")).className = "inactive";
+          document.getElementById("menu_qc")).className = "inactive";
+          
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function onWaitCursor() {
+          document.body.style.cursor='wait';    
+        }
+    </script>
 
 </h:head>
+
 <h:body id="bodyStyle">
-    <ui:include src="header.xhtml" />  
+<ui:include src="header.xhtml" />  
 
-	<f:view>
-		<h:form role="form" id="caseInput">
+<h:form id="qc">
+<div class="container-fluid">
 
-			<!-- <div>
+    <!--  Error message reporting -->
+    <div class="row">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6">
+            <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
+            <h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+        </div>
+        <div class="col-xs-3"></div>
+    </div>
+    
+    <div></div>
+    
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Network</h4>
+         </div>
+         <div class="col-xs-10">
+           <div class="input-group">     
+               <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
+                   onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeNetwork}"  reRender="diagnosis" >
+                   <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+                   <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
+               </h:selectOneMenu>
 
-				<a href="/ARIES/">Back To Home</a>
+           </div> 
+        </div>
+    </div>
+    
+   <div></div>
+   
+   <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>CaseNo for QC</h4>
+        </div>
+        <div class="col-xs-10">
+            <h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}" class="registration">
+                <f:selectItem itemLabel="-select-" ></f:selectItem>
+                <f:selectItems value="#{serverModel.selectCaseList}" />
+            </h:selectOneMenu>
+        </div>
+    </div>
+        
+   <div><br /></div>
+   
+   <div class="row form-row">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-10">
+            <h:commandButton id="qcbutton" value="QC" class="btn btn-primary"
+                             action="#{serverModel.doQC}" />
+        </div>
+    </div>
+   
+   <h:inputHidden value="#{serverModel.postQCPageLoad}" />
+</div>
+</h:form>
 
-			</div> -->
-
-			<div class="row">
-
-				<div class="col-md-3"></div>
-				<div class="col-md-6">
-					<h:outputText id="errorMsg" value="#{serverModel.errorMsg}"
-						escape="false"></h:outputText>
-					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-				</div>
-			</div>
-
-			<div class="container">
-				<p>
-					<br />
-				</p>
-				<div class="form-group" style="text-align: center ;">
-				    <div class="col-md-2"></div>
-					<div class="col-md-2" style="color:white">
-						<label for="networkqc">Network :<font color="red">*</font>
-						</label>
-					</div>
-					<div class="input-group" >
-
-
-						<h:selectOneMenu id="networkqc" value="#{serverModel.nwNameforQC}"
-							onchange="this.form.submit()"
-							valueChangeListener="#{serverModel.getQCPrePageLoad}">
-							<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-							<f:selectItems value="#{serverModel.networkNameList}"></f:selectItems>
-						</h:selectOneMenu>
-
-					</div>
-				</div>
-				
-					<div class="form-group" style="text-align: center;">
-					<div class="col-md-2"></div>
-						<div class="col-md-2" style="color:white">
-							<label for="caseNoQC">CaseNo for QC :<font color="red">*</font></label>
-						</div>
-
-						<div class="input-group" >
-							<h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}">
-							<f:selectItem itemLabel="-select-" ></f:selectItem>
-								<f:selectItems value="#{serverModel.selectCaseList}" />
-							</h:selectOneMenu>
-						</div>
-					</div>
-					<div class="row">
-                    <div class="col-md-3"></div>
-					<div class="col-md-2">
-						<h:commandButton id="qcbutton" value="QC" class="btn btn-primary"
-							action="#{serverModel.doQC}" />
-						
-						
-					</div>
-					
-				</div>
-
-				<p>
-					<br />
-				</p>
-				
-				
-			</div>
-			<h:inputHidden value="#{serverModel.postPageLoad1}" />
-			
-			
-		</h:form>
-
-
-	</f:view>
 	<script type="text/javascript">
 	
 	//showOrhideDiv();

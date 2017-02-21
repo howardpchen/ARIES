@@ -44,6 +44,7 @@
 	</script>
 
 </h:head>
+
 <h:body onload="onLoadCursor();">
 
 <ui:include src="header.xhtml" />   
@@ -88,6 +89,25 @@
 	</div>
 
     <div></div>
+    
+     <div class="row form-row">
+        <div class="col-xs-2">
+          <h4>Modality</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:selectOneMenu id="modality" value="#{serverModel.modality}" class="registration">
+                        <f:selectItem itemLabel="-select-"></f:selectItem>
+                        <f:selectItem itemValue="MR" itemLabel="MR"></f:selectItem>
+                        <f:selectItem itemValue="XR" itemLabel="XR"></f:selectItem>
+                        <f:selectItem itemValue="CT" itemLabel="CT"></f:selectItem>
+                </h:selectOneMenu>
+
+            </div>
+        </div>
+    </div>
+                                
+    <div></div>                         
     
     <div class="row form-row">
        <div class="col-xs-2">
@@ -215,22 +235,30 @@
 	    </div> 
     </div>
 
-    <hr />
+
     
     
     <!-- Begin Rows of features/nodes to set -->                                        
     <h:panelGroup rendered="#{serverModel.activeNetwork != '-select-'}" >
-    <div class="row row2"><div class="col-xs-12"><div class="selectdiv">
+    
+    <hr />
+    
+    <div class="row"><div class="col-xs-12"><div class="selectdiv">
             <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
             
+                <!--  Does this prefix have 1 or more nodes to display -->
                 <h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
+                
+                    <!--  Display category name associated with prefix -->
                     <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
                         
-                    <ui:repeat var="feature" id="networkFeatureID" 
-                        value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+                    <!--  Add all nodes associated with prefix, except for disease names -->    
+                    <ui:repeat var="feature" id="networkFeatureID" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
     
+                        <!--  Set current feature for later reference -->
                         <h:outputText value="#{serverModel.currentFeature(feature)}" />
                         
+                        <!-- Feature name and menu of possible values -->
                         <h:selectOneMenu id="sensitivity" 
                             class="features ${serverModel.featureClass(feature)}" 
                             value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
@@ -242,15 +270,24 @@
     
             </ui:repeat>
     </div></div></div>
+    <hr />    
     </h:panelGroup>
     
-    <hr />
+    <div class="row form-row">
+        <div class="col-xs-12">
+            <div class="errorGroup">
+                <h:messages errorClass="messageError" infoClass="messageInfo"/>
+            </div>
+        </div>
+    </div>
+    
+    <div></div>
     
     <div class="row form-row">
         <div class="col-xs-4"></div>
         <div class="col-xs-2"> 
             <h:commandButton id="submit_btn" class="btn btn-block btn-register"
-                             value="Case Submit" action="#{serverModel.save}"
+                             value="Case Submit" action="#{serverModel.submitCase}"
                              reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
         </div> 
         <div class="col-xs-2"> 
@@ -261,12 +298,11 @@
         <div class="col-xs-4"></div>
     </div>
     
-    
     </div>
 
     <h:inputHidden value="#{serverModel.postPageLoad}" />
-
-	</h:form>
+    
+   </h:form>
 	
 	
 	
@@ -340,16 +376,18 @@
         checkMrNum();
         function checkMrNum()
          {
-           document.getElementById("number_error").innterText = "";
+           document.getElementById("number_error").innerText = "";
            document.getElementById("number_error").textContent = "";
            var mrnum = document.getElementById("caseInput:mrNum").value;
+           var mrnumStr = mrnum.toString();
+           var mrnumSize = mrnumStr.length;
            
            if ( isNaN(mrnum) ) {
-               document.getElementById("number_error").innterText = "Only numbers are allowed";
+               document.getElementById("number_error").innerText = "Only numbers are allowed";
                document.getElementById("number_error").textContent = "Only numbers are allowed";
                return true;
            }
-           else if ( 10000 > mrnum )  {
+           else if ( 5 > mrnum.length )  {
                document.getElementById("number_error").innerText = "Only 5 digit numbers are allowed";
                document.getElementById("number_error").textContent = "Only 5 digit numbers are allowed";
                return true;

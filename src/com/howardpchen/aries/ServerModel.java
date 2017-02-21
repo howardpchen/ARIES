@@ -221,6 +221,10 @@ public class ServerModel {
     private String educationNetwork = "-select-";
     private boolean educationNetworkLoaded = false;
     
+    private String educationDxFlag1 = "";
+    private String educationDxFlag2 = "";
+    private String educationDxFlag3 = "";
+    
     private boolean changingEducationNetwork = false;
     
 	public String getEducationNetwork( ) {
@@ -229,6 +233,24 @@ public class ServerModel {
 	
 	public void setEducationNetwork( String network ) {
 		educationNetwork = network;
+	}
+	
+	public String getEducationDxFlag1() {
+		return educationDxFlag1;
+	}
+	
+	public String getEducationDxFlag2() {
+		return educationDxFlag2;
+	}
+	
+	public String getEducationDxFlag3() {
+		return educationDxFlag3;
+	}
+	
+	public void resetEducationDxFlags() {
+		this.educationDxFlag1 = "";
+		this.educationDxFlag2 = "";
+		this.educationDxFlag3 = "";
 	}
 	
 	/* =============================================================
@@ -663,8 +685,12 @@ public class ServerModel {
 	 * @return boolean indicating if he current model contains any features in the passed feature category
 	 */
 	public boolean getNetworkNodeSize(String prefix) {
+		System.out.println("getNetworkNodeSize( " + prefix + " )");
+		
 		for (Map.Entry<String, List<String>> entry : prefixNodeListMapping.entrySet()) {
 			if (entry.getKey().equals(prefix)) {
+				
+				// FIXME - What is this exception? 
 				if (prefix.equals("MS") && entry.getValue().size() == 1) {
 					return false;
 				} else
@@ -677,6 +703,8 @@ public class ServerModel {
 	// CR103 Ends here
 
 	public List<String> getSelectMenuFeatures(String prefix) {
+		System.out.println("getSelectMenuFeatures( " + prefix + " )");
+		
 		List<String> features = new ArrayList<String>();
 		List<String> prefixNodeList = prefixNodeListMapping.get(prefix);
 
@@ -746,7 +774,7 @@ public class ServerModel {
 	 * Get network for case page
 	 */
 	public String getActiveCaseNetwork () {
-		if (debugMode) System.out.println( "getActiveNetwork()" );
+		if (debugMode) System.out.println( "getActiveCaseNetwork()" );
 		return activeCaseNetwork;
 	}
 	
@@ -1141,8 +1169,12 @@ public class ServerModel {
 		// one line change for CR101
 		//System.out.println("getNodeInput()");
 		
-		if (!currentFeature.equals(""))
+		System.out.println("getNodeInput() for currentFeature: " + currentFeature);
+		
+		if (!currentFeature.equals("")) {
+			System.out.println("  --> " + userInputs.get(nodeNameReverseMapping.get(currentFeature)));
 			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
+		}
 		else
 			return "";
 	}
@@ -1163,6 +1195,7 @@ public class ServerModel {
 	}
 
 	public String currentFeature(String cf) {
+		System.out.println("* currentFeature( "+cf+" )");
 		currentFeature = cf;
 		return "";
 	}
@@ -1263,6 +1296,7 @@ public class ServerModel {
 	}
 
 	public String featureClass(String nodeName) {
+		System.out.println( "featureClass( " + nodeName + " )");
 		// old before CR101
 		/*
 		 * if (userInputs.containsKey(nodeName) &&
@@ -1279,8 +1313,6 @@ public class ServerModel {
 				&& !userInputs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
 			return "hasChoice unverified";
 		}
-		
-		// changes starts for CR102,CR103
 		else if ((nodeNameReverseMapping.get(nodeName).equals(highestSISensitiveNodeName)
 				|| nodeNameReverseMapping.get(nodeName).equals(highestSPSensitiveNodeName)
 				|| nodeNameReverseMapping.get(nodeName).equals(highestCLSensitiveNodeName)
@@ -1360,7 +1392,7 @@ public class ServerModel {
 	}
 
 	public List<String> selectMenuInputs(String nodeName) {
-		//System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
+		System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
 		List<String> returnString = new ArrayList<String>();
 
 	
@@ -1373,9 +1405,11 @@ public class ServerModel {
 			returnString.add(nodeName + ":" + key);
 		}
 
+		System.out.println("  -> " + returnString);
 		return returnString;
 	}
 	
+	/*
 	public List<String> selectMenuInputsForResearch(String nodeName) {
 		System.out.println("ServerModel.selectMenuInputsForResearch(" + nodeName + ")" );
 		List<String> returnString = new ArrayList<String>();
@@ -1390,8 +1424,10 @@ public class ServerModel {
 			returnString.add(nodeName + ":" + key);
 		}
 
+		System.out.println("  -> " + returnString);
 		return returnString;
 	}
+	*/
 	
 	
 	public List<String> selectMenuInputsFromCase(String nodeName) {
@@ -1664,7 +1700,7 @@ public class ServerModel {
 	public void setQCPrePageLoad(String pl) {
 		this.pageLoad = pl;
 	}
-	public void getQCPrePageLoad(ValueChangeEvent event){
+	public void qcChangeNetwork(ValueChangeEvent event){
 		
 		clear();
 		String newValue= event.getNewValue().toString();
@@ -1798,33 +1834,16 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 	
-
-	
-	public void caseChangeNetwork(ValueChangeEvent event) {
-		System.out.println("caseChangeNetwork");
-		clearInputs = true;
-	}
-	
-	public String getCasePrePageLoad() {
-		System.out.println("+");
-		System.out.println("+");
-		System.out.println("+");
-		System.out.println("DNET Wrapper session started - Case Input");
+	public void loadNeticaSession() {
 		
-		if ( clearInputs == true ) {
-			System.out.println("clear inputs");
-			userInputs.clear();
-			probInputs.clear();
-			clearInputs = false;
-		}
+		System.out.println("*");
+		System.out.println("*");
+		System.out.println("*");
+		System.out.println("DNET Wrapper session started - " + this.activePage);
 		
-		this.setEvent("");
-		try {
-	        networkNamers = "";
-
-	        if(!"".equals(this.activeNetwork) && !"-select-".equals(this.activeNetwork)) {
-		        String networkFileName = networkNameMap.get(this.activeNetwork);
-		        
+		if (!"".equals(this.activeNetwork) && !"-select-".equals(this.activeNetwork)) {
+			String networkFileName = networkNameMap.get(this.activeNetwork);
+			try {
 		        if ( dw != null ) {
 		        	System.out.println("call: dw.endSession()");
 		        	dw.endSession();
@@ -1832,28 +1851,81 @@ public class ServerModel {
 		        }
 		        
 				dw = new DNETWrapper(PATH + "/" + networkFileName);
-				nodes = dw.getNodeNames();
 				
-				String [] diseases = dw.getStates("Diseases");
-				diseaseNames = Arrays.asList(diseases);
-				Collections.sort(diseaseNames);
-				diseaseNameMap.clear();
-				
-				for ( int i=0; i<diseaseNames.size(); i++) {
-					String formattedName = diseaseNames.get(i).replace("_", " ");
-					diseaseNameMap.put(formattedName, diseaseNames.get(i));
-					diseaseNames.set(i, formattedName);
-				}
-
-				processNodePrefixes();
-				Arrays.sort(nodes);
-	        }
-		} catch (NetworkLoadingException e) {
-			System.out.println("Error loading the network: " + this.activeNetwork);
-
-		} catch (Exception e) {
-			System.out.println("Error converting filename.");
+			} catch (NetworkLoadingException e) {
+				System.out.println("Error loading the network: " + this.activeNetwork);
+	
+			} catch (Exception e) {
+				System.out.println("Error converting filename.");
+			}
 		}
+		else {
+			System.out.println("No active network to load");
+		}
+		
+	}
+	
+	public void unloadNeticaSession() {
+		
+		if (dw != null) {
+			dw.endSession();
+			dw = null;
+		}
+		else {
+			System.out.println("No active Netica session");
+		}
+		
+		System.out.println("DNET Wrapper session ended - " + this.activePage);
+		System.out.println("+");
+		System.out.println("+");
+		System.out.println("+");
+	}
+	
+	public void caseChangeNetwork(ValueChangeEvent event) {
+		System.out.println("caseChangeNetwork");
+		clearInputs = true;
+	}
+	
+	public String getCasePrePageLoad() {
+
+		this.loadNeticaSession();
+		
+		if ( clearInputs == true ) {
+			System.out.println("Clearing inputs for new network: " + this.activeNetwork);
+			userInputs.clear();
+			probInputs.clear();
+			clearInputs = false;
+		   
+			nodes = dw.getNodeNames();
+			
+			// Get disease nodes
+			String [] diseases = dw.getStates("Diseases");
+			diseaseNames = Arrays.asList(diseases);
+			Collections.sort(diseaseNames);
+			
+			// Format disease names for display
+			diseaseNameMap.clear();
+			for ( int i=0; i<diseaseNames.size(); i++) {
+				String formattedName = diseaseNames.get(i).replace("_", " ");
+				diseaseNameMap.put(formattedName, diseaseNames.get(i));
+				diseaseNames.set(i, formattedName);
+			}
+
+			processNodePrefixes();
+			Arrays.sort(nodes);
+		    }
+		else {
+			if (! this.userInputs.isEmpty() ) {
+				System.out.println( "Number of user inputs: " + this.userInputs.size() );
+				for ( Map.Entry<String, String> entry: userInputs.entrySet() ) {
+					System.out.println( "userInput: " + entry.getKey() + " = " + entry.getValue() );
+				}
+			}
+			else {
+				System.out.println("No user inputs for current case");
+			}
+		}
+		
 		if ( debugMode ) System.out.println("End casePrePageLoad()");	
 		return "";
 	}
@@ -2238,6 +2310,12 @@ public class ServerModel {
 
 		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
 		 list = UserDAO.getUserCaseInput(this.getEducationCaseNo());
+		 
+		 System.out.println("Correct Features");
+		 for ( UserCaseInput userCaseInput:list ) {
+			 System.out.println( userCaseInput.getValue() );
+		 }
+		 System.out.println("Check vs. User Inputs");
 
 		 for ( UserCaseInput userCaseInput:list ) {
 			 System.out.println( userCaseInput.getValue() );
@@ -2697,6 +2775,7 @@ public class ServerModel {
 	
 	public void educationChangeNetwork(ValueChangeEvent event) {
 		System.out.println("educationChangeNetwork");
+		this.resetEducationDxFlags();
 		changingEducationNetwork = true;
 		educationNetworkLoaded = false;
 	}
@@ -2772,10 +2851,12 @@ public class ServerModel {
 		//return this.pageLoad;
 	}
 	public void setPrePageLoad(String pl) {
+		System.out.println("setPrePageLoad()");
 		this.pageLoad = pl;
 	}
 	
 	public void setCasePrePageLoad(String pl) {
+		System.out.println("setCasePrePageLoad()");
 		this.pageLoad = pl;
 	}
 
@@ -2853,19 +2934,15 @@ public class ServerModel {
 
 	public String getPostPageLoad() {
 		
+		System.out.println("getPostPageLoad()");
+		
 		settingDisease = false;
 		if ( !probInputs.isEmpty() ) {
 			System.out.println("Clear probInputs");
 			probInputs.clear();
 		}
-		if(dw != null) {
-			dw.endSession();
-			dw = null;
-			System.out.println("DNET Wrapper session ended");
-			System.out.println("+");
-			System.out.println("+");
-			System.out.println("+");
-		}
+		
+		this.unloadNeticaSession();
 
 		return this.pageLoad;
 	}
@@ -2882,6 +2959,7 @@ public class ServerModel {
 		}
 		return this.pageLoad;
 	}
+
 	public void setPostEducationPageLoad(String pl) {
 		this.pageLoad = pl;
 	}
@@ -2891,6 +2969,18 @@ public class ServerModel {
 		dw = null;
 		System.out.println("DNET Wrapper session ended");
 		}
+		return this.pageLoad;
+	}
+	
+	public void setPostQCPageLoad(String pl) {
+		this.pageLoad = pl;
+	}
+	public String getPostQCPageLoad() {
+		if ( dw != null) {
+			dw.endSession();
+			dw = null;
+		}
+		System.out.println("DNET Wrapper session ended - QC");
 		return this.pageLoad;
 	}
 
@@ -3030,7 +3120,9 @@ public class ServerModel {
         getFeatureProbCase();
 		}
 	}
-	public boolean basicCaseValidate(){
+	public boolean basicCaseValidate() {
+		System.out.println("-- basicCaseValidate()");
+		
 		boolean hasErrors = false;
 		
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -3041,7 +3133,7 @@ public class ServerModel {
 		}
 
 
-		if(this.getActiveNetwork().equals("") || "-select-".equalsIgnoreCase(this.getActiveNetwork())){
+		if(this.activeNetwork.equals("") || "-select-".equalsIgnoreCase(this.activeNetwork)){
 			hasErrors = true;
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Error: select network", ""));
@@ -3182,12 +3274,36 @@ public class ServerModel {
 		correctDx = UserDAO.getCorrectDx(this.getEducationCaseNo());
 		}
 		if(!correctDx.equals("")){
-			if((correctDx.equals(this.getFirstDx())) ||( correctDx.equals(this.getSecondDx()) ) || (correctDx.equals(this.getThirdDx()) )){
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "You have selected the Correct Diagnosis : "+correctDx, ""));
-			}else{
-				educationErrorMessages.add("Correct Diagnosis is "+ correctDx +". None of the selected diagnosis is correct! ");
+			
+			this.educationDxFlag1 = "Incorrect";
+			this.educationDxFlag2 = "Incorrect";
+			this.educationDxFlag3 = "Incorrect";
+			
+			boolean correctFound = false;
+			
+			if ( correctDx.equals(this.getFirstDx() ) ) {
+				this.educationDxFlag1 = "Correct!";
+				correctFound = true;
 			}
+			if ( correctDx.equals(this.getSecondDx() ) ) {
+				this.educationDxFlag2 = "Correct!";
+				correctFound = true;
+			}
+			if ( correctDx.equals(this.getThirdDx() ) ) {
+				this.educationDxFlag3 = "Correct!";
+				correctFound = true;
+			}
+			
+			if ( !correctFound ) {
+				this.educationDxFlag1 = "Incorrect - The correct diagnosis is: " + correctDx;
+			}
+			
+			//if((correctDx.equals(this.getFirstDx())) ||( correctDx.equals(this.getSecondDx()) ) || (correctDx.equals(this.getThirdDx()) )){
+			//	FacesContext.getCurrentInstance().addMessage(null,
+			//			new FacesMessage(FacesMessage.SEVERITY_INFO, "You have selected the Correct Diagnosis : "+correctDx, ""));
+			//}else{
+			//	educationErrorMessages.add("Correct Diagnosis is "+ correctDx +". None of the selected diagnosis is correct! ");
+			//}
 		}
 		}else{
 			educationErrorMessages.add("Please Select all the Mandatory Fields before Check Diagnosis");
@@ -3199,51 +3315,56 @@ public class ServerModel {
 	}
 
 	/**
-	 * Save the current case to the database
+	 * Submit case to the database
 	 * @return
 	 */
-	public String save() {
+	public String submitCase() {
+		System.out.println("Attempt to submit case to database");
+		
 		String networkcode = null;
 
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Attempt to save case", ""));
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Attempt to save case line 2", ""));
-		System.out.println("Attempt to save case");
-		
 		
 		if( basicCaseValidate() == true ) {
+			System.out.println("Errors found - case not submitted");
 			return null;
 		}
 		
+		System.out.println("Basic Case Validation Passed");
+		
 		// Save a "Submit Case"
-		if(this.getReviewCase().equalsIgnoreCase("false") && this.getFromQcPage().equalsIgnoreCase("false")){
+		
 		try {
-			networkcode = UserDAO.getCode(this.getNwName());
+			networkcode = UserDAO.getCode(this.networkNameMap.get(this.activeNetwork));
 			CaseList caseList = new CaseList();
 			caseList.setAccession(this.getAccession());
 			caseList.setOrganization(this.getOrganization());
 			caseList.setNetwork(networkcode);
 			caseList.setModality(this.getModality());
 			caseList.setDescription(this.getDescription());
+			
 			if ("Other".equalsIgnoreCase(this.getCorrectDx())) {
 				caseList.setCorrectDx(this.getCorrectDxText());
-			} else {
+			} 
+			else {
 				caseList.setCorrectDx(this.getCorrectDx());
 			}
+			
 			caseList.setPatientid(this.getPatientId());
 			caseList.setAge(this.getAge());
 			caseList.setGender(this.getGender());
 			caseList.setSubmittedDate(new Date());
 			
-			//caseList.setSubmittedBy(user.getUserid());
 			String withoutLastComma = null;
-			if(this.getSupportingDataList().size() > 0){
-			StringBuffer sb = new StringBuffer();
-			for (String supportData : this.getSupportingDataList()) {
-				sb.append(supportData).append(", ");
-			}
-			withoutLastComma = sb.substring(0, sb.length() - ", ".length());
+			if (this.getSupportingDataList().size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (String supportData : this.getSupportingDataList()) {
+					sb.append(supportData).append(", ");
+					}
+				withoutLastComma = sb.substring(0, sb.length() - ", ".length());
 			}
 			caseList.setSupportingData(withoutLastComma);
 			HttpSession session = Util.getSession();
@@ -3258,45 +3379,70 @@ public class ServerModel {
 			int userid = UserDAO.getUserID(username, password);
 			caseList.setSubmittedBy(userid);
 			caseList.setQcperson(this.getQcperson());
-			
+						
 			this.setCaseList(caseList);
-			if (caseListValidation()) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-						"Combination of Organization,MR Number,Network Already exists", ""));
-			} else {
+			
+			if (! this.userInputs.isEmpty() ) {
+				System.out.println( "Number of user inputs: " + this.userInputs.size() );
+				for ( Map.Entry<String, String> entry: userInputs.entrySet() ) {
+					System.out.println( "userInput: " + entry.getKey() + " = " + entry.getValue() );
+				}
+			}
+			if ( ! this.probInputs.isEmpty() ) {
+				System.out.println( "Number of prob inputs: " + this.userInputs.size() );
+			}
+			
+			if ( caseListValidation() ) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"This combination of organization, MR number, and network already exists - Case not submitted", ""));
+				return "caseInput_form?redirect=true";
+			} 
+			else {
 				boolean success = UserDAO.SaveCaseList(caseList);
-				if(success){
-				//this.featureFlag = "true";
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Save Successful!", ""));
-				  if(!probInputs1.isEmpty()){
+				
+				if( success ) {
+					System.out.println("UserDAO.SaveCaseList() returned success");
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Save appears to be a success", ""));
+					
+					// FIXME - is this correct?
+				    if(!probInputs.isEmpty()) {
 				    	userInputsCase.putAll(probInputs1);
 				    	for (Map.Entry<String, String> entry : userInputsCase.entrySet()) {
-				    	if(!entry.getKey().contains("Diseases")){
-				    	UserCaseInput caseinput = new UserCaseInput();
-				    	caseinput.setUserid(userid);
-				    	caseinput.setCaseid(getCaseid());
-				    	caseinput.setSessionid(session.getId());
-				    	caseinput.setEventid(1001);
-				        caseinput.setValue("["+networkcode+"]"+" "+nodeNameDirectMapping.get(entry.getKey())+"="+entry.getValue());
-				        UserDAO.SaveFeature(caseinput);
-				    		}
-					}
-
-				}
+					    	if(!entry.getKey().contains("Diseases")) {
+						    	UserCaseInput caseinput = new UserCaseInput();
+						    	caseinput.setUserid(userid);
+						    	caseinput.setCaseid(getCaseid());
+						    	caseinput.setSessionid(session.getId());
+						    	caseinput.setEventid(1001);
+						        caseinput.setValue("["+networkcode+"]"+" "+nodeNameDirectMapping.get(entry.getKey())+"="+entry.getValue());
+						        //UserDAO.SaveFeature(caseinput);
+					    	}
+				    	}	
+				    }
+				  
+				  // FIXME - reset all form values here
+				    
 				  return "caseInput_form?faces-redirect=true";
+				  //return "";
 				}
 				else{
-					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO, "Save is not Successful!", ""));
+					System.out.println("Failed to submit case");
+					System.out.println("getReviewCase() = " + this.getReviewCase() );
+					System.out.println("getFromQcPage() = " + this.getFromQcPage() );
+					return "caseInput_form?faces-redirect=true";
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return "caseInput_form?faces-redirect=true";
 		}
-		else{
+
+		/*
+		else {
 			if(this.getReviewCase().equalsIgnoreCase("true")){
 			try {
 				networkcode = UserDAO.getCode(this.getNwName());
@@ -3340,10 +3486,10 @@ public class ServerModel {
 				caseList.setSubmittedBy(userid);
 				caseList.setQcperson(this.getQcperson());
 				this.setCaseList(caseList);
-				/*if (this.getCaseid() != 0 && caseListValidation()) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Combination of Organization,MR Number,Network Already exists", ""));
-				} else {*/
+				//if (this.getCaseid() != 0 && caseListValidation()) {
+				//	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+				//			"Combination of Organization,MR Number,Network Already exists", ""));
+				//} else {
 				boolean success = UserDAO.UpdateCaseList(caseList);
 				if(success){
 				  // this.featureFlag = "true";
@@ -3362,6 +3508,8 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 		}
+		*/
+		
 		/*if(this.getFromQcPage().equalsIgnoreCase("true")){
 			try {
 				networkcode = UserDAO.getCode(this.getNwName());
@@ -3453,9 +3601,9 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 		}*/
-		}
-		return "";
-	}
+		//}
+		//return "";
+	//}
 	
 	public String selectionDone(){
 		//this.setFeatureFlag("false");
@@ -3665,7 +3813,7 @@ public class ServerModel {
 		
 	}
 
-	public String actionCompleted(){
+	public String actionCompleted() {
 		
 		// FIXME - do nothing for now, mimic "skip" button
 		return this.clearInput();
@@ -3727,10 +3875,16 @@ public class ServerModel {
 	}
 
 	public boolean caseListValidation() {
+		System.out.println("--caseListValidation()");
 		boolean flag = false;
 		List<CaseList> caselists = null;
 		caselists = UserDAO.getCaseList();
-		String nwcode = UserDAO.getCode(this.getNwName());
+		System.out.println("--this.activeNetwork = " + this.activeNetwork);
+		
+		String nwcode = UserDAO.getCode(this.networkNameMap.get(this.activeNetwork));
+		System.out.println("--nwcode: " + nwcode);
+		
+		
 		for (CaseList caselist : caselists) {
 			if ((this.getOrganization().equalsIgnoreCase(caselist.getOrganization()))
 					&& (this.getPatientId().equalsIgnoreCase(caselist.getPatientid()))
@@ -3743,11 +3897,13 @@ public class ServerModel {
 		return flag;
 	}
 	public String saveUserCaseInput(){
-		System.out.println("cominggg");
+		System.out.println("saveUserCaseInput() - Not yet implemented");
 		return "";
 		
 	}
 	public String clear() {
+		System.out.println("clear()");
+		
 		if(errorMessages != null && errorMessages.size() >0)
 			errorMessages.clear();
 		this.setAccession("");
@@ -3896,6 +4052,8 @@ public class ServerModel {
 	public String getNavRuleClinical() {
 		activePage = PageType.CLINICAL;
 		activeNetwork = availableNetworks.get(0);
+		//if ( !userInputs.isEmpty() ) userInputs.clear();
+		//if ( !probInputs.isEmpty() ) probInputs.clear();
 		//probInputs.clear();
 		//userInputs.clear();
 		if(dw != null){
@@ -3906,9 +4064,12 @@ public class ServerModel {
 		return "index?faces-redirect=true";
 	}
 	public String getNavRuleCase() {
-		//userInputs.clear();
-		//probInputs.clear();
+		System.out.println("getNavRuleCase()");
+		
 		activePage = PageType.CASE;
+		if ( !userInputs.isEmpty() ) userInputs.clear();
+		if ( !probInputs.isEmpty() ) probInputs.clear();
+
 		if(dw!= null){
 			dw.endSession();
 			dw = null;
@@ -3917,9 +4078,10 @@ public class ServerModel {
 		this.setNwName("");;*/
 		clearDefault();
 		this.setFromQcPage("false");
-		this.setActiveNetwork("-select-");
+		this.activeNetwork="-select-";
 		return "caseInput_form?faces-redirect=true";
 	}
+	
 	public String getNavRuleQC() {
 		activePage = PageType.QC;
 		if(dw!= null){
@@ -3939,6 +4101,10 @@ public class ServerModel {
 			dw.endSession();
 			dw = null;
 		}
+		if ( !userInputs.isEmpty() ) userInputs.clear();
+		if ( !probInputs.isEmpty() ) probInputs.clear();
+		this.setActiveNetwork("-select-");
+		this.setResearchNetwork("-select-");
 		/*userInputsForRs.clear();
 		this.setNwNameforResearch("");
     	this.setFirstDx("");
@@ -3961,6 +4127,11 @@ public class ServerModel {
 			dw.endSession();
 			dw = null;
 		}
+		if ( !userInputs.isEmpty() ) userInputs.clear();
+		if ( !probInputs.isEmpty() ) probInputs.clear();
+		this.setActiveNetwork("-select-");
+		this.setEducationNetwork("-select-");
+		
 		/*userInputs.clear();
 		this.setNwNameforEducation("");*/
     	this.setFirstDx("");
@@ -4151,6 +4322,7 @@ public class ServerModel {
 		}
 
 		public void setFirstDx(String firstDx) {
+			if (!firstDx.equals(this.firstDx)) this.educationDxFlag1 = "";
 			this.firstDx = firstDx;
 		}
 
@@ -4159,6 +4331,7 @@ public class ServerModel {
 		}
 
 		public void setSecondDx(String secondDx) {
+			if (!secondDx.equals(this.secondDx)) this.educationDxFlag2 = "";
 			this.secondDx = secondDx;
 		}
 
@@ -4167,6 +4340,7 @@ public class ServerModel {
 		}
 
 		public void setThirdDx(String thirdDx) {
+			if (!thirdDx.equals(this.thirdDx)) this.educationDxFlag3 = "";
 			this.thirdDx = thirdDx;
 		}
 
@@ -4518,16 +4692,18 @@ public class ServerModel {
 
 	public String getEducationErrMsg() {
 		String errMsg;
-		if(educationErrorMessages == null || educationErrorMessages.size() == 0){
+		if(educationErrorMessages == null || educationErrorMessages.size() == 0) {
 			errMsg ="";
-		}else{
+		}
+		else {
 			errMsg = "<FONT COLOR=RED><B><UL>\n";
 			for(String message: educationErrorMessages) {
 				errMsg = errMsg + "<LI>" + message + "\n";
 			}
 			errMsg = errMsg + "</UL></B></FONT>\n";
-			}
-		System.out.println("Err"+errMsg);
+			System.out.println("Education Err: "+errMsg);
+		}
+		
 		return errMsg;
 	}
 

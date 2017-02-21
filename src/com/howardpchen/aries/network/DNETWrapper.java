@@ -109,16 +109,16 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			myNode = net.getNode(nodeName);
 			
 			int st = myNode.getNumStates();
-			System.out.println("Checking " + st + " states");
+			//System.out.println("Checking " + st + " states");
 			
 			float [] priorProbs = null;
 			if ( myNode.hasTable(null) ) {
-				System.out.println("Get CPTable for: " + myNode.getName() );
+				//System.out.println("Get CPTable for: " + myNode.getName() );
 				priorProbs = myNode.getCPTable(null);
-				System.out.println("Got table");
+				//System.out.println("Got table");
 			}
 			else {
-				System.out.println("No CPTable found for:" + myNode.getName() );
+				//System.out.println("No CPTable found for:" + myNode.getName() );
 				radiographic = true;
 				resetCPTable = false;
 			}

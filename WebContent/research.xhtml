@@ -1,198 +1,225 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core">
-
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
 
 
 <h:head>
-	<title>Adaptive Radiology Interpretation / Education System
-		(ARIES)</title>
-
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-	<!-- Bootstrap -->
-	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link href="./css/teststyle.css" rel="stylesheet" type="text/css" />
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="./resources/js/bootstrap.min.js"></script>
+    <title>Adaptive Radiology Interpretation / Education System
+        (ARIES)</title>
+    <link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+    <link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/collapseTable.js"></script>
+    <script type="text/javascript" src="./js/skel.min.js"></script>
+    <script type="text/javascript" src="./js/skel-panels.min.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+    <script type="text/javascript" src="./js/modules/data.js"></script>
+    
+    <script type="text/javascript">
+        function onLoadCursor() {
+          document.body.style.cursor='default'; 
+          
+          document.getElementById("menu_clinical")).className = "active";
+          document.getElementById("menu_submit")).className = "inactive";
+          document.getElementById("menu_research")).className = "inactive";
+          document.getElementById("menu_education")).className = "inactive";
+          document.getElementById("menu_qc")).className = "inactive";
+          
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function onWaitCursor() {
+          document.body.style.cursor='wait';    
+        }
+    </script>
 
 </h:head>
 
-<h:body id="bodyStyle">
-    <ui:include src="header.xhtml" />
-		<h:form id="research">
-		<div class="container-fluid">
+<h:body onload="onLoadCursor();">
 
-			<!--  Error message reporting -->
-			<div class="row">
-				<div class="col-xs-3"></div>
-				<div class="col-xs-6">
-				    <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
-					<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-				</div>
-				<div class="col-xs-3"></div>
-			</div>
-			
-			
-			<div class="row marginRow">
-		     
-			     <!--  Body of Page -->
-				 <div class="col-xs-12">                       
-					       <div class="row marginRow">
-        						 <div class="selectdiv mainmenu">
-        						  
-								        <h2>Select Network:</h2>
-									    <h:selectOneMenu id="network" value="#{serverModel.researchNetwork}" 
-										  onchange="this.form.submit()" valueChangeListener="#{serverModel.researchChangeNetwork}" reRender="diagnosis" >
-										<f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-										<f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
-										</h:selectOneMenu> 
-										
-										<h:inputHidden value="#{serverModel.researchPrePageLoad}" />
-										
-								   </div>
-							</div>
+<ui:include src="header.xhtml" />  
+<h:form id="research">
 
-                            <!--  Feature Buttons -->
-                            <h:panelGroup rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}" >
-                                  
-                             <div class="row row2"><div class="selectdiv">
-                                <h3>Enter Inputs for Accession: #{serverModel.researchAccessionNumber}</h3>
-								<!-- <ui:repeat var="networkPrefix" value="#{serverModel.networkPrefixList}"> -->
-							    <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
-                                    
-									<h:panelGrid id="pg_inputs" cellspacing="2" rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
-										<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+<div class="container-fluid">
 
-										<ui:repeat var="feature" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
-											<h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-											<h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClassRs(feature)}" 
-												value="#{serverModel.researchNodeInput}" onchange="this.form.submit()" valueChangeListener="#{serverModel.saveFeatures}" >
-												<f:selectItems
-													value="#{serverModel.selectMenuInputsForResearch(feature)}" /> 
-											</h:selectOneMenu>
-
-										</ui:repeat>
-									</h:panelGrid>
-
-								</ui:repeat>
-								
-                                <hr />
-    
-							  </div></div>
-							</h:panelGroup>
-								
-							<!--  Diagnosis Menus -->
-							<h:panelGroup rendered="#{not empty serverModel.diseaseTitles and serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0 }">
-
-                                <div class="row form-row">
-                                    <div class="form-group">
-                                        <div class="col-xs-2">
-                                            <label for="diagnosis">First Diagnosis:</label>
-                                        </div>
-                                        <div class="col-xs-10"> 
-                                            <div class="input-group">
-                                                <h:selectOneMenu id="firstdiag"
-                                                    class="registration"
-                                                    value="#{serverModel.firstDx}"> 
-                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
-                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
-                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-                                                </h:selectOneMenu>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                              <div class="row form-row">
-                                    <div class="form-group">
-                                        <div class="col-xs-2">
-                                            <label for="diagnosis">Second Diagnosis:</label>
-                                        </div>
-                                        <div class="col-xs-10"> 
-                                            <div class="input-group">
-                                                <h:selectOneMenu id="seconddiag"
-                                                    class="registration"
-                                                    value="#{serverModel.secondDx}"> 
-                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
-                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
-                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-                                                </h:selectOneMenu>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row form-row">
-                                    <div class="form-group">
-                                        <div class="col-xs-2">
-                                            <label for="diagnosis">Third Diagnosis:</label>
-                                        </div>
-                                        <div class="col-xs-10"> 
-                                            <div class="input-group">
-                                                <h:selectOneMenu id="thirddiag"
-                                                    class="registration"
-                                                    value="#{serverModel.thirdDx}"> 
-                                                    <f:selectItem itemLabel="-select-"></f:selectItem>
-                                                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
-                                                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
-                                                </h:selectOneMenu>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row form-row">
-                                    <div class="form-group">
-                                        <div class="col-xs-2">
-                                            <label for="diagnosis">Comments:</label>
-                                        </div>
-                                        <div class="col-xs-10"> 
-                                            <div class="input-group">
-                                                <h:inputTextarea id="comments" class="form-control" value="#{serverModel.comments}"
-                                                    style="height:80px;width:260px;"></h:inputTextarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-								</h:panelGroup>
-								
-
-								 <div class="form-group">
-									<div class="col-xs-4"></div>
-                                    <div class="col-xs-2"> 
-										<h:commandButton id="skip_btn" class="btn btn-primary" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
-											value="Skip" action="#{serverModel.clearInput}" onclick="this.form.submit()" />
-									</div>
-									<div class="col-xs-2"> 
-										<h:commandButton id="done_btn" class="btn btn-success" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
-											value="Done" action="#{serverModel.actionCompleted}" onclick="this.form.submit()" />
-									</div> 
-									<div class="col-xs-4"></div>
-									
-									
-								</div>
-
-					 </div>
-                              
-					</div>
-
-			
-			<h:inputHidden value="#{serverModel.postResearchPageLoad}" />
-			</div>
-          </h:form>  
-          
+	<!--  Error message reporting -->
+	<div class="row">
+		<div class="col-xs-3"></div>
+		<div class="col-xs-6">
+		    <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
+			<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
+		</div>
+		<div class="col-xs-3"></div>
+	</div>
 	
+	<div></div>
+	
+	<div class="row form-row">
+	    <div class="col-xs-2">
+	        <h4>Network</h4>
+	     </div>
+	     <div class="col-xs-10">
+	       <div class="input-group">     
+	           <h:selectOneMenu id="network" value="#{serverModel.researchNetwork}" class="registration" 
+	               onchange="this.form.submit()" valueChangeListener="#{serverModel.researchChangeNetwork}"  reRender="diagnosis" >
+	               <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+	               <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
+	           </h:selectOneMenu>
+	              
+	           <h:inputHidden value="#{serverModel.researchPrePageLoad}" />
+	       </div> 
+	    </div>
+    </div>
+    
+   <div></div>
+   
+	<!--  Feature Buttons -->   
+    <h:panelGroup rendered="#{serverModel.researchNetwork != '-select-' and serverModel.randomCaseNo == 0}" >
+                                  
+        <div class="row"><div class="col-xs-12"><div class="selectdiv">
+            <h4 class="warning">No cases found for this network</h4>
+        </div></div></div>
+        
+    </h:panelGroup>
+    
+    <div></div>
+        
+    <h:panelGroup rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}" >
+
+        <hr />
+
+        <div class="row"><div class="col-xs-12"><div class="selectdiv">
+            <h4>Enter Inputs for Accession: #{serverModel.researchAccessionNumber}</h4>
+        </div></div></div>              
+
+        <div></div><br />
+        
+        <div class="row"><div class="col-xs-12"><div class="selectdiv">
+        
+            <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
+                            
+	           <h:panelGrid id="pg_inputs" cellspacing="2" rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
+		          <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
+
+		              <ui:repeat var="feature" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+
+			             <h:outputText value="#{serverModel.currentFeature(feature)}" />
+
+			             <h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClassRs(feature)}" 
+				                          value="#{serverModel.researchNodeInput}" onchange="this.form.submit()" valueChangeListener="#{serverModel.saveFeatures}" >
+				            <f:selectItems value="#{serverModel.selectMenuInputsForResearch(feature)}" /> 
+			             </h:selectOneMenu>
+
+		              </ui:repeat>
+	           </h:panelGrid>
+
+            </ui:repeat>
+            
+         </div></div></div>
+         
+         <div></div><br />
+         
+         <div class="row form-row">
+            <div class="col-xs-2">
+                <label for="diagnosis">First Diagnosis:</label>
+            </div>
+            <div class="col-xs-10"> 
+                <div class="input-group">
+                    <h:selectOneMenu id="firstdiag"
+                                     class="registration"
+                                     value="#{serverModel.firstDx}"> 
+                        <f:selectItem itemLabel="-select-"></f:selectItem>
+                        <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                    </h:selectOneMenu>
+                </div>
+             </div>
+         </div>
+         
+         <div></div>
+          
+         <div class="row form-row">
+            <div class="col-xs-2">
+                <label for="diagnosis">Second Diagnosis:</label>
+            </div>
+            <div class="col-xs-10"> 
+                <div class="input-group">
+                    <h:selectOneMenu id="seconddiag"
+                                     class="registration"
+                                     value="#{serverModel.secondDx}"> 
+                        <f:selectItem itemLabel="-select-"></f:selectItem>
+                        <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                    </h:selectOneMenu>
+                </div>
+             </div>
+          </div>
+          
+          <div></div>
+                  
+         <div class="row form-row">
+            <div class="col-xs-2">
+                <label for="diagnosis">Third Diagnosis:</label>
+            </div>
+            <div class="col-xs-10"> 
+                <div class="input-group">
+                    <h:selectOneMenu id="thirddiag"
+                                     class="registration"
+                                     value="#{serverModel.thirdDx}"> 
+                        <f:selectItem itemLabel="-select-"></f:selectItem>
+                        <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                        <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                    </h:selectOneMenu>
+                </div>
+             </div>
+          </div>          
+                               
+          <div></div>
+                                
+          <div class="row form-row">
+            <div class="col-xs-2">
+                <label for="diagnosis">Comments:</label>
+            </div>
+            <div class="col-xs-10"> 
+                <div class="input-group">
+                    <h:inputTextarea id="comments" class="form-control" value="#{serverModel.comments}"
+                                     style="height:80px;width:260px;"></h:inputTextarea>
+                </div>
+            </div>
+          </div>
+        </h:panelGroup>
+        
+        <br />
+								
+
+		<div class="row">
+		  <div class="col-xs-4"></div>
+          <div class="col-xs-2"> 
+		      <h:commandButton id="skip_btn" class="btn btn-primary" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
+							   value="Skip" action="#{serverModel.clearInput}" onclick="this.form.submit()" />
+		  </div>
+		  <div class="col-xs-2"> 
+			  <h:commandButton id="done_btn" class="btn btn-success" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
+							   value="Done" action="#{serverModel.actionCompleted}" onclick="this.form.submit()" />
+		   </div> 
+		   <div class="col-xs-4"></div>
+         </div>
+
+		 <h:inputHidden value="#{serverModel.postResearchPageLoad}" />
+		 
+		</div>
+		
+</h:form>            
 </h:body>
 
 </html>
