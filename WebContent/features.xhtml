@@ -4,27 +4,32 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	>
 
-<div class="row row2"><div class="col-xs-12"><div class="selectdiv">
-        <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
-        
-            <h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
-                <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
-                    
-                <ui:repeat var="feature" id="networkFeatureID" 
-                    value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
-                    <h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-                    <h:selectOneMenu id="sensitivity" 
-                        class="features ${serverModel.featureClass(feature)}" 
-                        value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
-                        <f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
-                    </h:selectOneMenu>
-
-                </ui:repeat>
-            </h:panelGrid>
-
-        </ui:repeat>
-</div></div></div>
+    <div class="row"><div class="col-xs-12"><div class="selectdiv">
+            <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
+            
+                <!--  Does this prefix have 1 or more nodes to display -->
+                <h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
+                
+                    <!--  Display category name associated with prefix -->
+                    <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
+                        
+                    <!--  Add all nodes associated with prefix, except for disease names -->    
+                    <ui:repeat var="feature" id="networkFeatureID" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+    
+                        <!--  Set current feature for later reference -->
+                        <h:outputText value="#{serverModel.currentFeature(feature)}" />
+                        
+                        <!-- Feature name and menu of possible values -->
+                        <h:selectOneMenu id="sensitivity" 
+                            class="features ${serverModel.featureClass(feature)}" 
+                            value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
+                            <f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
+                        </h:selectOneMenu>
+                                
+                    </ui:repeat>
+                </h:panelGrid>
+    
+            </ui:repeat>
+    </div></div></div>
 
 </ui:composition>

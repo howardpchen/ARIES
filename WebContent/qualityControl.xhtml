@@ -26,14 +26,7 @@
     
     <script type="text/javascript">
         function onLoadCursor() {
-          document.body.style.cursor='default'; 
-          
-          document.getElementById("menu_clinical")).className = "active";
-          document.getElementById("menu_submit")).className = "inactive";
-          document.getElementById("menu_research")).className = "inactive";
-          document.getElementById("menu_education")).className = "inactive";
-          document.getElementById("menu_qc")).className = "inactive";
-          
+          document.body.style.cursor='default';          
         }
     </script>
     
@@ -72,8 +65,10 @@
                <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
                    onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeNetwork}"  reRender="diagnosis" >
                    <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-                   <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
+                   <f:selectItems value="#{serverModel.qcNetworkList}"></f:selectItems> 
                </h:selectOneMenu>
+               
+               <h:inputHidden value="#{serverModel.qcPrePageLoad}" />
 
            </div> 
         </div>
@@ -86,9 +81,10 @@
             <h4>CaseNo for QC</h4>
         </div>
         <div class="col-xs-10">
-            <h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}" class="registration">
+            <h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}" class="registration"
+                             onchange="this.form.submit()">
                 <f:selectItem itemLabel="-select-" ></f:selectItem>
-                <f:selectItems value="#{serverModel.selectCaseList}" />
+                <f:selectItems value="#{serverModel.qcIdList}" />
             </h:selectOneMenu>
         </div>
     </div>
@@ -98,12 +94,234 @@
    <div class="row form-row">
         <div class="col-xs-2"></div>
         <div class="col-xs-10">
-            <h:commandButton id="qcbutton" value="QC" class="btn btn-primary"
-                             action="#{serverModel.doQC}" />
+            <h:commandButton id="qcbutton" value="Load Case" class="btn btn-primary" action="#{serverModel.doQC}" />
         </div>
     </div>
    
-   <h:inputHidden value="#{serverModel.postQCPageLoad}" />
+   
+    <!-- Begin Rows of features/nodes to set -->                                        
+    <h:panelGroup rendered="#{serverModel.qcCaseLoaded != 0}" >
+    
+        <hr />
+    
+        <div class="row form-row">
+        <div class="col-xs-2">
+           <h4>Organization</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:selectOneMenu value="#{serverModel.organization}" class="registration"> 
+                    <f:selectItem itemLabel="-select-"></f:selectItem>
+                    <f:selectItem itemValue="CHOP" itemLabel="CHOP"></f:selectItem>
+                    <f:selectItem itemValue="UPHS" itemLabel="UPHS"></f:selectItem>
+                </h:selectOneMenu>
+            </div>
+        </div>
+    </div>
+
+    <div></div>
+    
+     <div class="row form-row">
+        <div class="col-xs-2">
+          <h4>Modality</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:selectOneMenu id="modality" value="#{serverModel.modality}" class="registration">
+                        <f:selectItem itemLabel="-select-"></f:selectItem>
+                        <f:selectItem itemValue="MR" itemLabel="MR"></f:selectItem>
+                        <f:selectItem itemValue="XR" itemLabel="XR"></f:selectItem>
+                        <f:selectItem itemValue="CT" itemLabel="CT"></f:selectItem>
+                </h:selectOneMenu>
+
+            </div>
+        </div>
+    </div>
+                                
+    <div></div>                         
+    
+    <div class="row form-row">
+       <div class="col-xs-2">
+          <h4>Accession</h4>
+       </div>
+       <div class="col-xs-10">
+           <div class="input-group">
+               <h:inputText id="accession" value="#{serverModel.accession}"
+                            onblur="return validate()" class="form-control" />
+           </div>
+           <div id="error" style="color: red;"></div>
+       </div>
+    </div>
+    
+    <div></div>
+    
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>MR Number (Last 5)</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:inputText id="mrNum" value="#{serverModel.patientId}" onblur="return checkMrNum()"
+                             maxlength="5" class="form-control"></h:inputText>
+            </div>
+            <div id="number_error" style="color: red"></div>
+        </div>
+    </div>
+
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Patient Age</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:inputText id="age" value="#{serverModel.age}" class="form-control" maxlength="3" onblur="return checkAge()"/>
+            </div>
+            <div id="age_error" style="color: red"></div>
+        </div>
+    </div>
+
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Gender</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:selectOneRadio id="gender" value="#{serverModel.gender}">
+                    <f:selectItem itemValue="Female" itemLabel="Female"></f:selectItem>
+                    <f:selectItem itemValue="Male" itemLabel="Male"></f:selectItem>
+                </h:selectOneRadio>
+    
+            </div>
+        </div>
+    </div>
+
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Supporting Data</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:selectManyCheckbox id="supportData"
+                    value="#{serverModel.supportingDataList}">
+                    <f:selectItem itemValue="Pathology" itemLabel="Pathology"></f:selectItem>
+                    <f:selectItem itemValue="Laboratory" itemLabel="Laboratory"></f:selectItem>
+                    <f:selectItem itemValue="Clinical History"
+                        itemLabel="Clinical History"></f:selectItem>
+                    <f:selectItem itemValue="Imaging Findings"
+                        itemLabel="Imaging Findings"></f:selectItem>
+                </h:selectManyCheckbox>
+            </div>
+        </div>
+    </div>
+    
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Supporting Data Details</h4>
+        </div>
+        <div class="col-xs-10">
+            <div class="input-group">
+                <h:inputTextarea class="form-control" value="#{serverModel.description}" cols="75" rows="5"></h:inputTextarea>
+            </div>
+        </div>
+    </div>
+
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h4>Correct Diagnosis</h4>
+        </div>
+        <div class="col-xs-10"> 
+            <div class="input-group">
+                <h:selectOneMenu id="diagnosis"
+                    class="registration"
+                    value="#{serverModel.correctDx}"
+                    onchange='this.form.submit()'  
+                    valueChangeListener="#{serverModel.getCorrectDxAction}"> 
+                    
+                    <f:selectItem itemLabel="-select-"></f:selectItem>
+                    <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
+                    <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>
+                </h:selectOneMenu>
+            </div>
+        </div>
+    </div>
+
+    <div></div>
+
+    <div class="row form-row">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-10">
+            <div class="input-group" > 
+                <h:inputText class="form-control" value="#{serverModel.correctDxText}" disabled="#{serverModel.knownDx}"/>
+            </div>
+        </div> 
+    </div>
+    
+    
+    <hr />  
+    
+    <div class="row"><div class="col-xs-12"><div class="selectdiv">
+            <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
+            
+            
+                <!--  Does this prefix have 1 or more nodes to display -->
+                <h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
+                
+                    <!--  Display category name associated with prefix -->
+                    <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
+                        
+                    <!--  Add all nodes associated with prefix, except for disease names -->    
+                    <ui:repeat var="feature" id="networkFeatureID" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+    
+                        <!--  Set current feature for later reference -->
+                        <h:outputText value="#{serverModel.currentFeature(feature)}" />
+                        
+                        <!-- Feature name and menu of possible values -->
+                        <h:selectOneMenu id="sensitivity" 
+                            class="features ${serverModel.featureClass(feature)}" 
+                            value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
+                            <f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
+                        </h:selectOneMenu>
+                                
+                    </ui:repeat>
+                </h:panelGrid>
+    
+            </ui:repeat>
+    </div></div></div>
+    <hr />    
+    
+    <div class="row">
+        <div class="col-xs-3"></div>
+                                        
+        <div class="col-xs-2">
+            <h:commandButton id="done_btn" class="btn btn-success"
+                             value="Submit" action="#{serverModel.qcSelectionDone}" />
+        </div>
+        <div class="col-xs-2">
+            <h:commandButton id="del_btn" class="btn btn-danger"
+                             value="Delete" action="#{serverModel.deleteCaseQC}" />
+        </div>
+                                        
+        <div class="col-md-2">
+            <h:commandButton icon="glyphicon glyphicon-lock" class="btn btn-primary" value="Skip"
+                             action="#{serverModel.skipCaseQC}"/>
+        </div>
+    </div>
+    
+    </h:panelGroup>
+   
+   
+   <h:inputHidden value="#{serverModel.postPageLoad}" />
+
 </div>
 </h:form>
 

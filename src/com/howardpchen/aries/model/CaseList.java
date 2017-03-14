@@ -14,12 +14,14 @@ public class CaseList {
 	private String correctDx;
 	private String patientid;
 	private String network;
-	private int submittedBy;
-	private Date SubmittedDate;
+	private int    submittedBy;
+	private Date   SubmittedDate;
+	private String qualitycontrol;
 	private String age;
 	private String supportingData;
 	private String completed;
 	private String qcperson;
+	private String deleted;
 	private List<String> supportingDataList;
 	
 	public List<String> getSupportingDataList() {
@@ -120,6 +122,22 @@ public class CaseList {
 		this.network = network;
 	}
 
+	
+	public String getDeleted() {
+		return this.deleted;
+	}
+	
+	public void setDeleted( String del ) {
+		this.deleted = del;
+	}
+	
+	public boolean isDeleted() {
+		if ( !(this.deleted == null) && "Yes".equals(this.deleted) ) {
+			return true;
+		}
+		return false;
+	}
+	
 	/*public String getSubmittedBy() {
 		return submittedBy;
 	}
@@ -166,6 +184,19 @@ public class CaseList {
 
 	public void setQcperson(String qcperson) {
 		this.qcperson = qcperson;
+	}
+	
+	public String getQualityControl() {
+		return qualitycontrol;
+	}
+	
+	public void setQualityControl( String qc ) {
+		if ( qc == null ) {
+			this.qualitycontrol = "No";
+		}
+		else {
+			this.qualitycontrol = qc;
+		}
 	}
 
 

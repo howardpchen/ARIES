@@ -27,13 +27,6 @@
 	<script type="text/javascript">
 	    function onLoadCursor() {
        	  document.body.style.cursor='default';	
-       	  
-       	  document.getElementById("menu_clinical")).className = "active";
-          document.getElementById("menu_submit")).className = "inactive";
-          document.getElementById("menu_research")).className = "inactive";
-          document.getElementById("menu_education")).className = "inactive";
-          document.getElementById("menu_qc")).className = "inactive";
-       	  
 	    }
 	</script>
 	
@@ -89,15 +82,14 @@
 												escape="false"></h:outputText>
 										</div> -->
 			
-<!-- Begin Rows of features/nodes to set -->										
+<!-- Begin Rows of features/nodes to set -->									
 <div class="row row2"><div class="col-xs-12"><div class="selectdiv">
 		<ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
 		
 			<h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
 				<h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
 					
-				<ui:repeat var="feature" id="networkFeatureID" 
-					value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+				<ui:repeat var="feature" id="networkFeatureID" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
 
 					<h:outputText value="#{serverModel.currentFeature(feature)}" />
 
@@ -112,6 +104,8 @@
 
 		</ui:repeat>
 </div></div></div>
+
+<!--  <ui:include src="features.xhtml" />  -->
 
 		<!-- changes ends for CR101 -->
 <div></div>

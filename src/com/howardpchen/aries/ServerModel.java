@@ -81,6 +81,11 @@ public class ServerModel {
 	private Map<String, String> userInputsForQc;
 	
 	/**
+	 * Map from network code to username for assigned QC 
+	 */
+	private Map<String, String> qcMap;
+	
+	/**
 	 * User inputs for Research and Education page
 	 */
 	private Map<String, String> userInputsForRs;
@@ -106,8 +111,33 @@ public class ServerModel {
 	 * Name of active subpage
 	 */
 	private enum PageType { HOME, CLINICAL, CASE, RESEARCH, EDUCATION, QC };
-	
 	private PageType activePage = PageType.CLINICAL;
+	
+	public String menuClass( String pageName ) {
+		String className = "inactive";
+		
+		if ( (activePage==PageType.HOME) && pageName.equalsIgnoreCase("home") ) {
+			className = "active";
+		}
+		else if ( (activePage==PageType.CLINICAL) && pageName.equalsIgnoreCase("clinical") ) {
+			className = "active";
+		}
+		else if ( (activePage==PageType.CASE) && pageName.equalsIgnoreCase("case") ) {
+			className = "active";
+		}
+		else if ( (activePage==PageType.RESEARCH) && pageName.equalsIgnoreCase("research") ) {
+			className = "active";
+		}
+		else if ( (activePage==PageType.EDUCATION) && pageName.equalsIgnoreCase("education") ) {
+			className = "active";
+		}
+		else if ( (activePage==PageType.QC) && pageName.equalsIgnoreCase("qc") ) {
+			className = "active";
+		}
+		
+		return className;
+	}
+	
 	
 	/**
 	 * List of descriptive names for available networks
@@ -125,6 +155,11 @@ public class ServerModel {
 	private Map<String,String> networkCodeMap = new HashMap<String,String>();
 	
 	/**
+	 * Map from network code to descriptive network name
+	 */
+	private Map<String,String> networkReverseCodeMap = new HashMap<String,String>();
+	
+	/**
 	 * Map from network filename to descriptive name
 	 */
 	private Map<String,String> networkFileMap = new HashMap<String,String>();  
@@ -139,6 +174,15 @@ public class ServerModel {
 	 */
 	private List<String> networkNameList = new ArrayList<String>();
 	
+	/**
+	 * List of network assigned to current user for QC
+	 */
+	private List<String> qcNetworkList = new ArrayList<String>();
+	
+	/** 
+	 * Map from network to assigned QC case list for current user
+	 */
+	private Map<String, List<CaseList> > qcCaseMap = new HashMap<String, List<CaseList> >();
 	
 	/**
 	 * Netica wrapper
@@ -283,12 +327,16 @@ public class ServerModel {
 	/* =============================================================
 	 * For QC Page
 	 * ============================================================= */
-    private int caseNoforQC;
+    private int caseNoforQC = 0;
     private String caseNoforQCSetter;   
 	private String reviewCase="false";
     private String qcperson;
     private String fromQcPage = "false";
     
+    /**
+     * Is there a currently loaded QC case
+     */
+    private int qcCaseLoaded = 0;
     
 	/* =============================================================
 	 * For Unknown Page
@@ -328,12 +376,15 @@ public class ServerModel {
 	public void setCaseNoforQCSetter(String caseNoforQCSetter) {
 		String[] cast;
 		int val = 0;
-		if(!("").equalsIgnoreCase(caseNoforQCSetter) && caseNoforQCSetter!=null ){
+		if( !("").equalsIgnoreCase(caseNoforQCSetter) && (caseNoforQCSetter!=null) &&
+			( !"-select".equalsIgnoreCase(caseNoforQCSetter))) {
 			cast = caseNoforQCSetter.split("-");
-			val= Integer.parseInt(cast[0]); 
+			val = Integer.parseInt(cast[0]); 
 		}
 		this.caseNoforQC = val; 
 		this.caseNoforQCSetter = caseNoforQCSetter;
+		this.qcCaseLoaded = 0;
+		System.out.println("caseNoforQC set to: " + this.caseNoforQC);
 	}
 
     
@@ -531,6 +582,7 @@ public class ServerModel {
 			System.out.println("Checking info for file: " + netFileName);
 			
 			String desc = "";
+			String qc = "";
 			
 			String baseName = netFileName.split(".dne")[0];
 			String[] nameParts  = baseName.split("_");
@@ -543,7 +595,9 @@ public class ServerModel {
 					String[] networkEntry = line.split(",");
 					if (networkEntry[0].equals(code) ) {
 						desc = networkEntry[1] + " - " + networkEntry[2] + " (ver. " + version + ")";
+						qc = networkEntry[3];
 					}
+					
 				}
 				
 				reader.close();
@@ -560,6 +614,9 @@ public class ServerModel {
 			networkNameMap.put( desc, netFileName );
 			networkFileMap.put( netFileName, desc );
 			networkCodeMap.put( desc, code );
+			networkReverseCodeMap.put(code, desc);
+			
+			qcMap.put( code, qc );
 
 		}
 		
@@ -578,6 +635,10 @@ public class ServerModel {
 		probInputs1 = new HashMap<String, String>();
 		userInputsCase = new HashMap<String, String>();
 		
+		qcMap = new HashMap<String,String>();
+		qcNetworkList = new ArrayList<String>();
+		qcCaseMap = new HashMap<String, List<CaseList> >();
+		
 		// Manually fix feature prefix descriptions (SI=signal, etc)
 		populateNetworkList();
 		
@@ -585,6 +646,21 @@ public class ServerModel {
     
 		System.out.println("Read all network file descriptions");
 		getAriesNetworkFileDescriptions();
+		
+		HttpSession session = Util.getSession();
+		String username = null;
+		if(session.getAttribute("username") != null){
+			username = session.getAttribute("username").toString();
+		}
+
+		for ( Map.Entry<String,String> networkQC : qcMap.entrySet() ) {
+			if ( networkQC.getValue().equals(username) ) {
+				qcNetworkList.add( networkReverseCodeMap.get( networkQC.getKey()) );
+			}
+		}
+		
+		this.loadQCCaseMap();
+				
 				
 		// Default for clinical page
 		activeNetwork = availableNetworks.get(0);
@@ -623,6 +699,57 @@ public class ServerModel {
 
 	}
 
+	private void loadQCCaseMap( ) {
+		
+		System.out.println("loadQCCaseMap()");
+		this.qcCaseMap.clear();
+
+		for (String nw : this.qcNetworkList ) {
+			List<CaseList> cases = this.loadQCCases(nw);
+			this.qcCaseMap.put(nw, cases);
+		}
+		
+	}
+	
+	private List<CaseList> loadQCCases( String network ) {
+		System.out.println("loadQCCases("+network+")");
+		
+		String networkCode = this.networkCodeMap.get(network);
+		
+		List<CaseList> caseList = new ArrayList<CaseList>();
+		
+		List<CaseList> allCases = UserDAO.getCaseList();
+		for ( CaseList i : allCases ) {
+			//System.out.println("Scanning case " + i.getCaseid()  + " in: " + i.getNetwork() );
+			//System.out.println("  --> " + i.getQualityControl() );
+			if ( i.getNetwork().equals(networkCode) && i.getQualityControl().equals("No") && 
+				 !i.isDeleted()	) {
+				caseList.add( i );
+				System.out.println("Adding case " + i.getAccession() + "(" + i.getCaseid() + ")" + " for " + network);
+			}
+ 		}
+		
+		return caseList;
+	}
+	
+	public List<String> getQcIdList( ) {
+		return getQCIdListByNetwork( this.activeNetwork );
+	}
+	
+	public List<String> getQCIdListByNetwork(String network) {
+		List<CaseList> cases = loadQCCases(network);
+		List<String> idList = new ArrayList<String>();
+		
+		for ( CaseList i : cases ) {
+			//String caseid = "NA";
+			//if ( !( i.getCaseid() == null ) ) {
+			//	caseid = i.getCaseid();
+			//}
+			idList.add(Integer.toString(i.getCaseid()));
+		}
+		return idList;
+	}
+	
 	// changes starts for CR101
 
 	private void populateNetworkList() {
@@ -645,6 +772,7 @@ public class ServerModel {
 	 */
 	public List<String> getNetworkPrefixList() {
 		System.out.println("ServerModel.getNetworkPrefixList()");
+		System.out.println(" -- prefix list size: " + networkPrefixList.size() );
 		return networkPrefixList;
 	}
 
@@ -721,7 +849,7 @@ public class ServerModel {
 	}
 
 	/*
-	 * Read in all network node names for menus. Strip of the prefix that indicates
+	 * Read in all network node names for menus. Strip off the prefix that indicates
 	 * a category (signal, clinical, etc) and remove underscores for readability
 	 * Fill in:
 	 *   nodeNameDirectMapping:  Netica name  -> Display name
@@ -818,6 +946,14 @@ public class ServerModel {
 	public List<String> getAvailableNetworks() {
 		if ( debugMode ) System.out.println( "getAvailableNetworks()");
 		return availableNetworks;
+	}
+	
+	public List<String> getQcNetworkList() {
+		return this.qcNetworkList;
+	}
+	
+	public boolean getQcNetworkListExists() {
+		return ( this.qcNetworkList.size() > 0 );
 	}
 	
 	/*
@@ -1395,7 +1531,14 @@ public class ServerModel {
 		System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
 		List<String> returnString = new ArrayList<String>();
 
-	
+		String nodeNeticaName = nodeNameReverseMapping.get(nodeName);
+		if ( nodeNeticaName != null ) {
+			System.out.println("  -- node Netica name:" + nodeNeticaName);
+		}
+		else {
+			System.out.println("  -- No mapping found for this node");
+		}
+		
 		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);	
 		Set<String> s = values.keySet();
 		Iterator<String> it = s.iterator();
@@ -1700,28 +1843,43 @@ public class ServerModel {
 	public void setQCPrePageLoad(String pl) {
 		this.pageLoad = pl;
 	}
+	
+	
 	public void qcChangeNetwork(ValueChangeEvent event){
 		
-		clear();
+		System.out.println("qcChangeNetwork()");
+		
 		String newValue= event.getNewValue().toString();
 		String oldValue = "";
 		if(event.getOldValue()!= null){
 			oldValue = event.getOldValue().toString();
 		}
-		if(newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+		
+		if(  newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
+			clear(true);
+			this.activeNetwork = newValue;
+			this.caseNoforQC = 0;
+			System.out.println("Clearing inputs for new qc network: " + this.activeNetwork);
 
-			caseListforNw.clear(); 
-	    	String code = null;  
-	    	String username = null;
-	    	HttpSession session = Util.getSession();
-	    	if(session.getAttribute("username") != null)
-				username = session.getAttribute("username").toString();
-				//if(session.getAttribute("password") != null) 
-				//password = session.getAttribute("password").toString();
-				//int userid = UserDAO.getUserID(username, password);
-				
-			code= UserDAO.getCode(newValue);
-	    	caseListforNw.addAll(UserDAO.getCaseIdforQC(code,username));
+			this.loadNeticaSession();
+			nodes = dw.getNodeNames();
+			
+			// Get disease nodes
+			String [] diseases = dw.getStates("Diseases");
+			diseaseNames = Arrays.asList(diseases);
+			Collections.sort(diseaseNames);
+			
+			// Format disease names for display
+			diseaseNameMap.clear();
+			for ( int i=0; i<diseaseNames.size(); i++) {
+				String formattedName = diseaseNames.get(i).replace("_", " ");
+				diseaseNameMap.put(formattedName, diseaseNames.get(i));
+				diseaseNames.set(i, formattedName);
+			}
+
+			processNodePrefixes();
+			Arrays.sort(nodes);
+			 
 	    }
 		
 		
@@ -1782,10 +1940,10 @@ public class ServerModel {
 	}
 	
 	
-	public void getDWInfo(){
-		String newValue = this.getNwNameforQC();
+	public void getDWInfo() {
+		String newValue = this.activeNetwork;
 		
-		if(newValue!= null && !newValue.equalsIgnoreCase("--select--") ){
+		if( newValue != null && !newValue.equalsIgnoreCase("-select-") ){
 			try {
 				Map<String, Double> values = new HashMap<String, Double>();
 				Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
@@ -2860,6 +3018,60 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 
+	public void setQcPrePageLoad(String pl) {
+		System.out.println("setQcPrePageLoad()");
+		this.pageLoad = pl;
+	}
+	
+	public int getQcCaseLoaded() {
+		return this.qcCaseLoaded;
+	}
+	
+	public String getQcPrePageLoad() {
+
+		this.loadNeticaSession();
+		
+		if ( clearInputs == true ) {
+			System.out.println("Clearing inputs for new network: " + this.activeNetwork);
+			userInputs.clear();
+			probInputs.clear();
+			clearInputs = false;
+		   
+			nodes = dw.getNodeNames();
+			
+			// Get disease nodes
+			String [] diseases = dw.getStates("Diseases");
+			diseaseNames = Arrays.asList(diseases);
+			Collections.sort(diseaseNames);
+			
+			// Format disease names for display
+			diseaseNameMap.clear();
+			for ( int i=0; i<diseaseNames.size(); i++) {
+				String formattedName = diseaseNames.get(i).replace("_", " ");
+				diseaseNameMap.put(formattedName, diseaseNames.get(i));
+				diseaseNames.set(i, formattedName);
+			}
+
+			processNodePrefixes();
+			Arrays.sort(nodes);
+		    }
+		else {
+			if (! this.userInputs.isEmpty() ) {
+				System.out.println( "Number of user inputs: " + this.userInputs.size() );
+				for ( Map.Entry<String, String> entry: userInputs.entrySet() ) {
+					System.out.println( "userInput: " + entry.getKey() + " = " + entry.getValue() );
+				}
+			}
+			else {
+				System.out.println("No user inputs for current case");
+			}
+		}
+		
+		if ( debugMode ) System.out.println("End qcPrePageLoad()");	
+		return "";
+	}
+	
+	
 	/*
 	 * Pre page loader for Clinical page
 	 */
@@ -3411,7 +3623,7 @@ public class ServerModel {
 				    }
 				  
 				  // FIXME - reset all form values here or leave that to user?
-				  this.clear();
+				  this.clear(false);
 				    
 				  return "caseInput_form?faces-redirect=true";
 				  //return "";
@@ -3608,8 +3820,6 @@ public class ServerModel {
 		this.setModality("");
 		this.setCorrectDx("");
 		this.setPatientId("");
-		//this.setNwName("");
-		//this.setNwNameforQC("");
 		this.setCorrectDx("");
 		this.setCorrectDxText("");
 		this.setAge("");
@@ -3621,6 +3831,8 @@ public class ServerModel {
 		//return "login?faces-redirect=true";
 		return "caseInput_form?faces-redirect=true";
 	}
+	
+	
 	public String qcSelectionDone(){
 		String networkcode = null;
 		
@@ -3739,21 +3951,21 @@ public class ServerModel {
 		return "";
 	}
 	
-	public String deleteCase(){
+	public String deleteCaseQC(){
 		UserDAO.deleteCaseList(this.getCaseNoforQC());
-		//this.setFeatureFlag("false");
-		userInputs.clear();
-		userInputsForQc.clear();
-		clear();
-		this.setQcperson("");
+		clear(true);
 		return "qualityControl?faces-redirect=true";
 	}
+	
     public String backtoLogin(){
 		 return "login?faces-redirect=true";
 	}
-    public String backtoQc(){
-		 return "qualityControl?faces-redirect=true";
+    
+    public String skipCaseQC() {
+    	clear(false);
+		return "qualityControl?faces-redirect=true";
 	}
+    
 	public String educationCompleted(){
 		this.setEducationErrMsg("");
 		if(EducationCaseValidate() == true){
@@ -3892,11 +4104,16 @@ public class ServerModel {
 		return "";
 		
 	}
-	public String clear() {
+	public String clear(boolean resetActiveNetwork) {
 		System.out.println("clear()");
 		
-		if(errorMessages != null && errorMessages.size() >0)
+		if(errorMessages != null && errorMessages.size() > 0 )
 			errorMessages.clear();
+		this.qcCaseLoaded = 0;
+		this.caseNoforQC = 0;
+		this.caseNoforQCSetter = "-select-";
+		
+		this.settingDisease = false;
 		this.setAccession("");
 		this.setOrganization("");
 		this.setDescription("");
@@ -3909,14 +4126,19 @@ public class ServerModel {
 		this.setCorrectDxText("");
 		this.setAge("");
 		this.setGender("");
-		//this.setQcperson("");
+		this.setQcperson("");
 		this.setSupportingDataList(new ArrayList<String>());
 		//this.setQcFlag("false");
-		this.prefixNodeListMapping.clear(); 
-		userInputs.clear();
-		probInputs.clear();
 		
-		this.activeNetwork = "-select-";
+		if ( !userInputs.isEmpty() ) userInputs.clear();
+		if (! probInputs.isEmpty() ) probInputs.clear();
+		
+		if ( resetActiveNetwork ) {
+		  this.prefixNodeListMapping.clear(); 
+		  this.activeNetwork = "-select-";
+		}
+
+		this.unloadNeticaSession();
 		
 		return "";
 	}
@@ -4041,47 +4263,57 @@ public class ServerModel {
 		this.setSupportingDataList(new ArrayList<String>());
 		//this.setQcFlag("false");
 	}
-
 	
+	/*
+	 * Go to Home page
+	 */
+	public String getNavRuleHome() {
+		this.clear(true);
+		this.unloadNeticaSession();
+		
+		this.activePage = PageType.HOME;
+		this.prefixNodeListMapping.clear();
+		this.activeNetwork = null;
+
+		return "home?faces-redirect=true";
+	}
+
+	/*
+	 * Go to clinical page
+	 */
 	public String getNavRuleClinical() {
-		activePage = PageType.CLINICAL;
-		activeNetwork = availableNetworks.get(0);
-		//if ( !userInputs.isEmpty() ) userInputs.clear();
-		//if ( !probInputs.isEmpty() ) probInputs.clear();
-		//probInputs.clear();
-		//userInputs.clear();
-		if(dw != null){
-			dw.endSession();
-			dw = null;
-		}
-		//this.setActiveNetwork( "" );
+		this.clear(true);
+		this.unloadNeticaSession();
+		
+		this.activePage = PageType.CLINICAL;
+		this.prefixNodeListMapping.clear();
+		this.activeNetwork = availableNetworks.get(0);
+
 		return "index?faces-redirect=true";
 	}
+	
+	/*
+	 * Go to Submit Case page
+	 */
 	public String getNavRuleCase() {
 		System.out.println("getNavRuleCase()");
 		
-		activePage = PageType.CASE;
-		if ( !userInputs.isEmpty() ) userInputs.clear();
-		if ( !probInputs.isEmpty() ) probInputs.clear();
+		this.clear(true);
+		this.unloadNeticaSession();
+		
+		this.activePage = PageType.CASE;
+		this.fromQcPage = "false";
 
-		if(dw!= null){
-			dw.endSession();
-			dw = null;
-		}
-		/*clearDefault();
-		this.setNwName("");;*/
-		clearDefault();
-		this.setFromQcPage("false");
-		this.activeNetwork="-select-";
 		return "caseInput_form?faces-redirect=true";
 	}
 	
+	/*
+	 * Got to QC [age
+	 */
 	public String getNavRuleQC() {
-		activePage = PageType.QC;
-		if(dw!= null){
-			dw.endSession();
-			dw = null;
-		}
+		this.clear(true);
+		this.activePage = PageType.QC;
+		
 		/*userInputsForQc.clear();
 		this.setNwNameforQC("");
 		clearDefault();*/
@@ -4089,14 +4321,18 @@ public class ServerModel {
 		this.setFromQcPage("true");
 		return "qualityControl?faces-redirect=true";
 	}
+	
+	/*
+	 * Go to Research page
+	 */
 	public String getNavRuleResearch() {
+		this.clear(true);
 		activePage = PageType.RESEARCH;
 		if(dw!= null){
 			dw.endSession();
 			dw = null;
 		}
-		if ( !userInputs.isEmpty() ) userInputs.clear();
-		if ( !probInputs.isEmpty() ) probInputs.clear();
+
 		this.setActiveNetwork("-select-");
 		this.setResearchNetwork("-select-");
 		/*userInputsForRs.clear();
@@ -4115,6 +4351,10 @@ public class ServerModel {
 		this.setCorrectDxList(new ArrayList<String>());
 		return "research?faces-redirect=true";
 		}
+	
+	/* 
+	 * Go to Education page
+	 */
 	public String getNavRuleEducation() {
 		activePage = PageType.EDUCATION;
 		if(dw!= null){
@@ -4599,57 +4839,77 @@ public class ServerModel {
 	    	
 	    }
 	 
-	 public String doQC(){
+	 public String doQC() {
 		 
+		 System.out.println("doQC()");
+		 System.out.println("  -- for case: " + caseNoforQC);
 		 
-			 errorMessages = new ArrayList<String>();
+		 errorMessages = new ArrayList<String>();
 		
-		 if(("".equals(this.getNwNameforQC())) || ("-select-".equals(this.getNwNameforQC()))
+		 if(("".equals(this.activeNetwork)) || ("-select-".equals(this.activeNetwork))
 				 || ("".equals(this.getCaseNoforQCSetter())) || ("-select-".equals(this.getCaseNoforQCSetter()))){
 			 errorMessages.add("Please Select the Mandatory Fields.");
+			 System.out.println("  -- No Case selected");
 			 return "";
 		 }
+		 
 		 //String nwcode = UserDAO.getCode(this.getNwNameforQC());
 	       // UserDAO.UpdateCaseList(this.getCaseNoforQC(),nwcode,"Yes");
 		 this.setFromQcPage("true");
-		 userInputsForQc.clear();
+		 //userInputs.clear();
+		 
 		 CaseList caselist = new CaseList();
 		// this.setCase(caselist.getCaseid());
 		 
+		 
+		 
 		 caselist = UserDAO.getCaseList(caseNoforQC);
-		 if(caselist != null){
-		 String nwname = UserDAO.getNwName(caselist.getNetwork());
-		 this.setNwName(nwname);
-		 getDWInfo();
-		 this.setOrganization(caselist.getOrganization());
-		 this.setModality(caselist.getModality());
-		 this.setAccession(caselist.getAccession());
-		 this.setPatientId(caselist.getPatientid());
-		 this.setAge(caselist.getAge());
-		 this.setGender(caselist.getGender());
-		 this.setDescription(caselist.getDescription());
-		 this.setCorrectDx(caselist.getCorrectDx());
-		 //System.out.println("caselist.getCorrectDx() :"+this.getCorrectDx());
-		 this.setSupportingDataList(caselist.getSupportingDataList());
-		 this.setQcperson(caselist.getQcperson());
-		// UserCaseInput usercaseinput = new UserCaseInput();
-		// this.setQcFlag("true");
-		// this.setFeatureFlag("false"); 
-		// QualityForm qForm = new QualityForm();
-		// qForm.setQcFlag("true"); 
-		 this.setEvent("FEATURE ENTERED");
-		 String[] input = new String[0];
-		// List<String> values = new ArrayList<String>();
-		 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
-		 list = UserDAO.getUserCaseInput(caseNoforQC);
-		 for(UserCaseInput userCaseInput:list){
-			 input = userCaseInput.getValue().split("] ");
-			// values.add(input[1]);
-			 String[] val = input[1].split("=");
-			 userInputsForQc.put(nodeNameReverseMapping.get(val[0]),val[1]);
-		 }
+		 if ( caselist != null ) {
+			 this.qcCaseLoaded = 1;
+			 //String nwname = UserDAO.getNwName(caselist.getNetwork());
+			 //this.setNwName(nwname);
+			 //getDWInfo();
+			 
+			 
+			 this.setOrganization(caselist.getOrganization());
+			 this.setModality(caselist.getModality());
+			 this.setAccession(caselist.getAccession());
+			 this.setPatientId(caselist.getPatientid());
+			 this.setAge(caselist.getAge());
+			 this.setGender(caselist.getGender());
+			 this.setDescription(caselist.getDescription());
+			 this.setCorrectDx(caselist.getCorrectDx());
+			 //System.out.println("caselist.getCorrectDx() :"+this.getCorrectDx());
+			 this.setSupportingDataList(caselist.getSupportingDataList());
+			 this.setQcperson(caselist.getQcperson());
+			// UserCaseInput usercaseinput = new UserCaseInput();
+			// this.setQcFlag("true");
+			// this.setFeatureFlag("false"); 
+			// QualityForm qForm = new QualityForm();
+			// qForm.setQcFlag("true"); 
+			 
+			 this.setEvent("FEATURE ENTERED");
+			 String[] input = new String[0];
+			// List<String> values = new ArrayList<String>();
+			 
+			 List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+			 list = UserDAO.getUserCaseInput(caseNoforQC);
+			 
+			 System.out.println("userInput size: " + userInputs.size() );
+			 
+			 for (UserCaseInput userCaseInput:list) {
+				 System.out.println( "  -- case input value: " + userCaseInput.getValue());
+				 input = userCaseInput.getValue().split("] ");
+				// values.add(input[1]);
+				 if ( input.length > 1 ) {
+					 String[] val = input[1].split("=");
+					 userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+				 }
+			 }
 		 } 
-		 return "qualityControl2";
+		 return "qualityControl";
+		 
+		 //return "caseInput_form?faces-redirect=true";
 	 }
 	
 	public int getCaseNoforQC() {

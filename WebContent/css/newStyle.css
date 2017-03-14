@@ -35,14 +35,21 @@ body {
 a {
 	color: #66B9BF;
 }
-a:active {
+
+
+/*a:active {
 	color: #333333;
 }
-a:hover {
+*/
+a.inactive:hover {
+	color: #07889B;
+}
+a.active:hover {
 	color: #E37722;
 }
 
-p {
+
+p, table {
 	margin-left: 20px;
 	margin-right: 20px;
 	margin-top: 0px;
@@ -101,13 +108,21 @@ ul.nav {
     border-color: #333;
 }
 
+/* Text in main menu buttons */
 .nav-pills > li > a {
 	border: medium none;
-	color: #66B9BF;
-	font-weight: bold;
 	font-size: 12pt;
+	font-weight: bold;
 	text-align: center;
 }
+.inactive {
+	color: #66B9BF;
+}
+.active {
+    color: #E37722;
+}
+
+
 
 /* Space below the menu bar*/
 ul.nav-pills {
@@ -207,6 +222,12 @@ li {
 	padding:0 10px; 
 	margin:0; 
 	}
+
+li.lined {
+    display: block;
+    float: left;
+    color: #555;
+}
 	
 .mainmenu > h2 {
 	text-align: right;

@@ -1,15 +1,71 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      >
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        <h:form>       
-            <p>Welcome, #{loginBean.uname}</p>
-        <h:commandButton action="#{loginBean.logout}" value="Logout" ></h:commandButton>
-    </h:form>
-    </h:body>
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
+
+
+<h:head>
+    <title>Adaptive Radiology Interpretation / Education System
+        (ARIES)</title>
+    <link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+    <link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/collapseTable.js"></script>
+    <script type="text/javascript" src="./js/skel.min.js"></script>
+    <script type="text/javascript" src="./js/skel-panels.min.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+    <script type="text/javascript" src="./js/modules/data.js"></script>
+    
+    <script type="text/javascript">
+        function onLoadCursor() {
+          document.body.style.cursor='default'; 
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function onWaitCursor() {
+          document.body.style.cursor='wait';    
+        }
+    </script>
+
+</h:head>
+<h:body onload="onLoadCursor();">
+
+<ui:include src="header.xhtml" />  
+
+<p>About ARIES</p>
+<br />
+
+<div class="row">
+    <div class="col-xs-12">
+        <table>
+            <tr><th>Available Networks</th></tr>
+	        <ui:repeat var="network" value="#{serverModel.availableNetworks}">
+	            <tr><td><h:outputText value="#{network}"></h:outputText></td></tr>
+	        </ui:repeat>
+	    </table>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <table>
+            <tr><th>User QC Networks</th></tr>
+            <ui:repeat var="network" value="#{serverModel.qcList}">
+                <tr><td><h:outputText value="#{network}"></h:outputText></td></tr>
+            </ui:repeat>
+        </table>
+    </div>
+</div>
+
+</h:body>
 </html>

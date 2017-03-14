@@ -674,8 +674,9 @@ public class UserDAO {
              con = Database.getConnection();
              statement = con.createStatement();
              ResultSet rs = statement.executeQuery(query);
-             while(rs.next()){
+             while ( rs.next() ) {
             	 obj = new CaseList();
+            	 System.out.println("SQL query returned for caseid: " + rs.getInt("caseid"));
             	 obj.setCaseid(rs.getInt("caseid"));
             	 obj.setAccession(rs.getString("accession"));
             	 obj.setOrganization(rs.getString("organization"));
@@ -683,23 +684,24 @@ public class UserDAO {
             	 obj.setModality(rs.getString("modality"));
             	 obj.setAnatomy(rs.getString("anatomy"));
             	 obj.setCorrectDx(rs.getString("correctdx"));
-            	 System.out.println(rs.getString("correctdx"));
             	 obj.setPatientid(rs.getString("patientid"));
             	 obj.setNetwork(rs.getString("network"));
             	 obj.setCompleted(rs.getString("completed"));
             	 obj.setQcperson(rs.getString("qcperson"));
             	 obj.setAge(rs.getString("age"));
             	 obj.setGender(rs.getString("gender"));
-            	 System.out.println(rs.getString("supportingData"));
+            	 
+            	 //System.out.println(rs.getString("supportingData"));
             	 String supportData = rs.getString("supportingData");
-            	 String[] supportDataArray = supportData.split(", ");
-            			
-            	 List<String> newList = new ArrayList<String>(Arrays.asList(supportDataArray));
-            	 obj.setSupportingDataList(newList);
+            	 if ( supportData != null ) {
+            		 String[] supportDataArray = supportData.split(", ");
+            		 List<String> newList = new ArrayList<String>(Arrays.asList(supportDataArray));
+            		 obj.setSupportingDataList(newList);
+            	 }
             	
              }
          } catch (Exception ex) {
-             System.out.println("Error in getCaseList() -->" + ex.getMessage());
+             System.out.println("Error in getCaseList() --> " + ex.getMessage());
          } finally {
              Database.close(con);
          }
@@ -728,6 +730,8 @@ public class UserDAO {
             	 obj.setPatientid(rs.getString("patientid"));
             	 obj.setNetwork(rs.getString("network"));
             	 obj.setCompleted(rs.getString("completed"));
+            	 obj.setQualityControl(rs.getString("qualitycontrol"));
+            	 obj.setDeleted(rs.getString("deleted"));
             	 
             	 caseList.add(obj);
             	
@@ -759,16 +763,18 @@ public class UserDAO {
              Database.close(con);
          }
      }
-     public static void deleteCaseList(int caseid){
+     public static void deleteCaseList(int caseid) {
     	 Connection con = null;
     	 PreparedStatement ps = null;
-    	 String sql = "delete from caselist WHERE caseid= ?";
+    	 //String sql = "delete from caselist WHERE caseid= ?";
+    	 String sql = "UPDATE caselist SET deleted = ? WHERE caseid = ?";
     	 try{
     		 con = Database.getConnection();
     		 ps = con.prepareStatement(sql);
-    		 ps.setInt(1, caseid);
+    		 ps.setString(1, "Yes");
+    		 ps.setInt(2, caseid);
     		 ps.executeUpdate();
-    		System.out.println("Case is Deleted");
+    		 System.out.println("Case is Deleted");
     		
     	 }catch (Exception ex) {
              System.out.println("Error in Delete Records -->" + ex.getMessage());
