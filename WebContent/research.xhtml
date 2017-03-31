@@ -26,14 +26,7 @@
     
     <script type="text/javascript">
         function onLoadCursor() {
-          document.body.style.cursor='default'; 
-          
-          document.getElementById("menu_clinical")).className = "active";
-          document.getElementById("menu_submit")).className = "inactive";
-          document.getElementById("menu_research")).className = "inactive";
-          document.getElementById("menu_education")).className = "inactive";
-          document.getElementById("menu_qc")).className = "inactive";
-          
+          document.body.style.cursor='default';          
         }
     </script>
     
@@ -52,25 +45,13 @@
 
 <div class="container-fluid">
 
-	<!--  Error message reporting -->
-	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
-		    <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
-			<h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-		</div>
-		<div class="col-xs-3"></div>
-	</div>
-	
-	<div></div>
-	
 	<div class="row form-row">
 	    <div class="col-xs-2">
 	        <h4>Network</h4>
 	     </div>
 	     <div class="col-xs-10">
 	       <div class="input-group">     
-	           <h:selectOneMenu id="network" value="#{serverModel.researchNetwork}" class="registration" 
+	           <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
 	               onchange="this.form.submit()" valueChangeListener="#{serverModel.researchChangeNetwork}"  reRender="diagnosis" >
 	               <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
 	               <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
@@ -84,50 +65,59 @@
    <div></div>
    
 	<!--  Feature Buttons -->   
-    <h:panelGroup rendered="#{serverModel.researchNetwork != '-select-' and serverModel.randomCaseNo == 0}" >
+    <h:panelGroup rendered="#{serverModel.activeNetwork != '-select-' and serverModel.randomCaseNo == 0}" >
                                   
-        <div class="row"><div class="col-xs-12"><div class="selectdiv">
+        <div class="row"><div class="col-xs-12">
             <h4 class="warning">No cases found for this network</h4>
-        </div></div></div>
+        </div></div>
         
     </h:panelGroup>
     
     <div></div>
         
-    <h:panelGroup rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}" >
+    <h:panelGroup rendered="#{serverModel.activeNetwork != '-select-' and not empty serverModel.activeNetwork and serverModel.randomCaseNo != 0}" >
 
-        <hr />
+        <div class="row">
+            <div class="col-xs-2">
+                <h4>Enter Inputs for Accession: </h4>
+            </div>
+           <div class="col-xs-10">
+                <h4>#{serverModel.researchAccessionNumber}</h4>
+            </div>
+        </div>
 
-        <div class="row"><div class="col-xs-12"><div class="selectdiv">
-            <h4>Enter Inputs for Accession: #{serverModel.researchAccessionNumber}</h4>
-        </div></div></div>              
-
-        <div></div><br />
+        <div></div><hr />
         
         <div class="row"><div class="col-xs-12"><div class="selectdiv">
+        <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
         
-            <ui:repeat var="networkPrefix" id="networkPrefixID" value="#{serverModel.networkPrefixList}">
-                            
-	           <h:panelGrid id="pg_inputs" cellspacing="2" rendered="#{serverModel.getFeaturesRendered(networkPrefix)}" >
-		          <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" />
-
-		              <ui:repeat var="feature" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
-
-			             <h:outputText value="#{serverModel.currentFeature(feature)}" />
-
-			             <h:selectOneMenu id="sensitivity" class="features ${serverModel.featureClassRs(feature)}" 
-				                          value="#{serverModel.researchNodeInput}" onchange="this.form.submit()" valueChangeListener="#{serverModel.saveFeatures}" >
-				            <f:selectItems value="#{serverModel.selectMenuInputsForResearch(feature)}" /> 
-			             </h:selectOneMenu>
-
-		              </ui:repeat>
-	           </h:panelGrid>
-
-            </ui:repeat>
+            <!--  Does this prefix have 1 or more nodes to display -->
+            <h:panelGrid rendered="#{serverModel.getNetworkNodeSize(networkPrefix)}">
             
-         </div></div></div>
+                <!--  Display category name associated with prefix -->
+                <h:outputText value="#{serverModel.getNetworkPrefixName(networkPrefix)}" class="category" />
+                    
+                <!--  Add all nodes associated with prefix, except for disease names -->    
+                <ui:repeat var="feature" id="networkFeatureID" value="#{serverModel.getSelectMenuFeatures(networkPrefix)}">
+
+                    <!--  Set current feature for later reference -->
+                    <h:outputText value="#{serverModel.currentFeature(feature)}" />
+                    
+                    <!-- Feature name and menu of possible values -->
+                    <h:selectOneMenu id="sensitivity" 
+                        class="features ${serverModel.featureClass(feature)}" 
+                        value="#{serverModel.nodeInput}" onchange="this.form.submit()" >
+                        <f:selectItems value="#{serverModel.selectMenuInputs(feature)}" />
+                    </h:selectOneMenu>
+                            
+                </ui:repeat>
+            </h:panelGrid>
+
+        </ui:repeat>
+        </div></div></div>  
+
          
-         <div></div><br />
+         <div></div><hr />
          
          <div class="row form-row">
             <div class="col-xs-2">
@@ -199,19 +189,29 @@
           </div>
         </h:panelGroup>
         
-        <br />
-								
-
+	    <div class="row">
+	        <div class="col-xs-4"></div>
+	        <div class="col-xs-4">
+	            <div class="errorGroup">
+	                <h:messages errorClass="messageError" infoClass="messageInfo"/>
+	            </div>
+	        </div>
+	        <div class="col-xs-4"></div>
+	    </div>
+	   
+	    <div></div>							
+    
 		<div class="row">
 		  <div class="col-xs-4"></div>
-          <div class="col-xs-2"> 
-		      <h:commandButton id="skip_btn" class="btn btn-primary" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
-							   value="Skip" action="#{serverModel.clearInput}" onclick="this.form.submit()" />
-		  </div>
 		  <div class="col-xs-2"> 
-			  <h:commandButton id="done_btn" class="btn btn-success" rendered="#{serverModel.researchNetwork != '-select-' and not empty serverModel.researchNetwork and serverModel.randomCaseNo != 0}"
-							   value="Done" action="#{serverModel.actionCompleted}" onclick="this.form.submit()" />
-		   </div> 
+              <h:commandButton id="done_btn" class="btn btn-success" rendered="#{serverModel.activeNetwork != '-select-' and not empty serverModel.activeNetwork and serverModel.randomCaseNo != 0}"
+                               value=" Submit " action="#{serverModel.actionCompleted}" onclick="this.form.submit()" />
+          </div> 
+          <div class="col-xs-2"> 
+		      <h:commandButton id="skip_btn" class="btn btn-primary" rendered="#{serverModel.activeNetwork != '-select-' and not empty serverModel.activeNetwork and serverModel.randomCaseNo != 0}"
+							   value=" Skip " action="#{serverModel.clearInput}" onclick="this.form.submit()" />
+		  </div>
+
 		   <div class="col-xs-4"></div>
          </div>
 

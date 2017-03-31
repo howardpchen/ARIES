@@ -5,7 +5,8 @@ import java.util.List;
 
 public class CaseList {
 
-	private int caseid;
+	private int    caseid;
+	private int    submittedid;  // original ID of a case that has been QC'd
 	private String accession;
 	private String organization;
 	private String description;
@@ -33,7 +34,12 @@ public class CaseList {
 	}
 
 	public String getCompleted() {
-		return completed;
+		if ( completed == null ) {
+			return "No";
+		}
+		else {
+			return completed;
+		}
 	}
 
 	public void setCompleted(String completed) {
@@ -152,6 +158,14 @@ public class CaseList {
 
 	public void setSubmittedDate(Date submittedDate) {
 		SubmittedDate = submittedDate;
+	}
+	
+	public void setSubmittedid( int id ) {
+		this.submittedid = id;
+	}
+	
+	public int getSubmittedid( ) {
+		return submittedid;
 	}
 
 	public String getPatientid() {

@@ -334,6 +334,35 @@ public class UserDAO {
 		return userCaseInputList;
     	 
      }
+     
+     public static int getNewCaseID() {
+    	 Connection con = null;
+         Statement  statement = null;
+         String query = "select * from caselist";
+         int nextID = 0;
+         
+         try {
+             con = Database.getConnection();
+             statement = con.createStatement();
+             ResultSet rs = statement.executeQuery(query);
+             
+             while ( rs.next() ) {
+            	 int caseID = rs.getInt("caseid");
+            	 if ( caseID > nextID ) {
+            		 nextID = caseID;
+            	 }
+             }
+             
+         }
+         catch (Exception ex) {
+             System.out.println("Error in getNewCaseID(int caseid) -->" + ex.getMessage());
+         } finally {
+             Database.close(con);
+         }
+        	 
+         return (nextID+1);
+     }
+     
      public static List<UserCaseInput> getUserCaseInput(int caseid){
     	 List<UserCaseInput> userCaseInputList = new ArrayList<UserCaseInput>();
     	 Connection con = null;
@@ -437,6 +466,12 @@ public class UserDAO {
          }
 		return updatesuccess;
      }
+     
+     /**
+      * Add a new case to the database
+      * @param caselist
+      * @return
+      */
  public static boolean QCCaseList(CaseList caselist){
     	 
     	 boolean updatesuccess = false;
@@ -474,7 +509,7 @@ public class UserDAO {
          }
 		return updatesuccess;
      }
-     public static boolean SaveCaseList(CaseList caselist){
+     public static boolean SaveCaseList(CaseList caselist, boolean isQC) {
     	 boolean savesuccess = false;
     	 Connection con = null;
     	 PreparedStatement ps = null;
@@ -484,19 +519,24 @@ public class UserDAO {
     	 try{
     		 con = Database.getConnection();
     		 ps = con.prepareStatement(sql);
-    		 ps.setString(1, caselist.getAccession());
-    		 ps.setString(2,caselist.getPatientid());
-    		 ps.setString(3, caselist.getNetwork());
-    		 ps.setString(4, caselist.getOrganization());
-    		 ps.setString(5,caselist.getDescription());
-    		 ps.setString(6,caselist.getModality());
-    		 ps.setString(7,caselist.getCorrectDx());
-    		 ps.setString(8,caselist.getAge());
-    		 ps.setString(9,caselist.getGender());
-    		 ps.setString(10,caselist.getSupportingData());
-    		 ps.setInt(11, caselist.getSubmittedBy());
+    		 ps.setString(1,  caselist.getAccession());
+    		 ps.setString(2,  caselist.getPatientid());
+    		 ps.setString(3,  caselist.getNetwork());
+    		 ps.setString(4,  caselist.getOrganization());
+    		 ps.setString(5,  caselist.getDescription());
+    		 ps.setString(6,  caselist.getModality());
+    		 ps.setString(7,  caselist.getCorrectDx());
+    		 ps.setString(8,  caselist.getAge());
+    		 ps.setString(9,  caselist.getGender());
+    		 ps.setString(10, caselist.getSupportingData());
+    		 ps.setInt(11,    caselist.getSubmittedBy());
     		 ps.setTimestamp(12,currentDate);
-    		 ps.setString(13,"No");
+    		 if ( isQC ) {
+    			 ps.setString(13, "Yes");
+    		 }
+    		 else {
+    			 ps.setString(13,"No");
+    		 }
     		 ps.setString(14, caselist.getQcperson());
     		 ps.executeUpdate();
     		 //System.out.println(rs.toString());
@@ -542,6 +582,11 @@ public class UserDAO {
              Database.close(con);
          }
      }
+     
+     /**
+      * Save features for research
+      * @param userCaseInput
+      */
      public static void SaveFeatureforOthers(UserCaseInput userCaseInput){
     	 Connection con = null;
     	 PreparedStatement ps = null;
@@ -743,6 +788,12 @@ public class UserDAO {
          }
 		return caseList;
      }
+     
+     /**
+      * Update a value for a case
+      * @param qualitycontrol
+      * @param caseid
+      */
      public static void UpdateCaseList(String qualitycontrol,int caseid){
     	 Connection con = null;
     	 PreparedStatement ps = null;

@@ -42,6 +42,14 @@
 <ui:include src="header.xhtml" />  
 
 <p>About ARIES</p>
+<p>In radiology, diagnostic errors occur either through the failure of detection or incorrect interpretation. Errors are estimated to occur in 30-35% of all exams and contribute to 40-54% of medical malpractice litigations. In this work, we focus on reducing incorrect interpretation of known imaging features. Existing literature categorizes cognitive bias leading a radiologist to an incorrect diagnosis despite having correctly recognized the abnormal imaging features: anchoring bias, framing effect, availability bias, and premature closure. Computational methods make a unique contribution, as they do not exhibit the same cognitive biases as a human. Bayesian networks formalize the diagnostic process. They modify pre-test diagnostic probabilities using clinical and imaging features, arriving at a post-test probability for each possible diagnosis. To translate Bayesian networks to clinical practice, we implemented an entirely web-based open-source software tool. In this tool, the radiologist first selects a network of choice (e.g. basal ganglia). Then, large, clearly labeled buttons displaying salient imaging features are displayed on the screen serving both as a checklist and for input. As the radiologist inputs the value of an extracted imaging feature, the conditional probabilities of each possible diagnosis are updated. The software presents its level of diagnostic discrimination using a Pareto distribution chart, updated with each additional imaging feature. Active collaboration with the clinical radiologist is a feasible approach to software design and leads to design decisions closely coupling the complex mathematics of conditional probability in Bayesian networks with practice. </p>
+<br />
+<p>Citation</p>
+<p>Po-Hao Chen, Emmanuel Botzolakis, Suyash Mohan, R.N. Bryan and Tessa Cook. "Feasibility of streamlining an interactive Bayesian-based diagnostic support tool designed for clinical practice ", Proc. SPIE 9789, Medical Imaging 2016: PACS and Imaging Informatics: Next Generation and Innovations, 97890C (April 5, 2016); doi:10.1117/12.2216574; http://dx.doi.org/10.1117/12.2216574</p>
+<br />
+
+
+<p>System Information</p>
 <br />
 
 <div class="row">
@@ -55,12 +63,13 @@
     </div>
 </div>
 
+<div><br /></div>
 
 <div class="row">
     <div class="col-xs-12">
         <table>
             <tr><th>User QC Networks</th></tr>
-            <ui:repeat var="network" value="#{serverModel.qcList}">
+            <ui:repeat var="network" value="#{serverModel.qcNetworkList}">
                 <tr><td><h:outputText value="#{network}"></h:outputText></td></tr>
             </ui:repeat>
         </table>

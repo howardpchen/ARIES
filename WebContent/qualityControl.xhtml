@@ -43,67 +43,44 @@
 
 <h:form id="qc">
 <div class="container-fluid">
+    
+	    <div class="row form-row">
+	        <div class="col-xs-2">
+	            <h4>Network</h4>
+	         </div>
+	         <div class="col-xs-10">
+	           <div class="input-group">     
+	               <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
+	                   onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeNetwork}"  reRender="diagnosis" >
+	                   <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
+	                   <f:selectItems value="#{serverModel.qcNetworkList}"></f:selectItems> 
+	               </h:selectOneMenu>
+	           
+	           </div> 
+	        </div>
+	    </div>
+	    
+	   <div></div>
+	   
+	   <div class="row form-row">
+	        <div class="col-xs-2">
+	            <h4>CaseNo for QC</h4>
+	        </div>
+	        <div class="col-xs-10">
+	            <h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}" class="registration"
+	                             onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeCase}">
+	                <f:selectItem itemLabel="-select-" ></f:selectItem>
+	                <f:selectItems value="#{serverModel.qcCaseIdList}" />
+	            </h:selectOneMenu>
+	        </div>
+	    </div>
 
-    <!--  Error message reporting -->
-    <div class="row">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-6">
-            <h:outputText value="#{serverModel.researchErrMsg}" escape="false"></h:outputText>
-            <h:messages globalOnly="true" style="color:red;font-weight:bold;"></h:messages>
-        </div>
-        <div class="col-xs-3"></div>
-    </div>
-    
-    <div></div>
-    
-    <div class="row form-row">
-        <div class="col-xs-2">
-            <h4>Network</h4>
-         </div>
-         <div class="col-xs-10">
-           <div class="input-group">     
-               <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
-                   onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeNetwork}"  reRender="diagnosis" >
-                   <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-                   <f:selectItems value="#{serverModel.qcNetworkList}"></f:selectItems> 
-               </h:selectOneMenu>
-               
-               <h:inputHidden value="#{serverModel.qcPrePageLoad}" />
 
-           </div> 
-        </div>
-    </div>
-    
-   <div></div>
-   
-   <div class="row form-row">
-        <div class="col-xs-2">
-            <h4>CaseNo for QC</h4>
-        </div>
-        <div class="col-xs-10">
-            <h:selectOneMenu id="caseNoQC" value="#{serverModel.caseNoforQCSetter}" class="registration"
-                             onchange="this.form.submit()">
-                <f:selectItem itemLabel="-select-" ></f:selectItem>
-                <f:selectItems value="#{serverModel.qcIdList}" />
-            </h:selectOneMenu>
-        </div>
-    </div>
-        
-   <div><br /></div>
-   
-   <div class="row form-row">
-        <div class="col-xs-2"></div>
-        <div class="col-xs-10">
-            <h:commandButton id="qcbutton" value="Load Case" class="btn btn-primary" action="#{serverModel.doQC}" />
-        </div>
-    </div>
-   
-   
     <!-- Begin Rows of features/nodes to set -->                                        
     <h:panelGroup rendered="#{serverModel.qcCaseLoaded != 0}" >
-    
+        <h:inputHidden value="#{serverModel.qcPrePageLoad}" />
         <hr />
-    
+        
         <div class="row form-row">
         <div class="col-xs-2">
            <h4>Organization</h4>
@@ -244,9 +221,9 @@
                 <h:selectOneMenu id="diagnosis"
                     class="registration"
                     value="#{serverModel.correctDx}"
-                    onchange='this.form.submit()'  
-                    valueChangeListener="#{serverModel.getCorrectDxAction}"> 
+                    onchange='this.form.submit()'> 
                     
+                    <!--  IMPORTANT - No valueChangeListener here -->
                     <f:selectItem itemLabel="-select-"></f:selectItem>
                     <f:selectItem itemValue="Other" itemLabel="Other"></f:selectItem>
                     <f:selectItems value="#{serverModel.diseaseTitles}"></f:selectItems>

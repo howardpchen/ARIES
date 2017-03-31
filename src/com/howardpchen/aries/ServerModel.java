@@ -63,7 +63,7 @@ public class ServerModel {
 	boolean debugMode = true;
 	
 	/**
-	 * Features set by user on Clinical page
+	 * Features set by user
 	 */
 	private Map<String, String> userInputs;
 	
@@ -185,6 +185,17 @@ public class ServerModel {
 	private Map<String, List<CaseList> > qcCaseMap = new HashMap<String, List<CaseList> >();
 	
 	/**
+	 * List of caseid's for current user/network
+	 */
+	private List<String> qcCaseIdList = new ArrayList<String>();
+	
+	public List<String> getQcCaseIdList() {
+		return this.qcCaseIdList;
+	}
+	
+	
+	
+	/**
 	 * Netica wrapper
 	 */
 	private NetworkWrapper dw;
@@ -210,7 +221,24 @@ public class ServerModel {
 	private static final String highlightOff = "Highlight Most Discriminating Features";
 	private static final String highlightOn =  "     Remove Feature Highlighting      ";
 	
-	private boolean settingDisease = false;
+	/**
+	 * flag indicating that new features are being loaded to the current form should be ignored
+	 *   the features to be loaded are stored in: probInputs
+	 */
+	private boolean loadingFeatures = false;
+	
+	/**
+	 * flag indicating a new case is being loaded so the current form should be ignored
+	 *   case info to be loaded is stored in: loadCase
+	 */
+	private boolean loadingCase = false;
+	
+	/** 
+	 * Info for new case to be loaded
+	 */
+	private CaseList loadCase = null;
+	
+	
 	private String currentFeature = "";
 	private String currentDisease = nullDisease;
 	private String featureFlag = "false"; 
@@ -314,15 +342,15 @@ public class ServerModel {
     /**
 	 * Descriptive name of currently selected research network
 	 */
-	private String researchNetwork = "-select-"; 
+	//private String researchNetwork = "-select-"; 
 	
-	public String getResearchNetwork( ) {
-		return researchNetwork;
-	}
+	//public String getResearchNetwork( ) {
+	//	return researchNetwork;
+	//}
 	
-	public void setResearchNetwork( String network ) {
-		researchNetwork = network;
-	}
+	//public void setResearchNetwork( String network ) {
+	//	researchNetwork = network;
+	//}
     
 	/* =============================================================
 	 * For QC Page
@@ -377,13 +405,13 @@ public class ServerModel {
 		String[] cast;
 		int val = 0;
 		if( !("").equalsIgnoreCase(caseNoforQCSetter) && (caseNoforQCSetter!=null) &&
-			( !"-select".equalsIgnoreCase(caseNoforQCSetter))) {
+			( !"-select-".equalsIgnoreCase(caseNoforQCSetter))) {
 			cast = caseNoforQCSetter.split("-");
 			val = Integer.parseInt(cast[0]); 
 		}
 		this.caseNoforQC = val; 
 		this.caseNoforQCSetter = caseNoforQCSetter;
-		this.qcCaseLoaded = 0;
+		//this.qcCaseLoaded = 0;
 		System.out.println("caseNoforQC set to: " + this.caseNoforQC);
 	}
 
@@ -722,7 +750,7 @@ public class ServerModel {
 		for ( CaseList i : allCases ) {
 			//System.out.println("Scanning case " + i.getCaseid()  + " in: " + i.getNetwork() );
 			//System.out.println("  --> " + i.getQualityControl() );
-			if ( i.getNetwork().equals(networkCode) && i.getQualityControl().equals("No") && 
+			if ( i.getNetwork().equals(networkCode) && i.getCompleted().equals("No") && 
 				 !i.isDeleted()	) {
 				caseList.add( i );
 				System.out.println("Adding case " + i.getAccession() + "(" + i.getCaseid() + ")" + " for " + network);
@@ -732,19 +760,15 @@ public class ServerModel {
 		return caseList;
 	}
 	
-	public List<String> getQcIdList( ) {
-		return getQCIdListByNetwork( this.activeNetwork );
-	}
+	//public List<String> getQcIdList( ) {
+	//	return getQCIdListByNetwork( this.activeNetwork );
+	//}
 	
 	public List<String> getQCIdListByNetwork(String network) {
-		List<CaseList> cases = loadQCCases(network);
+		List<CaseList> cases = this.qcCaseMap.get(network); //loadQCCases(network);
 		List<String> idList = new ArrayList<String>();
 		
 		for ( CaseList i : cases ) {
-			//String caseid = "NA";
-			//if ( !( i.getCaseid() == null ) ) {
-			//	caseid = i.getCaseid();
-			//}
 			idList.add(Integer.toString(i.getCaseid()));
 		}
 		return idList;
@@ -1189,8 +1213,8 @@ public class ServerModel {
 	 */
 	public void setNodeInput(String s) {
 		
-		if ( settingDisease ) {
-			System.out.println("In 'settingDisease' state");
+		if ( loadingFeatures ) {
+			System.out.println("In 'loadingFeatures' state");
 			System.out.println("probInputs size: " + probInputs.size());
 			System.out.println("probInputs: " + probInputs.toString() );
 	    	}
@@ -1202,7 +1226,7 @@ public class ServerModel {
 	    //System.out.println("userInputs size: " + userInputs.size());
 		//System.out.println( "userInputs: " + userInputs.toString() );
 		
-		if ( settingDisease  ) {
+		if ( loadingFeatures  ) {
 			//System.out.println("probInputs: " + probInputs.toString() );
 			if ( !probInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
 				System.out.println("Clearing value for" + inputs[0]);
@@ -1252,7 +1276,7 @@ public class ServerModel {
 			}
 		}
 		else if (inputs.length == 1) {
-			if ( !settingDisease ) {
+			if ( !loadingFeatures ) {
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 			}
 		}
@@ -1308,7 +1332,7 @@ public class ServerModel {
 		System.out.println("getNodeInput() for currentFeature: " + currentFeature);
 		
 		if (!currentFeature.equals("")) {
-			System.out.println("  --> " + userInputs.get(nodeNameReverseMapping.get(currentFeature)));
+			System.out.println("  --> [" + nodeNameReverseMapping.get(currentFeature) + "] = " + userInputs.get(nodeNameReverseMapping.get(currentFeature)));
 			return currentFeature + ":" + userInputs.get(nodeNameReverseMapping.get(currentFeature));
 		}
 		else
@@ -1355,35 +1379,9 @@ public class ServerModel {
 	}
  
 	
-	
-	@SuppressWarnings("rawtypes")
 	public List<String> getDiseaseTitles() {
 		System.out.println("getDiseaseTitles()");
-		/*
-		//String[] titles = null;
-		//System.out.println("this.getNwName() : " + this.getNwName());
-		if (activeNetwork != null && (!"--select--".equalsIgnoreCase(activeNetwork))
-				&& (!"".equalsIgnoreCase(activeNetwork)) && dw != null) {
-			//String fileName = UserDAO.getFileName(this.getNwName());
-			try {
-				//dw = new DNETWrapper(PATH + "/" + fileName);
-			//	nodes = dw.getNodeNames();
-				for (int i = 0; i < nodes.length; i++) {
-					if (nodes[i].equals("Diseases")) {
-						this.newTitles = dw.getStates(nodes[i]);
-					}
-				}
-
-				//dw.endSession();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println("Coming hereeee");
-				e.printStackTrace();
-			}}
-		*/
-		//return this.titlesNew;
 		return this.diseaseNames;
-
 	}
 
 	public String getTestNodes() {
@@ -1473,28 +1471,15 @@ public class ServerModel {
 
 	}
 
-	public String featureClassQC(String nodeName) {
-
-		if (userInputsForQc.containsKey(nodeNameReverseMapping.get(nodeName))
-				&& !userInputsForQc.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
-			return "hasChoice";
-		}
-		
-		else
-			return "";
-
-	}
-	public String featureClass1(String nodeName) {
+	public String featureClassEducation(String nodeName) {
 		
 		String nodeClass = "";
+		String neticaNodeName = nodeNameReverseMapping.get(nodeName);
 		
-		//if((dbFeatures.containsKey(nodeNameReverseMapping.get(nodeName)))){
-		//	return "red";
-	    //}
-		
-		
-		if ((userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName)))) {
-			nodeClass = "hasChoice";
+		if ( userInputs.containsKey(neticaNodeName) ) {
+			if ( !userInputs.get(neticaNodeName).equals("[Clear]")) {
+				nodeClass = "hasChoice";
+			}
 			
 			if (userInputs1.containsKey(nodeNameReverseMapping.get(nodeName))){
 				nodeClass = nodeClass + " correct";
@@ -1512,18 +1497,6 @@ public class ServerModel {
 		}
 		
 		return nodeClass;
-
-	}
-    public String featureClassRs(String nodeName) {
-		
-    	if (userInputsForRs.containsKey(nodeNameReverseMapping.get(nodeName))
-				&& !userInputsForRs.get(nodeNameReverseMapping.get(nodeName)).equals("[Clear]")) {
-			return "hasChoice";
-		}
-		
-		else
-			return "";
-
 
 	}
 
@@ -1845,6 +1818,54 @@ public class ServerModel {
 	}
 	
 	
+	public void qcChangeCase(ValueChangeEvent event) {
+		System.out.println("qcChangeCase()");
+		
+		if ( !(event.getNewValue() == null ) ) {
+			String newValue= event.getNewValue().toString();
+			String oldValue = "";
+			if(event.getOldValue()!= null){
+				oldValue = event.getOldValue().toString();
+			}
+			
+			if(  newValue != null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)) {
+				this.setCaseNoforQCSetter(newValue);
+				CaseList caselist = UserDAO.getCaseList(caseNoforQC);
+				 if ( caselist != null ) {
+					 this.loadCase = caselist;
+					 this.loadingCase = true;
+					 this.qcCaseLoaded = 1;			 
+					 
+					 List<UserCaseInput> featurelist = new ArrayList<UserCaseInput>();
+					 featurelist = UserDAO.getUserCaseInput(caseNoforQC);
+					 
+					 this.userInputs.clear();
+					 this.probInputs.clear();
+					 this.loadingFeatures = true;
+					 
+					 for (UserCaseInput userCaseInput:featurelist) {
+						 System.out.println( "  -- case input value: " + userCaseInput.getValue());
+						 String[] fullFeature = userCaseInput.getValue().split("] ");
+						 //String featureBase = fullFeature[0];
+						 
+						 // If is a feature value, e.g. [BG] Cerebellum=Yes
+						 if ( fullFeature.length > 1 ) {
+							 String[] featureParts = fullFeature[1].split("=");
+							 String featureKey = featureParts[0].replace("_", " ");
+							 String featureValue = featureParts[1];
+							 System.out.println("  -- " + nodeNameReverseMapping.get(featureKey) + " -> " + featureValue);
+							 probInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);
+						 }
+						 else {
+							 // FIXME - if disease set to correctDX ? 
+						 }
+					 }
+					 System.out.println("probInputs size after loading qc case = " + probInputs.size());
+				 } 
+			}
+		}
+	}
+	
 	public void qcChangeNetwork(ValueChangeEvent event){
 		
 		System.out.println("qcChangeNetwork()");
@@ -1858,7 +1879,10 @@ public class ServerModel {
 		if(  newValue!= null && !newValue.equalsIgnoreCase("-select-") && !newValue.equalsIgnoreCase(oldValue)){
 			clear(true);
 			this.activeNetwork = newValue;
+			this.qcCaseIdList = getQCIdListByNetwork(this.activeNetwork);
 			this.caseNoforQC = 0;
+			this.setCaseNoforQCSetter("-select-");
+			
 			System.out.println("Clearing inputs for new qc network: " + this.activeNetwork);
 
 			this.loadNeticaSession();
@@ -1878,8 +1902,7 @@ public class ServerModel {
 			}
 
 			processNodePrefixes();
-			Arrays.sort(nodes);
-			 
+			Arrays.sort(nodes);		 
 	    }
 		
 		
@@ -2491,8 +2514,8 @@ public class ServerModel {
 		 
 			 
 			 //FIXME
-			 if(!(userInputsForRs.isEmpty())) {
-				 for( Map.Entry<String, String> userInput : userInputsForRs.entrySet() ) {
+			 if(!(userInputs.isEmpty())) {
+				 for( Map.Entry<String, String> userInput : userInputs.entrySet() ) {
 					 System.out.println("  User Input: " + userInput.getKey() + " -> " + userInput.getValue() );
 					 if( !(dbFeatures.isEmpty()) ) {
 						 
@@ -2536,7 +2559,7 @@ public class ServerModel {
 			 
 			 
 			 educationErrorMessages = new ArrayList<String>();
-			 userInputs.putAll(dbFeatures);
+			 //userInputs.putAll(dbFeatures);
 			 
 		return "";
 	}
@@ -2808,11 +2831,11 @@ public class ServerModel {
 	public String getResearchPrePageLoad() {
 		System.out.println("DNET Wrapper session started - Research");
 		
-		if( ( changingResearchNetwork && !researchNetwork.equals("-select-") ) ||
-			( !researchNetworkLoaded && !researchNetwork.equals("-select-") ) ) {
+		if( ( changingResearchNetwork && !activeNetwork.equals("-select-") ) ||
+			( !researchNetworkLoaded && !activeNetwork.equals("-select-") ) ) {
 		try {
 			changingResearchNetwork = false;
-			this.setRandomCaseNo(CaseNo(this.researchNetwork));
+			this.setRandomCaseNo(CaseNo(this.activeNetwork));
 			System.out.println("Random Case No: " + randomCaseNo);
 			
 			Map<String, Double> values = new HashMap<String, Double>();
@@ -2822,7 +2845,7 @@ public class ServerModel {
 				dw = null;
 			}
 			
-			String networkFileName = networkNameMap.get(researchNetwork);
+			String networkFileName = networkNameMap.get(activeNetwork);
 			dw = new DNETWrapper(PATH + "/" + networkFileName);
 
 			nodes = dw.getNodeNames();
@@ -2876,12 +2899,12 @@ public class ServerModel {
 	public String getEducationPrePageLoad() {
 		System.out.println("DNET Wrapper session started - Education");
 		
-		if ( ( changingEducationNetwork && !educationNetwork.equals("-select-") ) ||
-			 ( (!educationNetworkLoaded) && (!educationNetwork.equals("-select-")) ) ) {
+		if ( ( changingEducationNetwork && !this.activeNetwork.equals("-select-") ) ||
+			 ( (!educationNetworkLoaded) && (!this.activeNetwork.equals("-select-")) ) ) {
 		try {
 			changingEducationNetwork = false;
 			System.out.println("Edu network not loaded");
-			this.setEducationCaseNo(CaseNo(this.educationNetwork));
+			this.setEducationCaseNo(CaseNo(this.activeNetwork));
 			System.out.println("Education Case No: " + this.educationCaseNo);
 			
 			Map<String, Double> values = new HashMap<String, Double>();
@@ -2891,7 +2914,7 @@ public class ServerModel {
 				dw = null;
 			}
 			
-			String networkFileName = networkNameMap.get(educationNetwork);
+			String networkFileName = networkNameMap.get(this.activeNetwork);
 			dw = new DNETWrapper(PATH + "/" + networkFileName);
 
 			nodes = dw.getNodeNames();
@@ -3023,6 +3046,19 @@ public class ServerModel {
 		this.pageLoad = pl;
 	}
 	
+	public boolean getInvalidQCCase( ) {
+		
+		if ( (this.activeNetwork==null) || 
+			 ("".equalsIgnoreCase(this.activeNetwork)) || 
+			 ("-select-".equalsIgnoreCase(this.activeNetwork)) || 
+			 ("-select-".equalsIgnoreCase(this.caseNoforQCSetter) ) ||
+			 (this.getCaseNoforQC()==0) ) {
+			return true;
+		}
+		return false;
+		
+	}
+	
 	public int getQcCaseLoaded() {
 		return this.qcCaseLoaded;
 	}
@@ -3133,7 +3169,41 @@ public class ServerModel {
 
 	public void setPostPageLoad(String pl) {
 		if ( debugMode ) System.out.println("setPostPageLoad()");
-		settingDisease = false;
+		
+		System.out.println("  probInputs size="+probInputs.size());
+		
+		if ( loadingFeatures && !(probInputs==null) && !(probInputs.isEmpty()) ) {
+			System.out.println( "Setting " + probInputs.size() + " preloaded features and clearing all others");
+			System.out.println( "Setting " + userInputs.size() + " total features");
+			userInputs.clear();
+			userInputs.putAll(probInputs);		
+		}
+		
+		if ( loadingCase && (loadCase != null) ) {
+			System.out.println("loading case info for caseid: " + loadCase.getCaseid() );
+		
+		 this.setOrganization(loadCase.getOrganization());
+		 this.setModality(loadCase.getModality());
+		 this.setAccession(loadCase.getAccession());
+		 this.setPatientId(loadCase.getPatientid());
+		 this.setAge(loadCase.getAge());
+		 this.setGender(loadCase.getGender());
+		 this.setDescription(loadCase.getDescription());
+		 this.setCorrectDx(loadCase.getCorrectDx());
+		 //System.out.println("caselist.getCorrectDx() :"+this.getCorrectDx());
+		 this.setSupportingDataList(loadCase.getSupportingDataList());
+		 this.setQcperson(loadCase.getQcperson());
+ 		 // UserCaseInput usercaseinput = new UserCaseInput();
+ 		 // this.setQcFlag("true");
+		 // this.setFeatureFlag("false"); 
+		 // QualityForm qForm = new QualityForm();
+		 // qForm.setQcFlag("true"); 
+		}
+		
+		
+		loadingFeatures = false;
+		loadingCase = false;
+		
 		if ( !probInputs.isEmpty() ) {
 			probInputs.clear();
 		}
@@ -3148,7 +3218,7 @@ public class ServerModel {
 		
 		System.out.println("getPostPageLoad()");
 		
-		settingDisease = false;
+		loadingFeatures = false;
 		if ( !probInputs.isEmpty() ) {
 			System.out.println("Clear probInputs");
 			probInputs.clear();
@@ -3328,9 +3398,19 @@ public class ServerModel {
 
 	public void setCorrectDx(String correctDx) {
 		this.correctDx = correctDx;
-		if(this.getFromQcPage().equalsIgnoreCase("false")){
-        getFeatureProbCase();
+		
+		if (correctDx.equalsIgnoreCase("Other")) {
+			this.knownDx = false;
 		}
+		else {
+			this.knownDx = true;
+		}
+		
+		// Autopopulate features by disease
+		if ( this.activePage == PageType.CASE ) {
+			getFeatureProbCase();
+		}
+		
 	}
 	public boolean basicCaseValidate() {
 		System.out.println("-- basicCaseValidate()");
@@ -3409,37 +3489,59 @@ public class ServerModel {
 	public boolean ResearchCaseValidate(){
 		this.setResearchErrMsg("");
 		if(researchErrorMessages!=null && researchErrorMessages.size()>0)
-		researchErrorMessages.clear();
+			researchErrorMessages.clear();
+		
 		researchErrorMessages = new ArrayList<String>();
-		if(this.getNwNameforResearch().equals("") || "-select-".equalsIgnoreCase(this.getNwNameforResearch())){
-			researchErrorMessages.add("Please select Network");
+		if(this.activeNetwork.equals("") || "-select-".equalsIgnoreCase(this.activeNetwork)){
+			//researchErrorMessages.add("Please select Network");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select network", ""));
+			return true;
 		}
 		/*else if(this.getCorrectDxList()!= null && this.getCorrectDxList().size()== 0){
 			researchErrorMessages.add("Please enter Correct Diagnosis");
 		}*/
 		else if(this.getFirstDx() == null || "".equals(this.getFirstDx())){
-			researchErrorMessages.add("Please select First Diagnosis");
+			//researchErrorMessages.add("Please select First Diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 1st diagnosis", ""));
+			return true;
 		}
 		else if(this.getSecondDx() == null || "".equals(this.getSecondDx())){
-			researchErrorMessages.add("Please select Second Diagnosis");
+			//researchErrorMessages.add("Please select Second Diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 2nd diagnosis", ""));
+			return true;
 		}
 		else if(this.getThirdDx() == null || "".equals(this.getThirdDx())){
-			researchErrorMessages.add("Please select Third Diagnosis");
+			//researchErrorMessages.add("Please select Third Diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 3rd diagnosis", ""));
+			return true;
 		}
 		else if(this.getFirstDx().equals(this.secondDx) || this.getFirstDx().equals(this.thirdDx)){
-			researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			//researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 3 unique diagnoses", ""));
+			return true;
 		}
 		else if(this.getSecondDx().equals(this.firstDx) || this.getSecondDx().equals(this.thirdDx)){
-			researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			//researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 3 unique diagnoses", ""));
+			return true;
 		}
 		else if(this.getThirdDx().equals(this.firstDx) || this.getThirdDx().equals(this.secondDx)){
-			researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			//researchErrorMessages.add("Diagnosis Entered twice.Please Select different diagnosis");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error: select 3 unique diagnoses", ""));
+			return true;
 		}
 		
 		
-		if(researchErrorMessages.size()>0){
+		if (researchErrorMessages.size()>0) {
 			return true;
-		}else 
+		} else 
 			return false;
 	}
 
@@ -3539,7 +3641,7 @@ public class ServerModel {
 			return "caseInput_form?redirect=true";
 		}
 		
-		// Save a "Submit Case"		
+		// Save a new case to the database
 		try {
 			networkcode = UserDAO.getCode(this.networkNameMap.get(this.activeNetwork));
 			CaseList caseList = new CaseList();
@@ -3601,7 +3703,7 @@ public class ServerModel {
 				return "caseInput_form?redirect=true";
 			} 
 			else {
-				boolean success = UserDAO.SaveCaseList(caseList);
+				boolean success = UserDAO.SaveCaseList(caseList, false);
 				
 				if( success ) {
 					System.out.println("UserDAO.SaveCaseList() returned success");
@@ -3833,127 +3935,169 @@ public class ServerModel {
 	}
 	
 	
-	public String qcSelectionDone(){
-		String networkcode = null;
+	public String qcSelectionDone() {
 		
-			try {
-				networkcode = UserDAO.getCode(this.getNwName());
-				//CaseList caseList = this.getCaseList();
-				CaseList caselist = new CaseList();
-				caselist.setCaseid(this.getCaseNoforQC());
-				caselist.setAccession(this.getAccession());
-				caselist.setOrganization(this.getOrganization());
-				caselist.setNetwork(networkcode);
-				caselist.setModality(this.getModality());
-				caselist.setDescription(this.getDescription());
-				if ("Other".equalsIgnoreCase(this.getCorrectDx())) {
-					caselist.setCorrectDx(this.getCorrectDxText());
-				} else {
-					caselist.setCorrectDx(this.getCorrectDx());
-				}
-				caselist.setPatientid(this.getPatientId());
-				caselist.setAge(this.getAge());
-				caselist.setGender(this.getGender());
-				caselist.setSubmittedDate(new Date());
-				
-				//caseList.setSubmittedBy(user.getUserid());
-				String withoutLastComma = null;
-				if(this.getSupportingDataList().size() > 0){
+		System.out.println("qcSelectionDone()");
+		
+		try {
+
+			String networkcode = this.networkCodeMap.get(this.activeNetwork);
+			int newID = UserDAO.getNewCaseID();
+			System.out.println("New caseid = " + newID);
+
+			CaseList caselist = new CaseList();
+			caselist.setCaseid(newID);
+			caselist.setSubmittedid(this.getCaseNoforQC());
+			
+			caselist.setAccession(this.getAccession());
+			caselist.setOrganization(this.getOrganization());
+			caselist.setNetwork(networkcode);
+			caselist.setModality(this.getModality());
+			caselist.setDescription(this.getDescription());
+			if ("Other".equalsIgnoreCase(this.getCorrectDx())) {
+				caselist.setCorrectDx(this.getCorrectDxText());
+			} else {
+				caselist.setCorrectDx(this.getCorrectDx());
+			}
+			caselist.setPatientid(this.getPatientId());
+			caselist.setAge(this.getAge());
+			caselist.setGender(this.getGender());
+			caselist.setSubmittedDate(new Date());
+			caselist.setQualityControl("Yes");
+			caselist.setCompleted("Yes");
+			
+			String withoutLastComma = null;
+			if (this.getSupportingDataList().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				for (String supportData : this.getSupportingDataList()) {
 					sb.append(supportData).append(", ");
 				}
 				withoutLastComma = sb.substring(0, sb.length() - ", ".length());
-				}
-				caselist.setSupportingData(withoutLastComma);
-				HttpSession session = Util.getSession();
-				String username = null;
-				String password = null;
-				if(session.getAttribute("username") != null){
-				username = session.getAttribute("username").toString();
-				}
-				if(session.getAttribute("password") != null){
-				password = session.getAttribute("password").toString();
-				}
-				int userid = UserDAO.getUserID(username, password);
-				caselist.setSubmittedBy(userid);
-				caselist.setQcperson(this.getQcperson());
-				this.setCaseList(caselist);
-				/*if (this.getCaseid() != 0 && caseListValidation()) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Combination of Organization,MR Number,Network Already exists", ""));
-				} else {*/
-				String[] input = new String[0];
-				String[] val = new String[0];
-				List<String> newList = new ArrayList<String>();
-				boolean success = UserDAO.QCCaseList(caselist);
-				List<UserCaseInput> list = new ArrayList<UserCaseInput>();
-				 list = UserDAO.getUserCaseInput(caseNoforQC);
-				 for(UserCaseInput userCaseInput:list){
-					 input = userCaseInput.getValue().split("] ");
-					 if(!input[1].contains("[Clear]")){
-					 newList.add(input[1]);
-					 }
-					// val = input[1];
-					// for(String s : input){
-						// newList.add(s);
-					// }
-					
-					// values.add(input[1]);
-					//val = input[1].split("=");
-					 
-					 //userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
-				 }
-				infoMessages = new ArrayList<String>();
-				if(newList.size()>0){
-				infoMessages.add("selected features are "+newList.toString());
-				}
-				 
-				if(success){
-				  // this.featureFlag = "true";
-				   //this.setReviewCase("false");
-				  // this.setFromQcPage("false");
-				   FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
-				   this.setFeatureFlag("false");
-					UserDAO.UpdateCaseList("Yes",this.getCaseNoforQC());
-					caseListforNw.remove(this.getCaseNoforQCSetter());
-					this.setCaseNoforQCSetter("");
-					userInputsForQc.clear();
-					//this.setQcFlag("false");
-					if(errorMessages != null && errorMessages.size() >0)
-						errorMessages.clear();
-					this.setAccession("");
-					this.setOrganization("");
-					this.setDescription("");
-					this.setModality("");
-					this.setCorrectDx("");
-					this.setPatientId("");
-					this.setCorrectDxText("");
-					this.setAge("");
-					this.setGender("");
-					//this.setQcperson("");
-					this.setSupportingDataList(new ArrayList<String>());
-					//this.setQcFlag("false");
-					this.prefixNodeListMapping.clear(); 
-					//return "login?faces-redirect=true";
-					return "qualityControl?faces-redirect=true";
-				   }
-				   else{
-						
-						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Update is not Successful!", ""));
-					}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		return "";
+			caselist.setSupportingData(withoutLastComma);
+			HttpSession session = Util.getSession();
+			String username = null;
+			String password = null;
+			if (session.getAttribute("username") != null) {
+				username = session.getAttribute("username").toString();
+			}
+			if (session.getAttribute("password") != null) {
+				password = session.getAttribute("password").toString();
+			}
+			int userid = UserDAO.getUserID(username, password);
+			caselist.setSubmittedBy(userid);
+			
+			caselist.setQcperson(this.getQcperson());
+			this.setCaseList(caselist);
+			/*if (this.getCaseid() != 0 && caseListValidation()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+						"Combination of Organization,MR Number,Network Already exists", ""));
+			} else {*/
+			//String[] input = new String[0];
+			//String[] val = new String[0];
+			//List<String> newList = new ArrayList<String>();
+			
+			// save case info
+			System.out.println("Saving  info to caselist");
+			boolean success = UserDAO.SaveCaseList(caselist, true); 
+			
+			// save features that are set
+			System.out.println("Saving features to usercaseinput");
+		    if(!userInputs.isEmpty()) {
+		    	for (Map.Entry<String, String> entry : userInputs.entrySet()) {
+			    	if(!entry.getKey().contains("Diseases")) {
+			    		if ( !entry.getValue().equals("[Clear]") ) {
+					    	UserCaseInput caseinput = new UserCaseInput();
+					    	caseinput.setUserid(userid);
+					    	caseinput.setCaseid(newID);
+					    	caseinput.setSessionid(session.getId());
+					    	caseinput.setEventid(1001);
+					    	String featureName = nodeNameDirectMapping.get(entry.getKey()).replace(" ",  "_");
+					        caseinput.setValue("[" + networkcode + "]" + " " + featureName + "=" + entry.getValue());
+					        UserDAO.SaveFeature(caseinput);
+			    		}
+			    	}
+		    	}	
+		    }
+		    
+		    // FIXME - update original caseid to indicate QC has been submitted
+		    UserDAO.UpdateCaseList(networkcode,this.getCaseNoforQC(),"Yes");
+		    
+		    // FIXME - update list of cases for this network
+		    this.loadQCCaseMap();
+		    this.qcCaseIdList = getQCIdListByNetwork(this.activeNetwork);
+		    
+			/*
+			List<UserCaseInput> list = new ArrayList<UserCaseInput>();
+			list = UserDAO.getUserCaseInput(caseNoforQC);
+			
+			for (UserCaseInput userCaseInput:list) {
+				 input = userCaseInput.getValue().split("] ");
+				 if(!input[1].contains("[Clear]")){
+					 newList.add(input[1]);
+				 }
+				// val = input[1];
+				// for(String s : input){
+					// newList.add(s);
+				// }
+				
+				// values.add(input[1]);
+				//val = input[1].split("=");
+				 
+				 //userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+			 }*/
+		    
+			//infoMessages = new ArrayList<String>();
+			//if (newList.size()>0) {
+			//	infoMessages.add("selected features are "+newList.toString());
+			//}
+			 
+			if(success){
+			  // this.featureFlag = "true";
+			   //this.setReviewCase("false");
+			  // this.setFromQcPage("false");
+			   FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Updated Successfully!", ""));
+			   this.setFeatureFlag("false");
+				UserDAO.UpdateCaseList("Yes",this.getCaseNoforQC());
+				caseListforNw.remove(this.getCaseNoforQCSetter());
+				this.setCaseNoforQCSetter("");
+				userInputsForQc.clear();
+				//this.setQcFlag("false");
+				if(errorMessages != null && errorMessages.size() >0)
+					errorMessages.clear();
+				this.setAccession("");
+				this.setOrganization("");
+				this.setDescription("");
+				this.setModality("");
+				this.setCorrectDx("");
+				this.setPatientId("");
+				this.setCorrectDxText("");
+				this.setAge("");
+				this.setGender("");
+				//this.setQcperson("");
+				this.setSupportingDataList(new ArrayList<String>());
+				//this.setQcFlag("false");
+				this.prefixNodeListMapping.clear(); 
+				//return "login?faces-redirect=true";
+				clear(false);
+				return "qualityControl?faces-redirect=true";
+			   }
+			   else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Case Update is not Successful!", ""));
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "qualityControl?faces-redirect=true";
 	}
 	
 	public String deleteCaseQC(){
 		UserDAO.deleteCaseList(this.getCaseNoforQC());
-		clear(true);
+		clear(false);
 		return "qualityControl?faces-redirect=true";
 	}
 	
@@ -4017,52 +4161,94 @@ public class ServerModel {
 	}
 
 	public String actionCompleted() {
+		System.out.println("ServerModel.actionCompleted()");
 		
-		// FIXME - do nothing for now, mimic "skip" button
-		return this.clearInput();
-		
-		/**
-		 
-		this.setResearchErrMsg("");
-		if(ResearchCaseValidate() == true){
-			return null;
+		if( ResearchCaseValidate() == true) {
+			System.out.println("Failed to validate the case");
+			return "research?redirect=true";
 		}
+		
 		HttpSession session = Util.getSession();
-		try{
-		UserCaseInput userCaseInput = new UserCaseInput();
-		userCaseInput.setEventid(1002);
-		userCaseInput.setCaseid(this.getCaseNo());
-		String withoutLastComma ="";
-		StringBuffer sb = new StringBuffer();
+		try {
+			UserCaseInput userCaseInput = new UserCaseInput();
+			userCaseInput.setEventid(1002);
+			userCaseInput.setCaseid(this.randomCaseNo);
+			
+			
+			//String withoutLastComma ="";
+			StringBuffer sb = new StringBuffer();
+			
+			/*
+			if(this.getCorrectDxList() != null & this.getCorrectDxList().size() >0){
+			for(String CorrectDx:correctDxList){
+				sb.append(CorrectDx).append(", ");
+				}
+				withoutLastComma = sb.substring(0, sb.length() - ", ".length());
+			}
+			userCaseInput.setValue(withoutLastComma);
+			
+			String withoutLastComma = null;
+			if (this.getSupportingDataList().size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (String supportData : this.getSupportingDataList()) {
+					sb.append(supportData).append(", ");
+				}
+				withoutLastComma = sb.substring(0, sb.length() - ", ".length());
+			}
+			*/
+			
+			sb.append(this.getFirstDx()+", "+this.getSecondDx()+", "+this.getThirdDx());
+			userCaseInput.setValue(sb.toString());
+			String username =null; 
+			String password = null;
+			if(session.getAttribute("username")!= null)
+				username = session.getAttribute("username").toString();
+			if(session.getAttribute("password")!= null)
+				password = session.getAttribute("password").toString();
+			int userid = UserDAO.getUserID(username, password);
 		
-		//if(this.getCorrectDxList() != null & this.getCorrectDxList().size() >0){
-		//for(String CorrectDx:correctDxList){
-		//	sb.append(CorrectDx).append(", ");
-		//	}
-		//	withoutLastComma = sb.substring(0, sb.length() - ", ".length());
-		//}
-		//userCaseInput.setValue(withoutLastComma);
-		sb.append(this.getFirstDx()+", "+this.getSecondDx()+", "+this.getThirdDx());
-		userCaseInput.setValue(sb.toString());
-		String username =null; 
-		String password = null;
-		if(session.getAttribute("username")!= null)
-		username = session.getAttribute("username").toString();
-		if(session.getAttribute("password")!= null)
-		password = session.getAttribute("password").toString();
-		int userid = UserDAO.getUserID(username, password);
-		
-		userCaseInput.setUserid(userid);
-		userCaseInput.setPageInfo("Research");
-		userCaseInput.setComments(this.getComments());
-		userCaseInput.setSessionid(session.getId());
-		UserDAO.SaveFeatureforOthers(userCaseInput);
-		String nwcode = UserDAO.getCode(this.getNwNameforResearch());
-        UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
-		}catch(Exception e){
+			userCaseInput.setUserid(userid);
+			userCaseInput.setPageInfo("Research");
+			userCaseInput.setComments(this.getComments());
+			userCaseInput.setSessionid(session.getId());
+			
+			// FIXME - temp disable
+			UserDAO.SaveFeatureforOthers(userCaseInput);
+			
+			// save features that are set
+			System.out.println("Saving features to usercaseinput1");
+			String nwcode = this.networkCodeMap.get(this.activeNetwork);
+		    if(!userInputs.isEmpty()) {
+		    	for (Map.Entry<String, String> entry : userInputs.entrySet()) {
+			    	if(!entry.getKey().contains("Diseases")) {
+			    		if ( !entry.getValue().equals("[Clear]") ) {
+					    	UserCaseInput caseinput = new UserCaseInput();
+					    	caseinput.setPageInfo("Research");
+					    	caseinput.setUserid(userid);
+					    	caseinput.setCaseid(this.randomCaseNo);
+					    	caseinput.setSessionid(session.getId());
+					    	caseinput.setEventid(1001);
+					    	String featureName = nodeNameDirectMapping.get(entry.getKey()).replace(" ",  "_");
+					        caseinput.setValue("[" + nwcode + "]" + " " + featureName + "=" + entry.getValue());
+					        
+					        //System.out.println("Saving [" + nwcode + "]" + " " + featureName + "=" + entry.getValue());
+					        UserDAO.SaveFeatureforOthers(caseinput);
+			    		}
+			    	}
+		    	}	
+		    }
+			
+			
+			
+			    //UserDAO.getCode(this.getNwNameforResearch());
+	        //UserDAO.UpdateCaseList(nwcode,this.getCaseNo(),"Yes");
+			
+		}  catch(Exception e){
 			e.printStackTrace();
 		}
-		userInputsForRs.clear();
+		
+		
+		userInputs.clear();
 		//this.setNwNameforResearch("-select-");
 		this.setFirstDx("");
     	this.setSecondDx("");
@@ -4071,9 +4257,15 @@ public class ServerModel {
 		this.setComments("");
 		researchErrorMessages = new ArrayList<String>();
 	   // session.invalidate();
-		this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
-		return "";
-		*/
+		//this.setRandomCaseNo(CaseNo(this.getNwNameforResearch()));
+		
+		//this.clear(false);
+		//this.randomCaseNo = 0;
+		//changingResearchNetwork = true;
+		
+		//clearInput();
+		//return "research?redirect=true";
+		return clearInput();
 		
 	}
 
@@ -4113,7 +4305,15 @@ public class ServerModel {
 		this.caseNoforQC = 0;
 		this.caseNoforQCSetter = "-select-";
 		
-		this.settingDisease = false;
+		this.randomCaseNo = 0;
+    	this.setFirstDx("");
+    	this.setSecondDx("");
+    	this.setThirdDx("");
+    	this.setComments("");
+		
+		this.currentFeature = "";
+		this.loadingFeatures = false;
+		this.loadingCase = false;
 		this.setAccession("");
 		this.setOrganization("");
 		this.setDescription("");
@@ -4133,9 +4333,18 @@ public class ServerModel {
 		if ( !userInputs.isEmpty() ) userInputs.clear();
 		if (! probInputs.isEmpty() ) probInputs.clear();
 		
+		if ( !userInputs1.isEmpty() ) userInputs1.clear();
+		if ( !userInputs2.isEmpty() ) userInputs2.clear();
+		if ( !dbFeatures.isEmpty() ) dbFeatures.clear();
+		
 		if ( resetActiveNetwork ) {
 		  this.prefixNodeListMapping.clear(); 
 		  this.activeNetwork = "-select-";
+		  //this.diseaseNames.clear();
+		  diseaseNames = new ArrayList<String>();
+		  if ( !diseaseNames.isEmpty() ) {
+			  diseaseNames.clear();
+		  }
 		}
 
 		this.unloadNeticaSession();
@@ -4161,7 +4370,7 @@ public class ServerModel {
     public String clearInput(){
     	//this.setNwNameforResearch("");
     	//this.getRandomCaseNo();
-    	userInputsForRs.clear();
+    	userInputs.clear();
     	this.setFirstDx("");
     	this.setSecondDx("");
     	this.setThirdDx("");
@@ -4334,7 +4543,7 @@ public class ServerModel {
 		}
 
 		this.setActiveNetwork("-select-");
-		this.setResearchNetwork("-select-");
+		//this.setResearchNetwork("-select-");
 		/*userInputsForRs.clear();
 		this.setNwNameforResearch("");
     	this.setFirstDx("");
@@ -4356,6 +4565,8 @@ public class ServerModel {
 	 * Go to Education page
 	 */
 	public String getNavRuleEducation() {
+		clear(true);
+		
 		activePage = PageType.EDUCATION;
 		if(dw!= null){
 			dw.endSession();
@@ -4364,7 +4575,7 @@ public class ServerModel {
 		if ( !userInputs.isEmpty() ) userInputs.clear();
 		if ( !probInputs.isEmpty() ) probInputs.clear();
 		this.setActiveNetwork("-select-");
-		this.setEducationNetwork("-select-");
+		//this.setEducationNetwork("-select-");
 		
 		/*userInputs.clear();
 		this.setNwNameforEducation("");*/
@@ -4472,7 +4683,7 @@ public class ServerModel {
 			if(!probInputs.isEmpty())
 				probInputs.clear();
 			
-			settingDisease = true;
+			loadingFeatures = true;
 			userInputs.put("Diseases", diseaseNameMap.get(newValue));
 			
 			getFeatureProb();
@@ -4485,6 +4696,7 @@ public class ServerModel {
 	public void getCorrectDxAction(ValueChangeEvent event) {
 	
 		if ( debugMode ) System.out.println("getCorrectDxAction()");
+		
 
 		String newValue = "";
 		if (event.getNewValue() != null) {
@@ -4500,7 +4712,7 @@ public class ServerModel {
 		   !newValue.equals("-select-") && 
 		   !newValue.equalsIgnoreCase(nullDisease) && 
 		   !newValue.equalsIgnoreCase(oldValue) &&
-		   !newValue.equalsIgnoreCase("Other") ) {
+		   !newValue.equalsIgnoreCase("Other")  ) {
 
 			if(!userInputs.isEmpty())
 				userInputs.clear();
@@ -4509,7 +4721,7 @@ public class ServerModel {
 			
 			this.setCorrectDx(newValue);
 			
-			settingDisease = true;
+			loadingFeatures = true;
 			userInputs.put("Diseases", diseaseNameMap.get(newValue));
 			getFeatureProb();
 		}
@@ -4523,7 +4735,7 @@ public class ServerModel {
 		
 		if (newValue.equalsIgnoreCase("Other")) {
 			if (debugMode) System.out.println("'Other' disease chosen");
-			settingDisease = true; // ???
+			loadingFeatures = true; // ???
 			setKnownDx(false);
 			probInputs.clear();
 			userInputs.clear();
@@ -4650,7 +4862,7 @@ public class ServerModel {
 		System.out.println("ServerModel.getResearchAccessionNumber()");
 		if ( ! this.researchNetworkLoaded ) {
 		//tring accessionNo = "";
-		userInputsForRs.clear();
+		userInputs.clear();
 		
 	    int caseid = this.getRandomCaseNo();
 	    HttpSession session = Util.getSession();
@@ -4695,9 +4907,9 @@ public class ServerModel {
 				
 				if(val.length > 0 && fullNodeName.startsWith("CL_")) {
 					System.out.println("val: " + val[0]);
-					String networkcode = UserDAO.getCode(this.getResearchNetwork());
+					String networkcode = UserDAO.getCode(this.activeNetwork);
 					System.out.println("network code: " + networkcode);
-					userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+					userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
 					UserCaseInput caseinput = new UserCaseInput();
 					caseinput.setUserid(userid);
 					caseinput.setCaseid(caseid);
@@ -4722,10 +4934,10 @@ public class ServerModel {
 		System.out.println("ServerModel.getEducationAccessionNumber()");
 		//String accessionNo ="";
 		if ( !educationNetworkLoaded ) {
-			System.out.println("Relead edu network");
+			System.out.println("Reload edu network");
 			this.educationNetworkLoaded = true;
 			
-		userInputsForRs.clear();
+		userInputs.clear();
 		
 	    int caseid = this.getEducationCaseNo();
 	    HttpSession session = Util.getSession();
@@ -4771,7 +4983,7 @@ public class ServerModel {
 					System.out.println("val: " + val[0]);
 					String networkcode = UserDAO.getCode(this.getEducationNetwork());
 					System.out.println("network code: " + networkcode);
-					userInputsForRs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+					userInputs.put(nodeNameReverseMapping.get(nodeName),val[1]);
 					UserCaseInput caseinput = new UserCaseInput();
 					caseinput.setUserid(userid);
 					caseinput.setCaseid(caseid);
@@ -4843,33 +5055,15 @@ public class ServerModel {
 		 
 		 System.out.println("doQC()");
 		 System.out.println("  -- for case: " + caseNoforQC);
-		 
-		 errorMessages = new ArrayList<String>();
-		
-		 if(("".equals(this.activeNetwork)) || ("-select-".equals(this.activeNetwork))
-				 || ("".equals(this.getCaseNoforQCSetter())) || ("-select-".equals(this.getCaseNoforQCSetter()))){
-			 errorMessages.add("Please Select the Mandatory Fields.");
-			 System.out.println("  -- No Case selected");
-			 return "";
-		 }
-		 
-		 //String nwcode = UserDAO.getCode(this.getNwNameforQC());
-	       // UserDAO.UpdateCaseList(this.getCaseNoforQC(),nwcode,"Yes");
+
 		 this.setFromQcPage("true");
-		 //userInputs.clear();
+		 userInputs.clear();
 		 
 		 CaseList caselist = new CaseList();
-		// this.setCase(caselist.getCaseid());
-		 
-		 
 		 
 		 caselist = UserDAO.getCaseList(caseNoforQC);
 		 if ( caselist != null ) {
-			 this.qcCaseLoaded = 1;
-			 //String nwname = UserDAO.getNwName(caselist.getNetwork());
-			 //this.setNwName(nwname);
-			 //getDWInfo();
-			 
+			 this.qcCaseLoaded = 1;			 
 			 
 			 this.setOrganization(caselist.getOrganization());
 			 this.setModality(caselist.getModality());
@@ -4903,7 +5097,11 @@ public class ServerModel {
 				// values.add(input[1]);
 				 if ( input.length > 1 ) {
 					 String[] val = input[1].split("=");
-					 userInputs.put(nodeNameReverseMapping.get(val[0]),val[1]);
+					 String nodeDisplayName = val[0].replace("_", " ");
+					 userInputs.put(nodeNameReverseMapping.get(nodeDisplayName),val[1]);
+				 }
+				 else {
+					 // FIXME - if disease set to correctDX ? 
 				 }
 			 }
 		 } 
