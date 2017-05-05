@@ -339,18 +339,6 @@ public class ServerModel {
      */
     private boolean changingResearchNetwork = false;
     
-    /**
-	 * Descriptive name of currently selected research network
-	 */
-	//private String researchNetwork = "-select-"; 
-	
-	//public String getResearchNetwork( ) {
-	//	return researchNetwork;
-	//}
-	
-	//public void setResearchNetwork( String network ) {
-	//	researchNetwork = network;
-	//}
     
 	/* =============================================================
 	 * For QC Page
@@ -760,10 +748,6 @@ public class ServerModel {
 		return caseList;
 	}
 	
-	//public List<String> getQcIdList( ) {
-	//	return getQCIdListByNetwork( this.activeNetwork );
-	//}
-	
 	public List<String> getQCIdListByNetwork(String network) {
 		List<CaseList> cases = this.qcCaseMap.get(network); //loadQCCases(network);
 		List<String> idList = new ArrayList<String>();
@@ -773,8 +757,6 @@ public class ServerModel {
 		}
 		return idList;
 	}
-	
-	// changes starts for CR101
 
 	private void populateNetworkList() {
 		networkPrefixList = new ArrayList<String>();
@@ -1130,25 +1112,8 @@ public class ServerModel {
 		else
 			return "";
 	}
-    
-    
-	//public void setResearchNodeInput(String s) {
-		//String[] inputs = s.split(":");
-		// old before CR101
-		/*
-		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
-		 * (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
-		 */
-
-		// changes starts for CR101
-		/*if (inputs.length == 2)
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
-		else if (inputs.length == 1)
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");*/
-		// changes ends for CR101
-		
-	//}
-   
+ 
+  
 	public String getResearchNodeInput() {
 		// old before CR101
 		/*
@@ -1161,32 +1126,9 @@ public class ServerModel {
 		else
 			return "";
 	}
+	
 	public void setEducationNodeInput(String s) {
-		String[] inputs = s.split(":");
-		//boolean clearflag = false;
-		// old before CR101
-		/*
-		 * if (inputs.length == 2) userInputs.put(inputs[0], inputs[1]); else if
-		 * (inputs.length == 1) userInputs.put(inputs[0], "[Clear]");
-		 */
-		
-	/*	if(!userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])))
-		{
-		if(inputs.length == 2){
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);		}
-		if(inputs.length == 1){
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
-			//clearflag = true;
-		}
-		}*/
-/*
-		// changes starts for CR101
-		if (inputs.length == 2)
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
-		else if (inputs.length == 1)
-			userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
-		// changes ends for CR101
-*/		
+		String[] inputs = s.split(":");	
 	}
 
 	public String getEducationNodeInput() {
