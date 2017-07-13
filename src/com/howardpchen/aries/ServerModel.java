@@ -60,7 +60,7 @@ public class ServerModel {
 	
 	//private final String PATH = System.getenv("ARIES_NETWORK_PATH");
 	
-	boolean debugMode = true;
+	boolean debugMode = false;
 	
 	/**
 	 * Features set by user
@@ -405,7 +405,8 @@ public class ServerModel {
 		this.caseNoforQC = val; 
 		this.caseNoforQCSetter = caseNoforQCSetter;
 		//this.qcCaseLoaded = 0;
-		System.out.println("caseNoforQC set to: " + this.caseNoforQC);
+		
+		if (debugMode) System.out.println("caseNoforQC set to: " + this.caseNoforQC);
 	}
 
     
@@ -492,17 +493,17 @@ public class ServerModel {
 	}
 
 	public boolean isKnownDx() {
-		System.out.println("isKnownDx()");
+		if (debugMode) System.out.println("isKnownDx()");
 		return this.knownDx;
 	}
 	
 	public boolean getKnownDx() {
-		System.out.println("getKnownDx()");
+		if (debugMode) System.out.println("getKnownDx()");
 		return this.knownDx;
 	}
 	
 	public void setKnownDx(boolean isKnown) {
-		System.out.println("setKnownDx(" + isKnown + ")");
+		if (debugMode) System.out.println("setKnownDx(" + isKnown + ")");
 		this.knownDx = isKnown;
 	}
 	
@@ -788,8 +789,10 @@ public class ServerModel {
 	 * @return list of prefixes for feature categories of selected network
 	 */
 	public List<String> getNetworkPrefixList() {
-		System.out.println("ServerModel.getNetworkPrefixList()");
-		System.out.println(" -- prefix list size: " + networkPrefixList.size() );
+		if (debugMode) {
+			System.out.println("ServerModel.getNetworkPrefixList()");
+			System.out.println(" -- prefix list size: " + networkPrefixList.size() );
+		}
 		return networkPrefixList;
 	}
 
@@ -799,7 +802,7 @@ public class ServerModel {
 	 * @return
 	 */
 	public String getNetworkPrefixName(String prefix) {
-		System.out.println("ServerModel.getNetworkPrefixName(" + prefix + ")");
+		if (debugMode) System.out.println("ServerModel.getNetworkPrefixName(" + prefix + ")");
 		return prefixNameMapping.get(prefix);
 	}
 
@@ -830,7 +833,7 @@ public class ServerModel {
 	 * @return boolean indicating if he current model contains any features in the passed feature category
 	 */
 	public boolean getNetworkNodeSize(String prefix) {
-		System.out.println("getNetworkNodeSize( " + prefix + " )");
+		if (debugMode) System.out.println("getNetworkNodeSize( " + prefix + " )");
 		
 		for (Map.Entry<String, List<String>> entry : prefixNodeListMapping.entrySet()) {
 			if (entry.getKey().equals(prefix)) {
@@ -848,7 +851,7 @@ public class ServerModel {
 	// CR103 Ends here
 
 	public List<String> getSelectMenuFeatures(String prefix) {
-		System.out.println("getSelectMenuFeatures( " + prefix + " )");
+		if (debugMode) System.out.println("getSelectMenuFeatures( " + prefix + " )");
 		
 		List<String> features = new ArrayList<String>();
 		List<String> prefixNodeList = prefixNodeListMapping.get(prefix);
@@ -1197,14 +1200,13 @@ public class ServerModel {
 	 */
 	public void setNodeInput(String s) {
 		
-		if ( loadingFeatures ) {
+		if ( loadingFeatures && debugMode) {
 			System.out.println("In 'loadingFeatures' state");
 			System.out.println("probInputs size: " + probInputs.size());
 			System.out.println("probInputs: " + probInputs.toString() );
-	    	}
+	    	}	
+		if (debugMode) System.out.println("setNodeInput(" + s + ")");
 		
-		
-		System.out.println("setNodeInput(" + s + ")");
 		String[] inputs = s.split(":");
 		
 	    //System.out.println("userInputs size: " + userInputs.size());
@@ -1213,7 +1215,7 @@ public class ServerModel {
 		if ( loadingFeatures  ) {
 			//System.out.println("probInputs: " + probInputs.toString() );
 			if ( !probInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
-				System.out.println("Clearing value for" + inputs[0]);
+				if (debugMode) System.out.println("Clearing value for" + inputs[0]);
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 			}
 			else {
@@ -1228,7 +1230,7 @@ public class ServerModel {
 			/* A set value has changed */
 			if ( userInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
 				if ( !userInputs.get( nodeNameReverseMapping.get(inputs[0])).equals(inputs[1]) ) {
-					System.out.println("Resetting value for " + inputs[0] + " to " +  probInputs.get( nodeNameReverseMapping.get(inputs[0])) );
+					if (debugMode) System.out.println("Resetting value for " + inputs[0] + " to " +  probInputs.get( nodeNameReverseMapping.get(inputs[0])) );
 					
 					//userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 					userInputs.put(nodeNameReverseMapping.get(inputs[0]), probInputs.get( nodeNameReverseMapping.get(inputs[0])));
@@ -1243,18 +1245,20 @@ public class ServerModel {
 			if ( !probInputs.isEmpty() ) {
 				System.out.println("probInputs: " + probInputs.toString() );
 				if ( !probInputs.containsKey(nodeNameReverseMapping.get(inputs[0])) ) {
-					System.out.println("Clearing value for" + inputs[0]);
+					if (debugMode) System.out.println("Clearing value for" + inputs[0]);
 					userInputs.put(nodeNameReverseMapping.get(inputs[0]), "[Clear]");
 				}
 				else {
 					//userInputs.put(nodeNameReverseMapping.get(inputs[0]), )
-					System.out.println(nodeNameReverseMapping.get(inputs[0]));
-					System.out.println(probInputs.get( nodeNameReverseMapping.get(inputs[0])));
+					if ( debugMode ) { 
+						System.out.println(nodeNameReverseMapping.get(inputs[0]));
+						System.out.println(probInputs.get( nodeNameReverseMapping.get(inputs[0])));
+					}
 				}
 			}
 			else {
 				/* Value set for first time */
-				System.out.println("Setting node value for " + inputs[0]);
+				if (debugMode) System.out.println("Setting node value for " + inputs[0]);
 				resetDisease();
 				userInputs.put(nodeNameReverseMapping.get(inputs[0]), inputs[1]);
 			}
@@ -1265,15 +1269,10 @@ public class ServerModel {
 			}
 		}
 		
-		
-	    //if(!probInputs.isEmpty()) {
-	    //	System.out.println("Setting userInputs to probInputs");
-	    //	userInputs.putAll(probInputs);		
-	    //}
-
-		System.out.println( "userInputs: " + userInputs.toString() );
-	    System.out.println("userInputs size: " + userInputs.size());	
-		// changes ends for CR101
+		if (debugMode) {
+			System.out.println( "userInputs: " + userInputs.toString() );
+			System.out.println("userInputs size: " + userInputs.size());	
+		}
 		
 	}
 	
@@ -1556,7 +1555,7 @@ public class ServerModel {
 	 * Update the clinical diagnosis plot based on the currently selected feature values
 	 */
 	public void updateDiagnosisNode() {
-		System.out.println("ServerModel.updateDiagnosisNode()");
+		if (debugMode) System.out.println("ServerModel.updateDiagnosisNode()");
 		Set<String> toRemove = new TreeSet<String>();
 		Set<String> s = userInputs.keySet();
 		
@@ -1574,7 +1573,7 @@ public class ServerModel {
 				String response = userInputs.get(key);
 				
 				if ( response.equals("[Clear]")) {
-					System.out.println("key="+key);
+					if (debugMode) System.out.println("key="+key);
 					toRemove.add(key);
 					dw.clearNodeState(key);
 				} else
@@ -1587,7 +1586,7 @@ public class ServerModel {
 			userInputs.remove(it.next());
 		}
 		
-		System.out.println("end ServerModel.updateDiagnosisNode()");
+		if (debugMode) System.out.println("end ServerModel.updateDiagnosisNode()");
 	}
 	
 	
