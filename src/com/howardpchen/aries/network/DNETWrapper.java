@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 
 
+
 import norsys.netica.*;
 
 /**
@@ -99,7 +100,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	@Override
 	public Map<String, Double> getNodeProbs(String nodeName, boolean radiographic ) {
 		
-		System.out.println("DNETWrapper::getNodeProbs(" + nodeName + ")");
+		//System.out.println("DNETWrapper::getNodeProbs(" + nodeName + ")");
 		Map<String, Double> returnMap = new HashMap<String, Double>();
 		
 		boolean resetCPTable = true;
@@ -149,7 +150,7 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 			System.err.println("Error getting node probabilities.");
 			//e.printStackTrace();
 		}
-		System.out.println(nodeName+" : " + returnMap);
+		//System.out.println(nodeName+" : " + returnMap);
 		
 		return returnMap;
 	}
@@ -384,18 +385,18 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 	// added for CR103
 		@SuppressWarnings("unchecked")
 		public String getSensitiveForDisease(String disease,Map<String, String> userInputs) {
-			System.out.println("DNETWrapper::getSensitiveForDisease(userInputs)");
+			//System.out.println("DNETWrapper::getSensitiveForDisease(userInputs)");
 			String sensitiveForDisease = null;
 			try {
 				Map<String, String> userSIInputs = new HashMap<String, String>();
 				Map<String, String> selectedSINodeStateMapping = new HashMap<String, String>();
-				System.out.println("userInputs.entrySet().." + userInputs.entrySet());
+				//System.out.println("userInputs.entrySet().." + userInputs.entrySet());
 				for (Map.Entry<String, String> entry : userInputs.entrySet()) {
 					if (entry.getKey().contains("SI_")) {
 						userSIInputs.put(entry.getKey(), entry.getValue());
 					}
 				}
-				System.out.println("userSIInputs SIMAP : " + userSIInputs.entrySet());
+				//System.out.println("userSIInputs SIMAP : " + userSIInputs.entrySet());
 				for (Map.Entry<String, String> entry : userSIInputs.entrySet()) {
 					String state = entry.getValue();
 
@@ -634,6 +635,82 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 		return highestSPSensitiveNodeName;
 	}
 
+	@Override
+	public Map<String, String> getMostSensitiveUnsetNodes(ArrayList<String> prefixList, Map<String,String> userInputs) {
+		
+		Map<String,String> mostSensitive = new HashMap<String,String>();
+		Map<String, Double> howSensitive = new HashMap<String, Double>();
+				
+		Map<String, Map<String,String> > setNodes = new HashMap<String, Map<String,String> >();
+		
+		try {
+			Node targetNode = net.getNode("Diseases");
+			
+			for ( String prefix : prefixList ) {
+				Map<String, String> prefixSetMap = new HashMap<String,String>();
+				setNodes.put(prefix, prefixSetMap);
+			}
+			
+			for (Map.Entry<String,String> userEntry : userInputs.entrySet() ) {
+				
+				String nodeName = userEntry.getKey();
+				String nodeValue = userEntry.getValue();
+				
+				if ( !nodeValue.equals("[Clear]") ) {
+					for ( String prefix : prefixList ) {
+						if ( nodeName.startsWith(prefix) ) {
+							setNodes.get(prefix).put( nodeName, nodeValue);
+						}
+					}
+				}
+			}
+			
+			NodeList allNodes = net.getNodes();
+			for ( String prefix : prefixList ) {
+				//for ( Map.Entry<String,String> thisEntry : setNodes.get(prefix).entrySet() ) {
+				//	System.out.println(prefix + " | " + thisEntry.getKey() + " = " + thisEntry.getValue() );
+				//}
+				NodeList localSetNodes  = net.getNodes();
+				localSetNodes.clear();
+				
+				Iterator<Node> it = allNodes.iterator();
+				while (it.hasNext()) {
+					Node node = it.next();
+
+					if (setNodes.get(prefix).containsKey(node.getName())) {
+						node.finding().setState(setNodes.get(prefix).get(node.getName()));
+					}
+
+					if (node.getName().startsWith(prefix)) {
+						localSetNodes.add(node);
+					}
+				}
+				
+				Sensitivity sensitivity = new Sensitivity(targetNode, localSetNodes, Sensitivity.ENTROPY_SENSV);
+				//Double highestSensitiveValue = 0.0d;
+				howSensitive.put(prefix, 0.0d);
+				
+				for (String varyingNodeName : getNodeNames(prefix)) {
+
+					Double nextValue = sensitivity.getMutualInfo(net.getNode(varyingNodeName));
+					
+					if (nextValue > howSensitive.get(prefix)) {
+						howSensitive.put(prefix,  nextValue);
+						mostSensitive.put(prefix, varyingNodeName);					
+					}
+
+				}
+				
+				System.out.println("Most sensitive for " + prefix + " is " + mostSensitive.get(prefix));
+			}			
+		} catch (NeticaException e) {
+			System.err.println("Problem calculating the senstivity");
+		}
+		
+				
+		return mostSensitive;
+	}
+	
 	@Override
 	public String getHighestCLSensitiveNodeName(Map<String, String> userInputs) {
 		//System.out.println("DNETWrapper::getHighestCLSensitiveNodeName(userInputs)");

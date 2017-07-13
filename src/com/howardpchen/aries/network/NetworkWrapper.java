@@ -2,6 +2,7 @@ package com.howardpchen.aries.network;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 public abstract class NetworkWrapper {
@@ -23,6 +24,7 @@ public abstract class NetworkWrapper {
 	//public abstract String getHighestSensitiveNodeName(Map<String, String> userInputs);
 	//changes ends for CR102
 	//Changes for CR103
+	public abstract Map<String,String> getMostSensitiveUnsetNodes( ArrayList<String> prefixList, Map<String, String> userInputs );
 	public abstract String getHighestSISensitiveNodeName(Map<String, String> userInputs);
 	public abstract String getHighestSPSensitiveNodeName(Map<String, String> userInputs);
 	public abstract String getHighestCLSensitiveNodeName(Map<String, String> userInputs);
