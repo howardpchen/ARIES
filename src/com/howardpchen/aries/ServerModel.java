@@ -60,7 +60,7 @@ public class ServerModel {
 	
 	//private final String PATH = System.getenv("ARIES_NETWORK_PATH");
 	
-	boolean debugMode = false;
+	boolean debugMode = true;
 	
 	/**
 	 * Features set by user
@@ -845,6 +845,7 @@ public class ServerModel {
 					return true;
 			}
 		}
+		if (debugMode) System.out.println(" -- No nodes for " + prefix);
 		return false;
 
 	}
@@ -1339,6 +1340,8 @@ public class ServerModel {
 	    //List<String> newList = new ArrayList<String>();
 		if(nodes != null){
 		for (int i = 0; i < nodes.length; i++) {
+			System.out.println(nodes[i]);
+			
 			if (nodes[i].equals("Diseases"))
 				continue;
 			sb.append("<p class='node-title'>" + nodes[i] + "</p>");
@@ -2916,6 +2919,7 @@ public class ServerModel {
 		if (this.changingActiveNetwork) {
 			this.changingActiveNetwork = false;
 			userInputs.clear();
+			this.processNodePrefixes();
 		}
 		
 		try {
@@ -4271,6 +4275,7 @@ public class ServerModel {
 		this.activePage = PageType.CLINICAL;
 		this.prefixNodeListMapping.clear();
 		this.activeNetwork = availableNetworks.get(0);
+		this.changingActiveNetwork = true;
 
 		return "index?faces-redirect=true";
 	}
