@@ -1441,20 +1441,22 @@ public class ServerModel {
 	}
 
 	public List<String> selectMenuInputs(String nodeName) {
-		//System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
+		if (debugMode) System.out.println("ServerModel.selectMenuInputs(" + nodeName + ")" );
 		List<String> returnString = new ArrayList<String>();
 
 		String nodeNeticaName = nodeNameReverseMapping.get(nodeName);
-		/*
+		
 		if ( nodeNeticaName != null ) {
 			System.out.println("  -- node Netica name:" + nodeNeticaName);
 		}
 		else {
 			System.out.println("  -- No mapping found for this node");
 		}
-		*/
 		
-		Map<String, Double> values = dw.getNodeProbs(nodeNameReverseMapping.get(nodeName),false);	
+		
+				
+		Map<String, Double> values = dw.getNodeProbs(nodeNeticaName,false);	
+		
 		Set<String> s = values.keySet();
 		Iterator<String> it = s.iterator();
 		returnString.add(nodeName);
@@ -2916,35 +2918,62 @@ public class ServerModel {
 		System.out.println("DNET Wrapper session started - Clinical");
 		this.setEvent("");
 		
-		if (this.changingActiveNetwork) {
-			this.changingActiveNetwork = false;
-			userInputs.clear();
-			this.processNodePrefixes();
-		}
+		this.closeNeticaSession();
+		String networkFileName = networkNameMap.get(activeNetwork);
 		
 		try {
-			System.out.println("activeNetwork: " + activeNetwork);
-	        if( !"".equals(activeNetwork)  ) {
-		        String networkFileName = networkNameMap.get(activeNetwork);
-
-		        this.closeNeticaSession();
-				dw = new DNETWrapper(PATH + "/" + networkFileName);
-				
-				// FIXME - tesing this functions
-				//Map<String,String> mostSensitive = dw.getMostSensitiveUnsetNodes(networkPrefixList, userInputs);
-	
-				highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
-				highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
-				highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
-				highestMSSensitiveNodeName = dw.getHighestMSSensitiveNodeName(userInputs);			 
-				
-	        }
+			dw = new DNETWrapper(PATH + "/" + networkFileName);
 		} catch (NetworkLoadingException e) {
 			System.out.println("Error loading the network.");
-
+	
 		} catch (Exception e) {
 			System.out.println("Error converting filename.");
 		}
+		
+		if (this.changingActiveNetwork) {
+			this.changingActiveNetwork = false;
+			userInputs.clear();
+
+			nodes = dw.getNodeNames();
+			for (int i = 0; i < nodes.length; i++) {
+				if (nodes[i].equals("Diseases")) {
+					this.titlesNew = dw.getStates(nodes[i]);
+					diseaseNames = Arrays.asList(this.titlesNew);
+				}
+			}
+			
+			this.processNodePrefixes(); 
+			
+			Map<String, Double> values = new HashMap<String, Double>();
+			Map<String, Map<String, Double>> valuesNode = new HashMap<String, Map<String, Double>>();
+			for(String prefix :this.getNetworkPrefixList()) {
+				
+				List<String> features  = getSelectMenuFeatures(prefix);
+				for(String menu : features){	
+					values = dw.getNodeProbs(nodeNameReverseMapping.get(menu),false);
+					System.out.println(menu + " -> " + nodeNameReverseMapping.get(menu));
+					valuesNode.put(menu, values);
+				}
+			}
+			this.valuesNew = valuesNode; 
+			
+			Arrays.sort(nodes);
+			
+		}
+
+		System.out.println("activeNetwork: " + activeNetwork);
+        if( !"".equals(activeNetwork)  ) {
+			
+			// FIXME - tesing this function
+			//Map<String,String> mostSensitive = dw.getMostSensitiveUnsetNodes(networkPrefixList, userInputs);
+
+			highestSISensitiveNodeName = dw.getHighestSISensitiveNodeName(userInputs);
+			highestSPSensitiveNodeName = dw.getHighestSPSensitiveNodeName(userInputs);
+			highestCLSensitiveNodeName = dw.getHighestCLSensitiveNodeName(userInputs);
+			highestMSSensitiveNodeName = dw.getHighestMSSensitiveNodeName(userInputs);			 
+			
+        }
+
 		if ( debugMode ) System.out.println("End getPrePageLoad()");
 		return this.pageLoad;
 	}
@@ -3149,7 +3178,7 @@ public class ServerModel {
 		
 		try {
 			List<Network> networkList = UserDAO.getNetworkList();
-			for (Network network1 : networkList()  ) {
+			for (Network network1 : networkList  ) {
 				nwNameList.add(network1.getDescription());
 			}
 		} catch (Exception e) {
@@ -4273,7 +4302,7 @@ public class ServerModel {
 		this.unloadNeticaSession();
 		
 		this.activePage = PageType.CLINICAL;
-		this.prefixNodeListMapping.clear();
+		//this.prefixNodeListMapping.clear();
 		this.activeNetwork = availableNetworks.get(0);
 		this.changingActiveNetwork = true;
 
