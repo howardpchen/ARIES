@@ -652,6 +652,60 @@ public class ServerModel {
 		java.util.Collections.sort(availableNetworks);
 		
 	}
+	
+	/*
+	 * Get descriptions for all network files
+	 */
+	private void uploadFeatures(  )  {
+		
+		String featureFile = "filename.csv";
+		String line = "";
+		
+		try ( BufferedReader reader = new BufferedReader(new FileReader(featureFile)) ) {
+			line = reader.readLine();
+			String[] featureNames = line.split(",");
+			String networkCode = featureNames[0];
+			String networkName = networkReverseCodeMap.get(networkCode);
+			this.setActiveNetwork( networkName );
+			System.out.println("Uploading features for network: " + networkName);
+			
+			CaseList caseList = new CaseList();
+			//caseList.setAccession(this.getAccession());
+			caseList.setOrganization(this.getOrganization());
+			caseList.setNetwork(networkCode);
+			//caseList.setModality(this.getModality());
+			//caseList.setDescription(this.getDescription());
+			
+			// set/load active network
+			
+			while (( line = reader.readLine()) != null ) {
+				String[] featureValues = line.split(",");
+				if ( featureValues.length != featureNames.length ) {
+					System.out.println("Invalid .csv file: " + featureFile);
+				}
+				else {
+					for ( int i=1; i<featureNames.length; i++ ) {
+						String nodeNeticaName = this.nodeNameReverseMapping.get(featureNames[i]);
+
+						if ( nodeNeticaName != null ) {
+							System.out.println(featureNames[i] + "  -- node Netica name:" + nodeNeticaName);
+						}
+						else {
+							System.out.println(featureNames[i] + "  -- No mapping found for this node");
+						}
+					}
+					
+				}
+			}
+			
+			reader.close();
+			
+		} catch (IOException e ) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 	/**
 	 * Constructor
