@@ -178,6 +178,9 @@ public class UserDAO {
     	else if ( nwName.indexOf("SP_") != -1 ) {
     		code = "SP";
     	}
+    	else if ( nwName.indexOf("WM_") != -1 ) {
+    		code = "WM";
+    	}
     	
     	return code;
      }

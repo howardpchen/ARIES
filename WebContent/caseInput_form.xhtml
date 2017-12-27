@@ -282,7 +282,7 @@
     </div>
     
     <div></div>
-    
+      
     <div class="row form-row">
         <div class="col-xs-4"></div>
         <div class="col-xs-2"> 
@@ -295,11 +295,27 @@
                              class="btn btn-block btn-register" action="#{serverModel.clear}"
                              reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
         </div>
+     
         <div class="col-xs-4"></div>
     </div>
     
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h:inputFile id="file" value="#{serverModel.uploadFeatureFile}"></h:inputFile>
+        </div>
+        <div class="col-xs-10"></div>
     </div>
-
+    <div></div>
+    <div class="row form-row">
+        <div class="col-xs-2">
+	      <h:commandButton id="upload" value="Upload .csv"
+	               class="btn btn-block btn-register" action="#{serverModel.upload}"
+	               reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
+	      </div>
+	      <div class="col-xs-10"></div>
+    </div>
+    </div>
+    
     <h:inputHidden value="#{serverModel.postPageLoad}" />
     
    </h:form>

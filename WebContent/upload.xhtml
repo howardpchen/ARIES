@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
+
+
+<h:head>
+	<title>Adaptive Radiology Interpretation / Education System
+		(ARIES)</title>
+	<link href="./css/skel-noscript.css" rel="stylesheet" type="text/css" />
+	<link href="./resources/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/css/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="./css/newStyle.css" rel="stylesheet" type="text/css" />
+	
+	<script type="text/javascript"
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/collapseTable.js"></script>
+	<script type="text/javascript" src="./js/skel.min.js"></script>
+	<script type="text/javascript" src="./js/skel-panels.min.js"></script>
+	<script type="text/javascript" src="./js/highcharts.js"></script>
+	<script type="text/javascript" src="./js/themes/dark-unica.js"></script>
+	<script type="text/javascript" src="./js/modules/data.js"></script>
+	
+	<script type="text/javascript">
+	    function onLoadCursor() {
+       	  document.body.style.cursor='default';	
+       	  
+       	  document.getElementById("menu_clinical")).className = "active";
+          document.getElementById("menu_submit")).className = "inactive";
+          document.getElementById("menu_research")).className = "inactive";
+          document.getElementById("menu_education")).className = "inactive";
+          document.getElementById("menu_qc")).className = "inactive";
+       	  
+	    }
+	</script>
+	
+	<script type="text/javascript">
+	    function onWaitCursor() {
+       	  document.body.style.cursor='wait';	
+	    }
+	</script>
+
+</h:head>
+
+<h:body onload="onLoadCursor();">
+
+<ui:include src="header.xhtml" />   
+<h:form id="caseInput" enctype="multipart/form-data">
+
+<div class="container-fluid">
+
+    <div class="row form-row">
+        <div class="col-xs-12">
+            <h4>Upload features via .csv file</h4>
+        </div>
+    </div>
+    
+    <div class="row form-row">
+        <div class="col-xs-2">
+            <h:inputFile id="file" value="#{serverModel.uploadFeatureFile}"></h:inputFile>
+        </div>
+        <div class="col-xs-10"></div>
+    </div>
+    <div></div>
+    <div class="row form-row">
+        <div class="col-xs-2">
+	      <h:commandButton id="upload" value="Upload .csv"
+	               class="btn btn-block btn-register" action="#{serverModel.uploadFeatures}"
+	               reRender="accession,organization,network,mrNum,description,modality,diagnosis" />
+	      </div>
+	      <div class="col-xs-10"></div>
+    </div>
+    
+    <div class="row form-row">
+        <div class="col-xs-12">
+            <div class="errorGroup">
+                <h:messages errorClass="messageError" infoClass="messageInfo"/>
+            </div>
+        </div>
+    </div>
+    
+    </div>
+    
+    <h:inputHidden value="#{serverModel.postPageLoad}" />
+    
+   </h:form>
+	
+	
+	
+   <script type="text/javascript">
+     
+       function validate() {
+
+           var flag = 0;
+           document.getElementById("error").innerText =  "";
+           document.getElementById("error").textContent= "";
+           var userName = document.getElementById("caseInput:accession").value;
+
+           if (/[^0-9a-zA-Z\s]/gi.test(userName)) {
+
+               document.getElementById("error").innerText ="Only Alphanumeric Characters are allowed";
+               document.getElementById("error").textContent= "Only Alphanumeric Characters are allowed";
+               return true;
+           } else
+               return false;
+
+       }
+       
+       //showhide();
+       
+        function showhide() {
+               var e = document.getElementById("feature_pg");
+               var er = document.getElementById("formDiv");
+              
+               var flag = document.getElementById("caseInput:dpFlag").value;
+               
+               if(flag == 'false') {               
+               e.style.display = 'none';
+               er.style.display =  'block';}
+               else{
+                    e.style.display =  'block';
+                    er.style.display = 'none'
+               er.readOnly = true;}
+            }
+        
+        showText();
+        function showText()
+        {  
+           
+            var correctDx = document.getElementById("caseInput:diagnosis").value;
+            if(correctDx == 'Other')
+               document.getElementById('inputTex').style.display='block';
+            else
+               document.getElementById('inputTex').style.display='none'; 
+        }
+        checkAge();
+        function checkAge()
+          {
+           document.getElementById("age_error").innerText = "";
+           document.getElementById("age_error").textContent = "";
+           var age = document.getElementById("caseInput:age").value;
+           if (isNaN(age)) {
+               document.getElementById("age_error").innerText = "Only Numbers are allowed";
+               document.getElementById("age_error").textContent = "Only Numbers are allowed";
+               return true;
+           }
+           else if ( (age > 150) || ( 0 > age) ) {
+               document.getElementById("age_error").innerText = "Numbers(0-150) are allowed";
+               document.getElementById("age_error").textContent = "Numbers(0-150) are allowed";
+               return true;
+           }
+   
+           return false;
+           
+          }
+        
+        checkMrNum();
+        function checkMrNum()
+         {
+           document.getElementById("number_error").innerText = "";
+           document.getElementById("number_error").textContent = "";
+           var mrnum = document.getElementById("caseInput:mrNum").value;
+           var mrnumStr = mrnum.toString();
+           var mrnumSize = mrnumStr.length;
+           
+           if ( isNaN(mrnum) ) {
+               document.getElementById("number_error").innerText = "Only numbers are allowed";
+               document.getElementById("number_error").textContent = "Only numbers are allowed";
+               return true;
+           }
+           else if ( 5 > mrnum.length )  {
+               document.getElementById("number_error").innerText = "Only 5 digit numbers are allowed";
+               document.getElementById("number_error").textContent = "Only 5 digit numbers are allowed";
+               return true;
+           }
+           
+           return false;
+         }
+        
+        function showQCWindow()
+        {
+            window.open('./qualityControl.jsf','mywindow', 'resizable=no,toolbar=no,scrollbars=yes,height=450,width=530,top=145,left=235');
+            return true;
+           
+        }
+           
+   </script>
+	
+	
+	
+
+</h:body>
+
+</html>

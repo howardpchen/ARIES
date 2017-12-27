@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -31,6 +33,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.Part;
 
 import com.howardpchen.aries.dao.UserDAO;
 import com.howardpchen.aries.model.CaseList;
@@ -61,6 +64,17 @@ public class ServerModel {
 	//private final String PATH = System.getenv("ARIES_NETWORK_PATH");
 	
 	boolean debugMode = true;
+	
+	public Part uploadFeatureFile;
+	
+	public Part getUploadFeatureFile( ) {
+		return uploadFeatureFile;
+	}
+	
+	public void setUploadFeatureFile(Part uploadedFile) {
+		this.uploadFeatureFile = uploadedFile;
+	}
+	
 	
 	/**
 	 * Features set by user
@@ -115,7 +129,7 @@ public class ServerModel {
 	/**
 	 * Name of active subpage
 	 */
-	private enum PageType { HOME, CLINICAL, CASE, RESEARCH, EDUCATION, QC };
+	private enum PageType { HOME, CLINICAL, CASE, RESEARCH, EDUCATION, QC, UPLOAD };
 	private PageType activePage = PageType.CLINICAL;
 	
 	public String menuClass( String pageName ) {
@@ -656,7 +670,116 @@ public class ServerModel {
 	/*
 	 * Get descriptions for all network files
 	 */
-	private void uploadFeatures(  )  {
+	public void uploadFeatures( )  {
+
+		System.out.println("ServerModel.uploadFeatures");
+		try {
+			Scanner scanner = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n");
+			
+			String[] featureNames = scanner.next().split(",");
+			String networkCode = featureNames[0];
+			String networkName = networkReverseCodeMap.get(networkCode);
+			this.setActiveNetwork( networkName );
+			System.out.println("Uploading features for network: " + networkName);
+			
+			for (int i = 0; i < nodes.length; i++) {
+				System.out.println(nodes[i]);
+			}
+			
+			while ( scanner.hasNext() ) {
+				System.out.println("-------row-------");
+				
+				if ( !userInputs.isEmpty() ) userInputs.clear();
+				
+				CaseList caseList = new CaseList();
+				caseList.setNetwork(networkCode);
+				caseList.setSubmittedDate(new Date());
+				
+				String[] features = scanner.next().split(",");
+				for ( int i=1; i<features.length; i++ ) {
+					String value = features[i].replace("\n", "").replace("\r", "");
+					String featureName = featureNames[i].replace("\n", "").replace("\r", "");;
+					System.out.println(featureName + " = " + value);
+					
+					// non-feature info
+					if ( featureName.equals("Accession") ) {
+						caseList.setAccession(value);
+					}
+					else if ( featureName.equals("Modality") ) {
+						caseList.setModality(value);
+					}
+					else if (featureName.equals("Description") ) {
+						caseList.setDescription(value);
+					}
+					else if ( featureName.equals("Organization") ) {
+						caseList.setOrganization(value);
+					}
+					else if ( featureName.equals("PatientId") ) {
+						caseList.setPatientid(value);
+					}
+					else if ( featureName.equals("Age") ) {
+						caseList.setAge(value);
+					}
+					else if ( featureName.equals("Gender") ) {
+						caseList.setGender(value);
+					}
+					else {
+						String nodeNeticaName = this.nodeNameDirectMapping.get(featureName);
+	
+						if ( nodeNeticaName != null ) {
+							//System.out.println(featureName + "  -- node Netica name:" + nodeNeticaName);
+							// add feature to userInputs
+						}
+						else {
+							System.out.println(featureName + "  -- No mapping found for this node");
+							FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_INFO, "Unknown node: "+featureName, ""));
+						}
+					}
+				}
+				
+				HttpSession session = Util.getSession();
+				String username = null;
+				String password = null;
+				if(session.getAttribute("username") != null){
+					username = session.getAttribute("username").toString();
+				}
+				if(session.getAttribute("password") != null){
+					password = session.getAttribute("password").toString();
+				}
+				int userid = UserDAO.getUserID(username, password);
+				caseList.setSubmittedBy(userid);
+				//caseList.setQcperson(this.getQcperson()); // FIXME - what goes here?
+							
+				this.setCaseList(caseList);
+				
+				if ( caseListValidation() ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
+				} 
+				else {
+					//boolean success = UserDAO.SaveCaseList(caseList, false);
+					
+					
+				}
+			}
+			
+			scanner.close();
+			
+			//fileContent = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n").next();
+		} catch (IOException ex) {
+			System.out.println("Failed to read file?");
+		}
+		
+		//System.out.println(fileContent);
+		
+		
+		
+		return;
+	}
+	
+	public void doesNothing() {
+		
 		
 		String featureFile = "filename.csv";
 		String line = "";
@@ -4447,6 +4570,13 @@ public class ServerModel {
     	educationErrorMessages = new ArrayList<String>();
     	this.setCorrectDxList(new ArrayList<String>());
 		return "education?faces-redirect=true";
+	}
+	
+	public String getNavRuleUpload() {
+		clear(true);
+		activePage = PageType.UPLOAD;
+		
+		return "upload?faces-redirect=true";
 	}
 	
 	
