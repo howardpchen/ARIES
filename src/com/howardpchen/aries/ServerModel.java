@@ -813,6 +813,7 @@ public class ServerModel {
 			
 			
 			scanner.close();
+			this.closeNeticaSession();
 			
 			//fileContent = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n").next();
 		} catch (IOException ex) {
