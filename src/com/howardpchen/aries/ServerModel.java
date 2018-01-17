@@ -1801,14 +1801,22 @@ public class ServerModel {
 		while (it.hasNext()) {
 			String key = it.next();
 			if (key != null) {
-				String response = userInputs.get(key);
 				
-				if ( response.equals("[Clear]")) {
-					if (debugMode) System.out.println("key="+key);
-					toRemove.add(key);
-					dw.clearNodeState(key);
-				} else
-					dw.setNodeState(key, response);
+				System.out.println("userInputs size: " + userInputs.size() );
+				System.out.println("key = " + key);
+				
+				String response = userInputs.get(key);
+				System.out.println("respose: " + response);
+				
+				if ( response != null ) {
+					if ( response.equals("[Clear]")) {
+						if (debugMode) System.out.println("key="+key);
+						toRemove.add(key);
+						dw.clearNodeState(key);
+					} else {
+						dw.setNodeState(key, response);
+					}
+				}
 			}
 		}
 
@@ -2297,7 +2305,7 @@ public class ServerModel {
 					e.printStackTrace();
 				}
 			}
-			nodes = dw.getNodeNames();
+			this.nodes = dw.getNodeNames();
 			
 			fromGraph = "false";
 			updateDiagnosisNode();
