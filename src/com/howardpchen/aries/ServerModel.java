@@ -617,12 +617,12 @@ public class ServerModel {
 			}
 		});
 		
-		//System.out.println("Reading " + listOfFiles.length + " files");
+		System.out.println("Reading " + listOfFiles.length + " files");
 		
 		// For each file, get description and code
 		for (int i = 0; i < listOfFiles.length; i++) {
 			String netFileName = listOfFiles[i].getName();
-			//System.out.println("Checking info for file: " + netFileName);
+			System.out.println("Checking info for file: " + netFileName);
 			
 			String desc = "";
 			String qc = "";
@@ -649,6 +649,7 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 
+			System.out.println("Adding network file: " + netFileName + " = " + desc);
 			networkFileList.add(netFileName);
 			networkNameList.add(desc);
 			
@@ -892,6 +893,7 @@ public class ServerModel {
 		networkPrefixList.add("SI");
 		networkPrefixList.add("SP");
 		networkPrefixList.add("CL");
+		networkPrefixList.add("TM");
 		networkPrefixList.add("MS");
 
 		// Apriori feature category display names
@@ -899,6 +901,7 @@ public class ServerModel {
 		prefixNameMapping.put("SI", "Signal");
 		prefixNameMapping.put("SP", "Spatial");
 		prefixNameMapping.put("CL", "Clinical");
+		prefixNameMapping.put("TM", "Time");
 		prefixNameMapping.put("MS", "Miscellaneous");
 		
 		// Initialize various hash maps for naming conversions
@@ -932,6 +935,11 @@ public class ServerModel {
 			}
 		}
 		this.loadQCCaseMap();
+		
+		System.out.println("Available Networks:");
+		for ( int i=0; i<availableNetworks.size(); i++) {
+			System.out.println("  " + availableNetworks.get(i));
+		}
 				
 		this.setActiveNetwork( availableNetworks.get(0) );
 		// Default for clinical page
@@ -3151,6 +3159,8 @@ public class ServerModel {
 		System.out.println("+");
 		System.out.println("DNET Wrapper session started - Clinical");
 		this.setEvent("");
+		
+		System.out.println("Active network = " + activeNetwork);
 		
 		this.closeNeticaSession();
 		String networkFileName = networkNameMap.get(activeNetwork);

@@ -57,8 +57,13 @@ public class DNETWrapper extends NetworkWrapper implements Serializable {
 				
 			} catch (NeticaException e) {
 				System.err.println("Problem loading network on Netica.");
-				//e.printStackTrace();
+				e.printStackTrace();
 				err = e;
+				try {
+					env.finalize();
+				} catch (NeticaException e2) {
+					System.err.println("Failed to finalize Netica environment");
+				}
 				//throw new NetworkLoadingException();
 			}
 			count++;
