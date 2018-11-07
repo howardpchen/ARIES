@@ -680,7 +680,8 @@ public class ServerModel {
 			
 			
 			String[] featureNames = scanner.next().split(",");
-			String networkCode = featureNames[0];
+			String networkCode = featureNames[0].replace("\"", "");
+			System.out.println("Uploading features for network code: " + networkCode);
 			String networkName = networkReverseCodeMap.get(networkCode);
 			this.setActiveNetwork( networkName );
 			System.out.println("Uploading features for network: " + networkName);
@@ -708,8 +709,8 @@ public class ServerModel {
 				
 				String[] features = scanner.next().split(",");
 				for ( int i=1; i<features.length; i++ ) {
-					String value = features[i].replace("\n", "").replace("\r", "").replace("_", " ");;
-					String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ");
+					String value = features[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"",  "");
+					String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
 							
 					System.out.println(featureName + " = " + value);
 					
