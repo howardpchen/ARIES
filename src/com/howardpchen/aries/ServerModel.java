@@ -683,122 +683,134 @@ public class ServerModel {
 			String networkCode = featureNames[0].replace("\"", "");
 			System.out.println("Uploading features for network code: " + networkCode);
 			String networkName = networkReverseCodeMap.get(networkCode);
-			this.setActiveNetwork( networkName );
-			System.out.println("Uploading features for network: " + networkName);
-					
-			String networkFileName = networkNameMap.get(networkName);
-			try {
-				dw = new DNETWrapper(PATH + "/" + networkFileName);
-			}
-			 catch (NetworkLoadingException e) {
-				System.out.println("Error loading the network.");
-
-			} catch (Exception e) {
-				System.out.println("Error converting filename.");
+			if ( networkName==null ) {
+			  FacesContext.getCurrentInstance().addMessage(null,
+			    new FacesMessage(FacesMessage.SEVERITY_INFO, "Unknown network code: "+networkCode, ""));
+			  validFile = false;
 			}
 			
-			while ( scanner.hasNext() ) {
-				System.out.println("-------row-------");
+			if ( validFile ) {
+			
+				System.out.println("Uploading features for network: " + networkName);
+				this.setActiveNetwork( networkName );
+				String networkFileName = networkNameMap.get(networkName);
+				try {
+					dw = new DNETWrapper(PATH + "/" + networkFileName);
+				}
+				 catch (NetworkLoadingException e) {
+					System.out.println("Error loading the network.");
+	
+				} catch (Exception e) {
+					System.out.println("Error converting filename.");
+				}
 				
-				// clear this out for each row/case
-				if ( !userInputs.isEmpty() ) userInputs.clear();
-				
-				CaseList caseList = new CaseList();
-				caseList.setNetwork(networkCode);
-				caseList.setSubmittedDate(new Date());
-				
-				String[] features = scanner.next().split(",");
-				for ( int i=1; i<features.length; i++ ) {
-					String value = features[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"",  "");
-					String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
-							
-					System.out.println(featureName + " = " + value);
+				while ( scanner.hasNext() ) {
+					System.out.println("-------row-------");
 					
-					// non-feature info
-					if ( featureName.equalsIgnoreCase("Accession") ) {
-						caseList.setAccession(value);
-					}
-					else if ( featureName.equalsIgnoreCase("Modality") ) {
-						caseList.setModality(value);
-					}
-					else if (featureName.equalsIgnoreCase("Description") ) {
-						caseList.setDescription(value);
-					}
-					else if ( featureName.equalsIgnoreCase("Organization") ) {
-						caseList.setOrganization(value);
-					}
-					else if ( featureName.equalsIgnoreCase("PatientId") ) {
-						caseList.setPatientid(value);
-					}
-					//else if ( featureName.equalsIgnoreCase("Age") ) {
-						//caseList.setAge(value);
-					//}
-					//else if ( featureName.equalsIgnoreCase("Gender") ) {
-						//caseList.setGender(value);
-					//}
-					else {
-						String nodeName = this.nodeNameReverseMapping.get(featureName);
+					// clear this out for each row/case
+					if ( !userInputs.isEmpty() ) userInputs.clear();
+					
+					CaseList caseList = new CaseList();
+					caseList.setNetwork(networkCode);
+					caseList.setSubmittedDate(new Date());
+					
+					String[] features = scanner.next().split(",");
+					for ( int i=1; i<features.length; i++ ) {
+						String value = features[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"",  "");
+						String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
+						featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
+								
+						System.out.println(featureName + " = " + value);
 						
-						// valid feature name
-						if ( nodeName != null ) {
+						// non-feature info
+						if ( featureName.equalsIgnoreCase("Accession") ) {
+							caseList.setAccession(value);
+						}
+						else if ( featureName.equalsIgnoreCase("Modality") ) {
+							caseList.setModality(value);
+						}
+						else if (featureName.equalsIgnoreCase("Description") ) {
+							caseList.setDescription(value);
+						}
+						else if ( featureName.equalsIgnoreCase("Organization") ) {
+							caseList.setOrganization(value);
+						}
+						else if ( featureName.equalsIgnoreCase("PatientId") ) {
+							caseList.setPatientid(value);
+						}
+						//else if ( featureName.equalsIgnoreCase("Age") ) {
+							//caseList.setAge(value);
+						//}
+						//else if ( featureName.equalsIgnoreCase("Gender") ) {
+							//caseList.setGender(value);
+						//}
+						else {
+							//String nodeName = this.nodeNameReverseMapping.get(featureName);
+							String nodeName = featureName;
+							String testName = this.nodeNameDirectMapping.get(nodeName);
 							
-							if ( value.equalsIgnoreCase("NA") ) {
-								this.userInputs.put(nodeName, "[Clear]");
-							}
-							else {
 							
-								boolean validValue = false;
-								if ( dw != null ) {
-									String[] validStates = dw.getStates(nodeName);
-									for ( int j=0; j<validStates.length; j++ ) {
-										if ( value.equalsIgnoreCase(validStates[j])) validValue = true;
+							// valid feature name
+							if ( testName != null ) {
+								
+								if ( value.equalsIgnoreCase("NA") ) {
+									this.userInputs.put(nodeName, "[Clear]");
+								}
+								else {
+								
+									boolean validValue = false;
+									if ( dw != null ) {
+										String[] validStates = dw.getStates(nodeName);
+										for ( int j=0; j<validStates.length; j++ ) {
+											if ( value.equalsIgnoreCase(validStates[j])) validValue = true;
+										}
+									}
+									else {
+										System.out.println("Null network wrapper");
+									}
+									
+									if ( !validValue ) {
+										validFile = false;
+										FacesContext.getCurrentInstance().addMessage(null,
+												new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid value: "+value+" for feature: "+featureName, ""));
+									}
+									else {
+										this.userInputs.put(nodeName, value);
 									}
 								}
-								else {
-									System.out.println("Null network wrapper");
-								}
-								
-								if ( !validValue ) {
-									validFile = false;
-									FacesContext.getCurrentInstance().addMessage(null,
-											new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid value: "+value+" for feature: "+featureName, ""));
-								}
-								else {
-									this.userInputs.put(nodeName, value);
-								}
+							}
+							else {
+								validFile = false;
+								System.out.println(featureName + "  -- No mapping found for this node");
+								FacesContext.getCurrentInstance().addMessage(null,
+										new FacesMessage(FacesMessage.SEVERITY_INFO, "Ignoring unknown feature: "+featureName, ""));
 							}
 						}
-						else {
-							validFile = false;
-							System.out.println(featureName + "  -- No mapping found for this node");
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_INFO, "Ignoring unknown feature: "+featureName, ""));
-						}
 					}
+	
+					
+					HttpSession session = Util.getSession();
+					String username = null;
+					String password = null;
+					if(session.getAttribute("username") != null){
+						username = session.getAttribute("username").toString();
+					}
+					if(session.getAttribute("password") != null){
+						password = session.getAttribute("password").toString();
+					}
+					int userid = UserDAO.getUserID(username, password);
+					caseList.setSubmittedBy(userid);
+					//caseList.setQcperson(this.getQcperson()); // FIXME - what goes here?
+								
+					this.setCaseList(caseList);
+					
+					if ( caseListValidation() ) {
+						validFile = false;
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
+					} 
+	
 				}
-
-				
-				HttpSession session = Util.getSession();
-				String username = null;
-				String password = null;
-				if(session.getAttribute("username") != null){
-					username = session.getAttribute("username").toString();
-				}
-				if(session.getAttribute("password") != null){
-					password = session.getAttribute("password").toString();
-				}
-				int userid = UserDAO.getUserID(username, password);
-				caseList.setSubmittedBy(userid);
-				//caseList.setQcperson(this.getQcperson()); // FIXME - what goes here?
-							
-				this.setCaseList(caseList);
-				
-				if ( caseListValidation() ) {
-					validFile = false;
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
-				} 
-
 			}
 			
 			// FIXME - update database with case list and features
@@ -1135,7 +1147,7 @@ public class ServerModel {
 				prefix = "MS";
 			}
 			
-			//if (debugMode) System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
+			System.out.println(nodeNameWithPrefix + " -> " + nodeNameWithoutPrefix);
 
 			nodeNameDirectMapping.put(nodeNameWithPrefix, nodeNameWithoutPrefix);
 			nodeNameReverseMapping.put(nodeNameWithoutPrefix, nodeNameWithPrefix);

@@ -160,6 +160,9 @@ public class UserDAO {
     	if ( nwName.indexOf("BG_") != -1 ) {
     		code = "BG";
     	}
+    	else if ( nwName.indexOf("BG2_") != -1 ) {
+    		code = "BG2";
+    	}
     	else if ( nwName.indexOf("CHEST_") != -1 ) {
     		code = "CH";
     	}
@@ -181,7 +184,9 @@ public class UserDAO {
     	else if ( nwName.indexOf("WM_") != -1 ) {
     		code = "WM";
     	}
-    	
+    	else if ( nwName.indexOf("WM2_") != -1 ) {
+    		code = "WM2";
+    	}   	
     	return code;
      }
      
