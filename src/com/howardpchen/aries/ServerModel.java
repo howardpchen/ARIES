@@ -649,8 +649,8 @@ public class ServerModel {
 				e.printStackTrace();
 			}
 
-			System.out.println("Adding network file: " + netFileName + " = " + desc);
-			networkFileList.add(netFileName);
+			System.out.println("Adding network file: " + netFileName + " = " + desc + " code: " + code);
+			networkFileList.add(netFileName); 
 			networkNameList.add(desc);
 			
 			availableNetworks.add(desc);
@@ -668,6 +668,15 @@ public class ServerModel {
 		
 	}
 	
+	public void printAvailableNetworks( ) {
+	    Iterator it = networkReverseCodeMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + pair.getValue());
+	        //it.remove(); // avoids a ConcurrentModificationException
+	    }
+	}
+	
 	/*
 	 * Get descriptions for all network files
 	 */
@@ -680,10 +689,21 @@ public class ServerModel {
 			
 			
 			String[] featureNames = scanner.next().split(",");
-			String networkCode = featureNames[0].replace("\"", "");
-			System.out.println("Uploading features for network code: " + networkCode);
+			String networkCode = featureNames[0].replace("\"", "").replace("\uFEFF", "");
+			
+			System.out.println("Uploading network code: " + "|" + networkCode + "|" + networkReverseCodeMap.get(networkCode));
 			String networkName = networkReverseCodeMap.get(networkCode);
+			System.out.println("Test network code: BG2 " + networkReverseCodeMap.get("BG2"));
+			if ( networkCode == "BG2" ) {
+				System.out.println(networkCode+"==BG2");
+			}
+			else {
+				System.out.println(networkCode+"!=BG2");
+			}
+
+			
 			if ( networkName==null ) {
+			  printAvailableNetworks();
 			  FacesContext.getCurrentInstance().addMessage(null,
 			    new FacesMessage(FacesMessage.SEVERITY_INFO, "Unknown network code: "+networkCode, ""));
 			  validFile = false;
