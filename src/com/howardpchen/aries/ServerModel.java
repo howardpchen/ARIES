@@ -829,6 +829,10 @@ public class ServerModel {
 						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
 					} 
+					else {
+						// Submit case to database
+						
+					}
 	
 				}
 			}
@@ -4382,6 +4386,8 @@ public class ServerModel {
 		}
 		return flag;
 	}
+	
+	
 	public String saveUserCaseInput(){
 		System.out.println("saveUserCaseInput() - Not yet implemented");
 		return "";
