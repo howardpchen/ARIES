@@ -53,7 +53,7 @@
 	               <h:selectOneMenu id="network" value="#{serverModel.activeNetwork}" class="registration" 
 	                   onchange="this.form.submit()" valueChangeListener="#{serverModel.qcChangeNetwork}"  reRender="diagnosis" >
 	                   <f:selectItem itemLabel="-select-" itemValue="-select-"></f:selectItem>
-	                   <f:selectItems value="#{serverModel.qcNetworkList}"></f:selectItems> 
+	                   <f:selectItems value="#{serverModel.availableNetworks}"></f:selectItems> 
 	               </h:selectOneMenu>
 	           
 	           </div> 

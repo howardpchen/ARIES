@@ -659,6 +659,27 @@ public class UserDAO {
 		return accession;
     	
      }
+     
+     public static Integer getCaseIdFromAccessionNo(String accession) {
+    	 Connection con = null;
+    	 Statement stmt = null;
+    	 String caseid = null;
+    	 try{
+    		 con = Database.getConnection();
+    		 stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT caseid FROM caselist where accession = '"+accession+"'");
+             while(rs.next()){
+            	 caseid = rs.getString("caseid");
+             }
+    	 } catch (Exception ex) {
+             System.out.println("Error in getCaseIdFromAccessionNo -->" + ex.getMessage());
+         } finally {
+             Database.close(con);
+         }
+		return Integer.parseInt(caseid);
+    	
+     }
+     
      //For Research CaseNo
      public static String getAccessionNo(int caseid,int userid){
     	 Connection con = null;

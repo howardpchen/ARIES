@@ -48,12 +48,22 @@
 <h:inputHidden value="#{serverModel.prePageLoad}" />
 
 <div class="row">
-    <div class="col-xs-12 selectdiv mainmenu">
+    <div class="col-xs-6 selectdiv mainmenu">
         <h2>Select Network:</h2>
         <h:selectOneMenu value="#{serverModel.activeNetwork}" onchange="this.form.submit()" >
         <f:selectItems value="#{serverModel.availableNetworks}" />
         </h:selectOneMenu>
     </div>
+    
+    
+    <div class="col-xs-6 selectdiv mainmenu">
+       <h2>Load Features:</h2>
+       <h:selectOneMenu value="#{serverModel.caseAccessionForFeatures}" onchange="this.form.submit()" >
+           <f:selectItem itemLabel="-select-" ></f:selectItem>
+           <f:selectItems value="#{serverModel.caseAccessionList}" />
+       </h:selectOneMenu>
+    </div>
+  
 </div>
 
 <div></div>

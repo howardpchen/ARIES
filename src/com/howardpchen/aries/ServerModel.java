@@ -212,6 +212,26 @@ public class ServerModel {
 		return this.qcCaseIdList;
 	}
 	
+	/** 
+	 * List of all case ids for the current network
+	 */
+	private List<String> caseAccessionList = new ArrayList<String>();
+	
+	public List<String> getCaseAccessionList() {
+		return this.caseAccessionList;
+	}
+	
+	private String caseAccessionForFeatures = "-select-";
+	
+	public String getCaseAccessionForFeatures() {
+		return this.caseAccessionForFeatures;
+	}
+	
+	private boolean changingCase = false;
+	public void setCaseAccessionForFeatures( String id ) {
+		this.caseAccessionForFeatures = id;
+		this.changingCase = true;
+	}
 	
 	
 	/**
@@ -691,16 +711,10 @@ public class ServerModel {
 			String[] featureNames = scanner.next().split(",");
 			String networkCode = featureNames[0].replace("\"", "").replace("\uFEFF", "");
 			
+			
+			
 			System.out.println("Uploading network code: " + "|" + networkCode + "|" + networkReverseCodeMap.get(networkCode));
 			String networkName = networkReverseCodeMap.get(networkCode);
-			System.out.println("Test network code: BG2 " + networkReverseCodeMap.get("BG2"));
-			if ( networkCode == "BG2" ) {
-				System.out.println(networkCode+"==BG2");
-			}
-			else {
-				System.out.println(networkCode+"!=BG2");
-			}
-
 			
 			if ( networkName==null ) {
 			  printAvailableNetworks();
@@ -733,6 +747,7 @@ public class ServerModel {
 					CaseList caseList = new CaseList();
 					caseList.setNetwork(networkCode);
 					caseList.setSubmittedDate(new Date());
+					caseList.setOrganization("UPHS");
 					
 					String[] features = scanner.next().split(",");
 					for ( int i=1; i<features.length; i++ ) {
@@ -740,7 +755,7 @@ public class ServerModel {
 						String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
 						featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
 								
-						System.out.println(featureName + " = " + value);
+						System.out.println(features[i] + " ---> " + featureName + " = " + value);
 						
 						// non-feature info
 						if ( featureName.equalsIgnoreCase("Accession") ) {
@@ -1587,6 +1602,7 @@ public class ServerModel {
 	public String resetHandler() {
 		userInputs.clear();
 		this.setDisease("");
+		this.setCaseAccessionForFeatures("-select-");
 				
 		infoMessages = new ArrayList<String>();
 		return ("index"); // return to index or refresh index
@@ -3198,6 +3214,7 @@ public class ServerModel {
 		this.setEvent("");
 		
 		System.out.println("Active network = " + activeNetwork);
+		System.out.println("Current Case ID = " + this.caseAccessionForFeatures );
 		
 		this.closeNeticaSession();
 		String networkFileName = networkNameMap.get(activeNetwork);
@@ -3212,6 +3229,7 @@ public class ServerModel {
 		}
 		
 		if (this.changingActiveNetwork) {
+			this.caseAccessionForFeatures = "-select-";
 			this.changingActiveNetwork = false;
 			userInputs.clear();
 
@@ -3240,6 +3258,16 @@ public class ServerModel {
 			
 			Arrays.sort(nodes);
 			
+			this.caseAccessionList = this.loadNetworkAccessions( this.activeNetwork );
+			
+			
+		}
+		
+		if ( this.changingCase ) {
+			this.changingCase = false;
+			System.out.println( "Changing Case to ID: " + this.caseAccessionForFeatures );
+			this.loadAccessionFeatures( this.caseAccessionForFeatures );
+
 		}
 
 		System.out.println("activeNetwork: " + activeNetwork);
@@ -3307,6 +3335,64 @@ public class ServerModel {
 			probInputs.clear();
 		}
 		this.pageLoad = pl;
+	}
+	
+	private List<String> loadNetworkAccessions( String network ) {
+		
+		List<String> cases = new ArrayList<String>();
+		if ( network.equals("-select-") || network.equals("") ) {
+			return cases;
+		}
+		
+		String code = this.networkCodeMap.get( network );
+		
+		List<CaseList> allCases = UserDAO.getCaseList();
+		for ( CaseList i : allCases ) {
+			if ( i.getNetwork().equals(code) && !i.isDeleted()	) {
+				cases.add( i.getAccession() );
+			}
+ 		}
+				
+		Collections.sort(cases);
+		return cases;
+	}
+	
+	// Fill this.userInput from a case in the database
+	private void loadAccessionFeatures( String accession ) {
+		
+		 this.userInputs.clear();
+		 this.probInputs.clear();
+		 //this.loadingFeatures = true;
+		 
+		 if ( accession.equals("") || accession.equals("-select-") ) {
+			 return;
+		 }
+		 
+		 List<UserCaseInput> featurelist = new ArrayList<UserCaseInput>();
+		 
+		 Integer caseId = UserDAO.getCaseIdFromAccessionNo( this.caseAccessionForFeatures );
+		 featurelist = UserDAO.getUserCaseInput( caseId );
+		 
+		 for (UserCaseInput userCaseInput:featurelist) {
+			 System.out.println( "  -- case input value: " + userCaseInput.getValue());
+			 
+		 String[] fullFeature = userCaseInput.getValue().split("] ");
+		 //String featureBase = fullFeature[0];
+		 
+		 // If is a feature value, e.g. [BG] Cerebellum=Yes
+		 if ( fullFeature.length > 1 ) {
+			 String[] featureParts = fullFeature[1].split("=");
+			 String featureKey = featureParts[0].replace("_", " ");
+			 String featureValue = featureParts[1];
+			 System.out.println("  -- " + nodeNameReverseMapping.get(featureKey) + " -> " + featureValue);
+			 //probInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);
+			 userInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);			 
+		 }
+		 else {
+			 // FIXME - if disease set to correctDX ? 
+			 }
+		 }
+		
 	}
 	
 	public void setPostPageLoad1(String pl) {
@@ -3723,6 +3809,83 @@ public class ServerModel {
 			return false;
 	}
 
+	/**
+	 * Submit case to the database
+	 * @return
+	 */
+	public String submitCase( CaseList caseList, Map<String, String> features ) {
+		System.out.println("Attempt to submit case to database");
+		
+		String networkcode = null;
+
+		// Save a new case to the database
+		try {
+			networkcode = UserDAO.getCode(this.networkNameMap.get(this.activeNetwork));
+			caseList.setSubmittedDate(new Date());
+
+			HttpSession session = Util.getSession();
+			String username = null;
+			String password = null;
+			if(session.getAttribute("username") != null){
+				username = session.getAttribute("username").toString();
+			}
+			if(session.getAttribute("password") != null){
+				password = session.getAttribute("password").toString();
+			}
+			int userid = UserDAO.getUserID(username, password);
+			caseList.setSubmittedBy(userid);
+			caseList.setQcperson(this.getQcperson()); // FIXME - what goes here?
+							
+			if ( caseListValidation() ) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Case not submitted - This combination of organization, MR number, and network already exists!", ""));
+				return "caseInput_form?redirect=true";
+			} 
+			else {
+				boolean success = UserDAO.SaveCaseList(caseList, false);
+				
+				if( success ) {
+					System.out.println("UserDAO.SaveCaseList() returned success");
+					
+					// Save all features
+				    if(!features.isEmpty()) {
+				    	for (Map.Entry<String, String> entry : features.entrySet()) {
+					    	if(!entry.getKey().contains("Diseases")) {
+						    	UserCaseInput caseinput = new UserCaseInput();
+						    	caseinput.setUserid(userid);
+						    	caseinput.setCaseid(getCaseid());
+						    	caseinput.setSessionid(session.getId());
+						    	caseinput.setEventid(1001);
+						    	String featureName = nodeNameDirectMapping.get(entry.getKey()).replace(" ",  "_");
+						        caseinput.setValue("[" + networkcode + "]" + " " + featureName + "=" + entry.getValue());
+						        UserDAO.SaveFeature(caseinput);
+					    	}
+				    	}	
+				    }
+				  
+				  // FIXME - reset all form values here or leave that to user?
+				  this.clear(false);
+				    
+				  return "caseInput_form?faces-redirect=true";
+				  //return "";
+				}
+				else{
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Save is not Successful!", ""));
+					System.out.println("Failed to submit case");
+					System.out.println("accession = " + caseList.getAccession() );
+					return "caseInput_form?faces-redirect=true";
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "caseInput_form?faces-redirect=true";
+		}
+
+	
+	
 	/**
 	 * Submit case to the database
 	 * @return
