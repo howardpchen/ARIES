@@ -697,24 +697,40 @@ public class ServerModel {
 	    }
 	}
 	
+	public String cleanString( String s ) {
+		int length = s.length();
+		char[] oldChars = new char[length];
+		s.getChars(0, length, oldChars, 0);
+		int newLen = 0;
+		for (int j = 0; j < length; j++) {
+		    char ch = oldChars[j];
+		    if (ch >= ' ') {
+		        oldChars[newLen] = ch;
+		        newLen++;
+		    }
+		}
+		return(  new String(oldChars, 0, newLen) );
+	}
+	
 	/*
 	 * Get descriptions for all network files
 	 */
 	public void uploadFeatures( )  {
 
 		System.out.println("ServerModel.uploadFeatures");
+		boolean validFile = true;
 		try {
-			boolean validFile = true;
 			Scanner scanner = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n");
 			
 			
 			String[] featureNames = scanner.next().split(",");
 			String networkCode = featureNames[0].replace("\"", "").replace("\uFEFF", "");
 			
-			
-			
+						
 			System.out.println("Uploading network code: " + "|" + networkCode + "|" + networkReverseCodeMap.get(networkCode));
 			String networkName = networkReverseCodeMap.get(networkCode);
+			
+
 			
 			if ( networkName==null ) {
 			  printAvailableNetworks();
@@ -722,10 +738,7 @@ public class ServerModel {
 			    new FacesMessage(FacesMessage.SEVERITY_INFO, "Unknown network code: "+networkCode, ""));
 			  validFile = false;
 			}
-			
-			if ( validFile ) {
-			
-				System.out.println("Uploading features for network: " + networkName);
+			else {
 				this.setActiveNetwork( networkName );
 				String networkFileName = networkNameMap.get(networkName);
 				try {
@@ -737,6 +750,21 @@ public class ServerModel {
 				} catch (Exception e) {
 					System.out.println("Error converting filename.");
 				}
+			}
+			
+			for ( int i=1; i<featureNames.length; i++ ) {
+				String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
+				String testName = this.nodeNameDirectMapping.get(featureName);
+				System.out.println(featureNames[i] + " is " + featureName + " and maps to " + testName);
+			}
+			
+			//boolean nope=true; if ( nope ) return;
+			
+			
+			if ( validFile ) {
+			
+				System.out.println("Uploading features for network: " + networkName);
+
 				
 				while ( scanner.hasNext() ) {
 					System.out.println("-------row-------");
@@ -751,10 +779,11 @@ public class ServerModel {
 					
 					String[] features = scanner.next().split(",");
 					for ( int i=1; i<features.length; i++ ) {
-						String value = features[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"",  "");
+						String value = features[i].replace("\n", "").replace("\r", "").replace("\"",  "").replace( " ", "");
 						String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
 						featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
 								
+						value = cleanString( value );
 						System.out.println(features[i] + " ---> " + featureName + " = " + value);
 						
 						// non-feature info
@@ -808,6 +837,14 @@ public class ServerModel {
 										validFile = false;
 										FacesContext.getCurrentInstance().addMessage(null,
 												new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid value: "+value+" for feature: "+featureName, ""));
+										String feedback = "Valid values are: ";
+										String[] validStates = dw.getStates(nodeName);
+										for ( int j=0; j<validStates.length; j++ ) {
+											feedback = feedback + validStates[j] + ",";
+										}
+										FacesContext.getCurrentInstance().addMessage(null,
+												new FacesMessage(FacesMessage.SEVERITY_INFO, feedback, ""));
+										System.out.println(feedback);
 									}
 									else {
 										this.userInputs.put(nodeName, value);
@@ -873,8 +910,197 @@ public class ServerModel {
 			System.out.println("Failed to read file?");
 		}
 		
-		//System.out.println(fileContent);
-		
+
+		if (validFile) try {
+
+			Scanner scanner = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n");
+			
+			
+			String[] featureNames = scanner.next().split(",");
+			String networkCode = featureNames[0].replace("\"", "").replace("\uFEFF", "");
+			
+						
+			System.out.println("Uploading network code: " + "|" + networkCode + "|" + networkReverseCodeMap.get(networkCode));
+			String networkName = networkReverseCodeMap.get(networkCode);
+			
+			if ( networkName==null ) {
+			  printAvailableNetworks();
+			  FacesContext.getCurrentInstance().addMessage(null,
+			    new FacesMessage(FacesMessage.SEVERITY_INFO, "Unknown network code: "+networkCode, ""));
+			  validFile = false;
+			}
+			else {
+				this.setActiveNetwork( networkName );
+				String networkFileName = networkNameMap.get(networkName);
+				try {
+					dw = new DNETWrapper(PATH + "/" + networkFileName);
+				}
+				 catch (NetworkLoadingException e) {
+					System.out.println("Error loading the network.");
+	
+				} catch (Exception e) {
+					System.out.println("Error converting filename.");
+				}
+			}
+			
+			for ( int i=1; i<featureNames.length; i++ ) {
+				String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
+				String testName = this.nodeNameDirectMapping.get(featureName);
+				System.out.println(featureNames[i] + " is " + featureName + " and maps to " + testName);
+			}
+			
+			//boolean nope=true; if ( nope ) return;
+			
+			
+			if ( validFile ) {
+			
+				System.out.println("Uploading features for network: " + networkName);
+
+				
+				while ( scanner.hasNext() ) {
+					System.out.println("-------row-------");
+					
+					// clear this out for each row/case
+					if ( !userInputs.isEmpty() ) userInputs.clear();
+					
+					CaseList caseList = new CaseList();
+					caseList.setNetwork(networkCode);
+					caseList.setSubmittedDate(new Date());
+					caseList.setOrganization("UPHS");
+					
+					
+					String[] features = scanner.next().split(",");
+					for ( int i=1; i<features.length; i++ ) {
+						String value = features[i].replace("\n", "").replace("\r", "").replace("\"",  "").replace( " ", "");
+						String featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("_", " ").replace("\"", "");
+						featureName = featureNames[i].replace("\n", "").replace("\r", "").replace("\"", "");
+								
+						value = cleanString( value );
+						System.out.println(features[i] + " ---> " + featureName + " = " + value);
+						
+						// non-feature info
+						if ( featureName.equalsIgnoreCase("Accession") ) {
+							caseList.setAccession(value);
+						}
+						else if ( featureName.equalsIgnoreCase("Modality") ) {
+							caseList.setModality(value);
+						}
+						else if (featureName.equalsIgnoreCase("Description") ) {
+							caseList.setDescription(value);
+						}
+						else if ( featureName.equalsIgnoreCase("Organization") ) {
+							caseList.setOrganization(value);
+						}
+						else if ( featureName.equalsIgnoreCase("PatientId") ) {
+							caseList.setPatientid(value);
+						}
+
+						else {
+							String nodeName = featureName;
+							String testName = this.nodeNameDirectMapping.get(nodeName);
+							
+							// valid feature name
+							if ( testName != null ) {
+								
+								if ( value.equalsIgnoreCase("NA") ) {
+									this.userInputs.put(nodeName, "[Clear]");
+								}
+								else {
+								
+									boolean validValue = false;
+									if ( dw != null ) {
+										String[] validStates = dw.getStates(nodeName);
+										for ( int j=0; j<validStates.length; j++ ) {
+											if ( value.equalsIgnoreCase(validStates[j])) validValue = true;
+										}
+									}
+									else {
+										System.out.println("Null network wrapper");
+									}
+									
+									if ( !validValue ) {
+										validFile = false;
+										FacesContext.getCurrentInstance().addMessage(null,
+												new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid value: "+value+" for feature: "+featureName, ""));
+										String feedback = "Valid values are: ";
+										String[] validStates = dw.getStates(nodeName);
+										for ( int j=0; j<validStates.length; j++ ) {
+											feedback = feedback + validStates[j] + ",";
+										}
+										FacesContext.getCurrentInstance().addMessage(null,
+												new FacesMessage(FacesMessage.SEVERITY_INFO, feedback, ""));
+										System.out.println(feedback);
+									}
+									else {
+										this.userInputs.put(nodeName, value);
+									}
+								}
+							}
+							else {
+								validFile = false;
+								System.out.println(featureName + "  -- No mapping found for this node");
+								FacesContext.getCurrentInstance().addMessage(null,
+										new FacesMessage(FacesMessage.SEVERITY_INFO, "Ignoring unknown feature: "+featureName, ""));
+							}
+						}
+					}
+
+				// submit case to database
+				HttpSession session = Util.getSession();
+				String username = null;
+				String password = null;
+				if(session.getAttribute("username") != null){
+					username = session.getAttribute("username").toString();
+				}
+				if(session.getAttribute("password") != null){
+					password = session.getAttribute("password").toString();
+				}
+				int userid = UserDAO.getUserID(username, password);
+				caseList.setSubmittedBy(userid);
+				if ( caseList.getPatientid() == null ) {
+					caseList.setPatientid( "anon" );
+				}
+				
+				boolean success = UserDAO.SaveCaseList(caseList, false);
+				
+				if ( success ) {
+					
+					// scan user inputs and submit
+					Integer thisCaseId = UserDAO.getCaseIdFromAccessionNo( caseList.getAccession() );
+					
+				    if(!userInputs.isEmpty()) {
+				    	for (Map.Entry<String, String> entry : userInputs.entrySet()) {
+					    	if(!entry.getKey().contains("Diseases")) {
+						    	UserCaseInput caseinput = new UserCaseInput();
+						    	caseinput.setUserid(userid);
+						    	caseinput.setCaseid(thisCaseId);
+						    	caseinput.setSessionid(session.getId());
+						    	caseinput.setEventid(1001);
+						    	String featureName = nodeNameDirectMapping.get(entry.getKey()).replace(" ",  "_");
+						        caseinput.setValue("[" + networkCode + "]" + " " + featureName + "=" + entry.getValue());
+						        UserDAO.SaveFeature(caseinput);
+					    	}
+				    	}	
+				    }
+				}
+				
+					
+				} // end row
+	
+				
+			}
+
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "File uploaded.", ""));	
+	
+			
+			scanner.close();
+			this.closeNeticaSession();
+			
+			//fileContent = new Scanner( uploadFeatureFile.getInputStream() ).useDelimiter("\\n").next();
+		} catch (IOException ex) {
+			System.out.println("Failed to read file?");
+		}
 		
 		
 		return;
