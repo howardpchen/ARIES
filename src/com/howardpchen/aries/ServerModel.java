@@ -3489,12 +3489,7 @@ public class ServerModel {
 			
 		}
 		
-		if ( this.changingCase ) {
-			this.changingCase = false;
-			System.out.println( "Changing Case to ID: " + this.caseAccessionForFeatures );
-			this.loadAccessionFeatures( this.caseAccessionForFeatures );
 
-		}
 
 		System.out.println("activeNetwork: " + activeNetwork);
         if( !"".equals(activeNetwork)  ) {
@@ -3511,17 +3506,17 @@ public class ServerModel {
 
 		if (! this.userInputs.isEmpty() ) {
 			System.out.println( "Number of user inputs: " + this.userInputs.size() );
-			for ( Map.Entry<String, String> entry: userInputs.entrySet() ) {
-				System.out.println( "userInput: " + entry.getKey() + " = " + entry.getValue() );
-			}
+			//for ( Map.Entry<String, String> entry: userInputs.entrySet() ) {
+			//	System.out.println( "userInput: " + entry.getKey() + " = " + entry.getValue() );
+			//}
 		}
         
-		if ( debugMode ) System.out.println("End getPrePageLoad()");
+		System.out.println("End getPrePageLoad()");
 		return this.pageLoad;
 	}
 
 	public void setPostPageLoad(String pl) {
-		if ( debugMode ) System.out.println("setPostPageLoad()");
+		System.out.println("setPostPageLoad()");
 		
 		System.out.println("  probInputs size="+probInputs.size());
 		
@@ -3586,9 +3581,10 @@ public class ServerModel {
 	// Fill this.userInput from a case in the database
 	private void loadAccessionFeatures( String accession ) {
 		
+		System.out.println("loadAccessionFeatures(" + accession + ")" );
 		 this.userInputs.clear();
 		 this.probInputs.clear();
-		 //this.loadingFeatures = true;
+		 this.loadingFeatures = true;
 		 
 		 if ( accession.equals("") || accession.equals("-select-") ) {
 			 return;
@@ -3596,7 +3592,7 @@ public class ServerModel {
 		 
 		 List<UserCaseInput> featurelist = new ArrayList<UserCaseInput>();
 		 
-		 Integer caseId = UserDAO.getCaseIdFromAccessionNo( this.caseAccessionForFeatures );
+		 Integer caseId = UserDAO.getCaseIdFromAccessionNo( accession );
 		 featurelist = UserDAO.getUserCaseInput( caseId );
 		 
 		 for (UserCaseInput userCaseInput:featurelist) {
@@ -3612,7 +3608,7 @@ public class ServerModel {
 			 String featureValue = featureParts[1];
 			 System.out.println("  -- " + nodeNameReverseMapping.get(featureKey) + " -> " + featureValue);
 			 //probInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);
-			 userInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);			 
+			 probInputs.put(nodeNameReverseMapping.get(featureKey), featureValue);			 
 		 }
 		 else {
 			 // FIXME - if disease set to correctDX ? 
@@ -5189,6 +5185,44 @@ public class ServerModel {
 		//updateDiagnosisNode1();
 		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
 	}
+	
+	/**
+	 * Called when the the "Prepopulate by Disease" menu is used
+	 * 
+	 * @param event holds info for previous and current value of menu
+	 */
+	public void getLoadAccessionAction(ValueChangeEvent event){
+		if ( debugMode ) System.out.println("getLoadAccessionAction()");
+		if ( event.getNewValue() == null ) {
+			return;
+		}
+		System.out.println("Event Change Value: '" + event.getOldValue() + "' -> '" + event.getNewValue()+"'" );
+		String newValue = event.getNewValue().toString();
+		
+		String oldValue = "";
+		if(event.getOldValue() != null){
+			oldValue = event.getOldValue().toString();
+		}
+		
+		currentDisease = newValue;
+		if(newValue != null && !newValue.equals("-select-") && !newValue.equalsIgnoreCase(nullDisease) && !newValue.equalsIgnoreCase(oldValue)) {
+
+			if(!userInputs.isEmpty())
+				userInputs.clear();
+			if(!probInputs.isEmpty())
+				probInputs.clear();
+			
+			loadingFeatures = true;
+			//userInputs.put("Diseases", diseaseNameMap.get(newValue));
+			
+			//getFeatureProb();
+			this.loadAccessionFeatures( newValue );
+		}
+		
+		//updateDiagnosisNode1();
+		//Map<String, Double> values = sortByValue(dw.getDiagnosisProbs(), -1);
+	}
+	
 	
 	public void getCorrectDxAction(ValueChangeEvent event) {
 	

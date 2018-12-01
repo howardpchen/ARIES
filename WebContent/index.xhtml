@@ -58,7 +58,8 @@
     
     <div class="col-xs-6 selectdiv mainmenu">
        <h2>Load Features:</h2>
-       <h:selectOneMenu value="#{serverModel.caseAccessionForFeatures}" onchange="this.form.submit()" >
+       <h:selectOneMenu value="#{serverModel.caseAccessionForFeatures}" onchange="this.form.submit()"
+           valueChangeListener="#{serverModel.getLoadAccessionAction}" >
            <f:selectItem itemLabel="-select-" ></f:selectItem>
            <f:selectItems value="#{serverModel.caseAccessionList}" />
        </h:selectOneMenu>
